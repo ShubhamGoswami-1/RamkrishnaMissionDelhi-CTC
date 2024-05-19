@@ -11,6 +11,10 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
 const userRouter = require("./routes/userRoute");
+const batchRouter = require("./routes/batchRoute");
+const courseRouter = require("./routes/courseRoute");
+const facultyRouter = require("./routes/facultyRoute");
+const studentRouter = require("./routes/studentRoute");
 
 const app = express();
 
@@ -66,6 +70,11 @@ app.use((req, res, next) => {
 
 // 3) ROUTES
 app.use('/api/v1/auth', userRouter);
+app.use('/api/v1/batch', batchRouter);
+app.use('/api/v1/course', courseRouter);
+app.use('/api/v1/faculty', facultyRouter);
+app.use('/api/v1/student', studentRouter);
+
   
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

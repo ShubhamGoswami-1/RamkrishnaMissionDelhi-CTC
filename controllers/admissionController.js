@@ -16,7 +16,7 @@ exports.newAdmission = catchAsyc(async(req, res, next) => {
     }
 
     if(!batch || !batch.active){
-        return next(new AppError(`atch didnt existed or is inActive`, 404));
+        return next(new AppError(`batch didnt existed or is inActive`, 404));
     }
     
     const newAdmission = await Admission.create({

@@ -1,6 +1,6 @@
-const Course = require("./../models/courseModel");
+const Course = require("../models/courseModel");
 
-const catchAsync = require('./../utils/catchAsync');
+const catchAsync = require('../utils/catchAsync');
 
 exports.addNewCourse = catchAsync(async (req, res, next) => {
     

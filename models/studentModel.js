@@ -38,7 +38,7 @@ const studentSchema = new mongoose.Schema({
     required: [true, "Enter the address"]
   },
   batchIds: {
-    type: [String],
+    type: [String], 
     /* 
     {
       courseId: {
