@@ -27,7 +27,7 @@ exports.addNewStudent = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getStudent = asyncErrorHandler(async (req, res, next) => {
+exports.getStudent = catchAsync(async (req, res, next) => {
     const studentId = req.params.studentId;
 
     const student = await Student.findById(studentId);
@@ -40,4 +40,13 @@ exports.getStudent = asyncErrorHandler(async (req, res, next) => {
         status: "sccess",
         student
     })
+})
+
+exports.getAllStudents = catchAsync(async (req, res, next) => {
+    const students = await Student.find();
+
+    res.status(200).json({
+        status: "success",
+        students
+    });
 })
