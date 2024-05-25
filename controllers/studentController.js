@@ -26,3 +26,18 @@ exports.addNewStudent = catchAsync(async (req, res, next) => {
         newStudent
     });
 });
+
+exports.getStudent = asyncErrorHandler(async (req, res, next) => {
+    const studentId = req.params.studentId;
+
+    const student = await Student.findById(studentId);
+
+    if(!student){
+        return next(new AppError(`No student found with id:${studentId}`, 404));
+    }
+
+    res.status(200).json({
+        status: "sccess",
+        student
+    })
+})

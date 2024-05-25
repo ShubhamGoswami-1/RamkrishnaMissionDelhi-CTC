@@ -29,6 +29,9 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter the DOB of student']
   },
+  phone: {
+    type: String
+  },
   active: {
     type: Boolean,
     default: true,

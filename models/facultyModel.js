@@ -5,6 +5,18 @@ const facultySchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter the name of the faculty"]
   },
+  email: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    validate: [validator.isEmail, 'Please provide a valid email']
+  },
+  address: {
+    type: String
+  },
+  phoneNo: {
+    type: String
+  },
   batchIds: {
     type: [String],
     default: []
