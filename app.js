@@ -72,10 +72,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// VIEWS
-app.use('/', viewRouter);
-
-
 // 3) ROUTES
 app.use('/api/v1/auth', userRouter);
 app.use('/api/v1/batch', batchRouter);
@@ -83,6 +79,8 @@ app.use('/api/v1/course', courseRouter);
 app.use('/api/v1/faculty', facultyRouter);
 app.use('/api/v1/student', studentRouter);
 
+// VIEWS
+app.use('/', viewRouter);
   
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
