@@ -9,10 +9,18 @@ const AppError = require('./../utils/appError');
 
 
 exports.signup = catchAsync(async (req, res, next) => {
+
+  const { name, email, password } = req.body;
+
+  // Check if required fields are provided
+  if (!name || !email || !password) {
+    return next(new AppError('Name, email, and password are required.', 400));
+  }
+
   const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
+    name,
+    email,
+    password,
   });
 
   res.status(201).json({

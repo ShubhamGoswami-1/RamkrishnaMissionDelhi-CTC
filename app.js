@@ -6,10 +6,12 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const ejs = require("ejs");
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
+const viewRouter = require("./routes/viewRoute");
 const userRouter = require("./routes/userRoute");
 const batchRouter = require("./routes/batchRoute");
 const courseRouter = require("./routes/courseRoute");
@@ -18,8 +20,10 @@ const studentRouter = require("./routes/studentRoute");
 
 const app = express();
 
-app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
+
+app.use(express.urlencoded({ extended: false }));
 
 // 1) GLOBAL MIDDLEWARES
 
@@ -67,6 +71,10 @@ app.use((req, res, next) => {
     // console.log(req.headers);
     next();
 });
+
+// VIEWS
+app.use('/', viewRouter);
+
 
 // 3) ROUTES
 app.use('/api/v1/auth', userRouter);
