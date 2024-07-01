@@ -12,10 +12,14 @@ const facultySchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email']
   },
+  aadhaarNo: {
+    type: String,
+    minlength: 12,
+  },
   address: {
     type: String
   },
-  phoneNo: {
+  phone: {
     type: String
   },
   batchIds: {

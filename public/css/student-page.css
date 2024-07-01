@@ -1,0 +1,209 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff3e6;
+    color: #333;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+.sidebar {
+    width: 150px;
+    background-color: #e65c00;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    margin: 4px 0;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: rgb(235, 127, 11);
+}
+.sidebar a:hover {
+    background-color: #ff704d;
+}
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-image: url('/images/missionlogo.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay; /* Adjust blend mode for dim effect */
+    opacity: 0.9; /* Adjust opacity for overall dimming */
+}
+.main-content h2 {
+    margin-bottom: 20px;
+    color: #e65c00;
+}
+.table-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background-color: #e65c00;
+    color: white;
+}
+tr:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+#addStudentButton {
+    padding: 10px 20px;
+    background-color: #004de6;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#addStudentButton:hover {
+    background-color: rgb(25, 138, 237);
+}
+
+/* Adjustments to form styling */
+.form-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%; /* Adjusted width */
+    max-width: 700px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.form-content input, .form-content select {
+    width: calc(100% - 40px); /* Adjusted input width */
+    margin-bottom: 6px; /* Smaller margin */
+    padding: 8px; /* Smaller padding */
+    font-size: 14px; /* Smaller font size */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.form-content h2 {
+    margin-top: 0;
+    color: #e65c00;
+}
+.form-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-content button {
+    padding: 10px 20px;
+    background-color: #004de6;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.form-content button:hover {
+    background-color: rgb(25, 138, 237);
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.search-container input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.search-container {
+    position: relative; /* Ensure position for absolute dropdown */
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    display: none;
+    background-color: #fff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.search-dropdown.active {
+    display: block;
+}
+
+#filterIcon {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.search-dropdown select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+    background-color: #fff;
+}
+
+
+.filter-container {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+#filterIcon {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+/* .search-container input, .search-container select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+} */

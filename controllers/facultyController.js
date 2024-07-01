@@ -4,14 +4,55 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
 exports.addNewFaculty = catchAsync(async (req, res, next) => {
-    const { name } = req.body;
+    const { name, aadhaarNo, phone, email, address } = req.body;
 
     const newFaculty = await Faculty.create({
-        name
+        name,
+        aadhaarNo,
+        phone,
+        address,
+        email
     });
 
-    res.status(201).json({
+    // res.status(201).json({
+    //     status: "success",
+    //     newFaculty
+    // });
+
+    res.redirect('/faculty');
+})
+
+exports.getAllFaculties = catchAsync(async (req, res, next) => {
+    const faculties = await Faculty.find();
+
+    res.status(200).json({
         status: "success",
-        newFaculty
+        faculties
+    });
+})
+
+exports.searchFaulty = catchAsync(async (req, res, next) => {
+    const { searchText, category } = req.query;
+    const query = {};
+    if(!category){
+        category = name
+    }
+    if(searchText){
+        query[category] = { $regex: new RegExp(searchText, "i") };   
+    }
+    let faculties = await Faculty.find(query, {
+        _id: 1,
+        name: 1,
+        email: 1,
+        aadhaarNo: 1,
+        phone: 1,
+        address: 1
+    })
+    .sort({ [category]: 1})
+    .limit(10);
+
+    res.status(200).json({
+        status: "success",
+        faculties
     });
 })

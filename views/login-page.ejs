@@ -111,6 +111,18 @@
         .right-side button:hover {
             background-color: #ff704d;
         }
+        .signup-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .signup-link a {
+            color: #e65c00;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -127,13 +139,16 @@
         </div>
         <div class="right-side">
             <h2>Login</h2>
-            <form method="POST" action="/api/v1/login">
+            <form method="POST" action="/api/v1/auth/login">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required>
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
                 <button type="submit">Login</button>
             </form>
+            <div class="signup-link">
+                <a href="/signup">New user, Signup</a>
+            </div>
         </div>
     </div>
     <footer>

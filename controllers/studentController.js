@@ -5,7 +5,7 @@ const AppError = require('./../utils/appError');
 
 exports.addNewStudent = catchAsync(async (req, res, next) => {
 
-    const { name, fathersName, email, aadhaarNo, gender, dob, address, education, reference } = req.body;
+    const { name, fathersName, email, aadhaarNo, gender, phone, dob, address, education, reference } = req.body;
 
     const studentObj = {
         name,
@@ -13,6 +13,7 @@ exports.addNewStudent = catchAsync(async (req, res, next) => {
         email,
         aadhaarNo,
         gender,
+        phone,
         dob,
         address,
         education,
@@ -21,10 +22,12 @@ exports.addNewStudent = catchAsync(async (req, res, next) => {
 
     const newStudent = await Student.create(studentObj);
 
-    res.status(201).json({
-        status: "success",
-        newStudent
-    });
+    // res.status(201).json({
+    //     status: "success",
+    //     newStudent
+    // });
+
+    res.redirect('/students');
 });
 
 exports.getStudent = catchAsync(async (req, res, next) => {
@@ -44,6 +47,33 @@ exports.getStudent = catchAsync(async (req, res, next) => {
 
 exports.getAllStudents = catchAsync(async (req, res, next) => {
     const students = await Student.find();
+
+    res.status(200).json({
+        status: "success",
+        students
+    });
+})
+
+exports.searchStudent = catchAsync(async (req, res, next) => {
+    const { searchText, category } = req.query;
+    const query = {};
+    if(!category){
+        category = name
+    }
+    if(searchText){
+        query[category] = { $regex: new RegExp(searchText, "i") };   
+    }
+    let students = await Student.find(query, {
+        _id: 1,
+        name: 1,
+        fathersName: 1,
+        aadhaarNo: 1,
+        phone: 1,
+        address: 1,
+        email: 1
+    })
+    .sort({ [category]: 1})
+    .limit(10);
 
     res.status(200).json({
         status: "success",

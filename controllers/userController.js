@@ -23,10 +23,12 @@ exports.signup = catchAsync(async (req, res, next) => {
     password,
   });
 
-  res.status(201).json({
-    status: "success",
-    newUser
-  });
+  // res.status(201).json({
+  //   status: "success",
+  //   newUser
+  // });
+
+  res.redirect('/students');
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -43,10 +45,12 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  res.status(200).json({
-    status: "success",
-    message: "You are logged in!!!"
-  });
+  // res.status(200).json({
+  //   status: "success",
+  //   message: "You are logged in!!!"
+  // });
+
+  res.redirect('/students');
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
