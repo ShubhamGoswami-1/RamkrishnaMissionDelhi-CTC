@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        populateStudentsTable(data.faculties); // Populate table with search results
+                        populateFacultyTable(data.faculties); // Populate table with search results
                     } else {
                         console.error('Error searching faculties:', data.error);
                     }
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        populateStudentsTable(data.faculties); // Populate table with all faculties
+                        populateFacultyTable(data.faculties); // Populate table with all faculties
                     } else {
                         console.error('Error fetching faculties:', data.error);
                     }
