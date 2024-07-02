@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fetch all batches when page loads
-    fetch('/api/v1/batch/get-all-batches')
+    fetch('/api/v1/batch/get-all-batches?courseId=6683b695e0e9aa976c0c5461')
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
+                    console.log("Faculties", data.faculties)
                     populateFacultyDropdown(data.faculties); // Populate dropdown with fetched faculties
                 } else {
                     console.error('Error fetching faculties:', data.error);

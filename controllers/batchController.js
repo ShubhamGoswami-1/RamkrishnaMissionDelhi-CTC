@@ -48,7 +48,7 @@ exports.addNewBatch = catchAsync(async (req, res, next) => {
 })
 
 exports.getAllBatches = catchAsync(async(req, res, next) => {
-    const { courseId } = req.params;
+    const { courseId } = req.query;
 
     const batches = await Batch.find({ courseId });
 
