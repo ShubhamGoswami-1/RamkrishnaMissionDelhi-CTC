@@ -14,6 +14,10 @@ router.get('/students', (req, res, next) => {
     res.render('students-page');
 })
 
+router.get('/batch', (req, res, next) => {
+    res.render('batch-page');
+})
+
 router.get('/faculty', (req, res, next) => {
     res.render('faculty-page');
 })
