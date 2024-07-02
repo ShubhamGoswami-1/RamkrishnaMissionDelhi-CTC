@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${batch.facultyName}</td>
                 <td>${batch.timing}</td>
                 <td>${batch.startingDate}</td>
-                <td>${batch.address}</td>
                 <td>${batch.active}</td>
             `;
 
