@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post('/add-new-batch', batchController.addNewBatch);
 router.get('/get-all-batches', batchController.getAllBatches);
-router.get('/search', batchController);
+router.get('/search', batchController.searchBatch);
 
 module.exports = router;
