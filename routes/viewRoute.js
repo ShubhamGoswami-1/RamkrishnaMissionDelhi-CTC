@@ -22,6 +22,10 @@ router.get('/faculty', (req, res, next) => {
     res.render('faculty-page');
 })
 
+router.get('/admission', (req, res, next) => {
+    res.render('admission-page');
+})
+
 router.get('/', (req, res, next) => {
     res.render('welcome-page');
 });
