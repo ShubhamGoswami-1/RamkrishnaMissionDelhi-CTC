@@ -25,3 +25,19 @@ exports.getAllCourses = catchAsync(async (req, res, next) => {
         courses
     });
 })
+
+exports.searchCourse = catchAsync(async (req, res, next) => {
+    const { searchText } = req.query;
+    let query = {};
+
+    if(searchText){
+        query.name = { $regex: new RegExp(searchText, "i") };   
+    }
+
+    const courses = await Course.find(query).sort({ name : 1});
+
+    res.status(200).json({
+        status: "success",
+        courses
+    });
+})
