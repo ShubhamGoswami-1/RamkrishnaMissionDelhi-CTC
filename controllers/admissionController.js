@@ -7,7 +7,7 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 exports.newAdmission = catchAsync(async(req, res, next) => {
-    const { studentId, courseId, batchId } = req.body; // formNo
+    const { studentId, courseId, batchId, formNo } = req.body; // formNo
 
     const student = await Student.findOne({ _id: studentId });
     const course = await Course.findById(courseId)
@@ -27,7 +27,8 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
         courseId,
         courseName: course.name,
         batchId,
-        batchTitle: batch.title
+        batchTitle: batch.title,
+        formNo
     });
 
     // Do neccessary steps
