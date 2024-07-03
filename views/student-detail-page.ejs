@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ramakrishna Mission Language and Culture School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/student-detail-page.css">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net;"> -->
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <a href="/students">Students</a>
+        <a href="/faculty">Faculty</a>
+        <a href="/batch">Batch</a>
+        <a href="/course">Course</a>
+        <a href="/admission">Admission</a>
+        <a href="/fees">Fees</a>
+    </div>
+    <div class="main-content" data-student-id="<%= studentId %>">
+        <h2>Students <%= studentId %></h2>
+    </div>
+    <script src="/js/student-detail-page.js"></script>
+</body>
+</html>

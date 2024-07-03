@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let rows = studentsTable.querySelectorAll('tbody tr');
 
         rows.forEach(row => {
-            let cell = row.querySelector(`td:nth-child(${category === 'name' ? 1 : category === 'fathersName' ? 2 : category === 'aadhaarNo' ? 3 : 4})`);
+            let cell = row.querySelector(`td:nth-child(${category === 'name' ? 1 : category === 'fathersName' ? 2 : category === 'aadhaarNo' ? 3 : category === 'phone' ? 4 : 5})`);
             if (cell.innerText.toLowerCase().includes(filter)) {
                 row.style.display = '';
             } else {
@@ -52,11 +52,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${student.address}</td>
             `;
 
+            row.addEventListener('click', function() {
+                viewStudentDetails(student._id);
+            });
+
             tbody.appendChild(row);
         });
     }
 
-// Fetch all students when page loads
+    // Fetch all students when page loads
     fetch('/api/v1/student/get-all-students')
         .then(response => response.json())
         .then(data => {
@@ -71,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to redirect to student details page
     function viewStudentDetails(studentId) {
-        window.location.href = `/student-details/${studentId}`;
+        window.location.href = `/students/details/${studentId}`;
     }
 
     // Bind event handlers
@@ -81,12 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle dynamic table row clicks
-    studentsTable.querySelectorAll('tbody tr').forEach(row => {
-        row.addEventListener('click', function() {
-            viewStudentDetails(row.dataset.studentId);
-        });
-    });
-
     filterIcon.addEventListener('click', function(event) {
         searchDropdown.classList.toggle('active');
     });
@@ -95,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.dispatchEvent(new Event('input')); // Trigger the search when the category changes
     });
 
-    
     // Handle search functionality
     searchInput.addEventListener('input', function() {
         let filter = this.value.toLowerCase();

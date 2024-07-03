@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const mainContent = document.querySelector('.main-content');
+    const courseId = mainContent.getAttribute('data-course-id');
     const addBatchButton = document.getElementById('addBatchButton');
     const batchFormModal = document.getElementById('batchFormModal');
     const closeButtons = document.querySelectorAll('.close');
@@ -45,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fetch all batches when page loads
-    fetch('/api/v1/batch/get-all-batches?courseId=6683b695e0e9aa976c0c5461')
+    fetch(`/api/v1/batch/get-all-batches?courseId=${courseId}`)
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
@@ -94,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let category = searchCategory.value;
 
         if (filter.length > 0) {
-            fetch(`/api/v1/batch/search?searchText=${filter}&category=${category}`)
+            fetch(`/api/v1/batch/search?searchText=${filter}&category=${category}&courseId=${courseId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => console.error('Error searching batches:', error));
         } else {
             // If the search input is cleared, fetch all batches again
-            fetch('/api/v1/batch/get-all-batches')
+            fetch(`/api/v1/batch/get-all-batches?courseId=${courseId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
