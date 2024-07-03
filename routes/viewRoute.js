@@ -14,9 +14,17 @@ router.get('/students', (req, res, next) => {
     res.render('students-page');
 })
 
+router.get('/students/details/:studentId', (req, res, next) => {
+    const studentId = req.params.studentId; // Access studentId from the route parameters
+    res.render('student-detail-page', { studentId: studentId });
+});
+
+
 router.get('/batch', (req, res, next) => {
-    res.render('batch-page');
-})
+    const courseId = req.query.courseId;
+    const courseName = req.query.courseName;
+    res.render('batch-page', { courseId: courseId, courseName: courseName });
+});
 
 router.get('/faculty', (req, res, next) => {
     res.render('faculty-page');

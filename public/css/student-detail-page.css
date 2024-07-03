@@ -1,0 +1,89 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff3e6;
+    color: #333;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+.sidebar {
+    width: 150px;
+    background-color: #e65c00;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    margin: 4px 0;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: rgb(235, 127, 11);
+}
+.sidebar a:hover {
+    background-color: #ff704d;
+}
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background-image: url('/images/missionlogo.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay; /* Adjust blend mode for dim effect */
+    opacity: 0.9; /* Adjust opacity for overall dimming */
+}
+.main-content h2 {
+    margin-bottom: 20px;
+    color: #e65c00;
+}
+.table-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background-color: #e65c00;
+    color: white;
+}
+tr:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+#addStudentButton {
+    padding: 10px 20px;
+    background-color: #004de6;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#addStudentButton:hover {
+    background-color: rgb(25, 138, 237);
+}
