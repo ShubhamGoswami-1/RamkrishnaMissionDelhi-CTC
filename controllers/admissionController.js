@@ -1,14 +1,16 @@
 const Admission = require('./../models/admissionModel');
 const Student = require('./../models/studentModel');
+const Course = require('./../models/courseModel');
 const Batch = require('./../models/batchModel');
 
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 exports.newAdmission = catchAsync(async(req, res, next) => {
-    const { studentId, courseId, batchId } = req.body;
+    const { studentId, courseId, batchId } = req.body; // formNo
 
     const student = await Student.findOne({ _id: studentId });
+    const course = await Course.findById(courseId)
     const batch = await Batch.findOne({ _id: batchId });
 
     if(!student){
@@ -23,7 +25,7 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
         studentId,
         studentName : student.name,
         courseId,
-        courseName: courseId.name,
+        courseName: course.name,
         batchId,
         batchTitle: batch.title
     });
@@ -56,7 +58,7 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
 });
 
 exports.getAllAdmissions = catchAsync(async (req, res, next) => {
-    const admissions = await Admission.find();
+    const admissions = await Admission.find().sort({ DateOfAdmission: 1 });
 
     res.status(200).json({
         status: "success",

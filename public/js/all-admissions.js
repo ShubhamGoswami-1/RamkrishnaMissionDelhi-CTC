@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
             row.innerHTML = `
                 <td>${admission.studentName}</td>
                 <td>${admission.courseName}</td>
-                <td>${admission.batchName}</td>
-                <td>${admission.admissionDate}</td>
-                <td>${admission.status}</td>
+                <td>${admission.batchTitle}</td>
+                <td>${admission.DateOfAdmission}</td>
+                <td>${admission.formNo}</td>
             `;
 
             tbody.appendChild(row);

@@ -22,11 +22,11 @@ router.get('/faculty', (req, res, next) => {
     res.render('faculty-page');
 })
 
-router.get('/admission', (req, res, next) => {
+router.get('/new-admission', (req, res, next) => {
     res.render('admission-page');
 })
 
-router.get('/all-admission', (req, res, next) => {
+router.get('/all-admissions', (req, res, next) => {
     res.render('all-admissions');
 })
 
