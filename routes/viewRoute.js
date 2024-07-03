@@ -18,6 +18,10 @@ router.get('/faculty', (req, res, next) => {
     res.render('faculty-page');
 })
 
+router.get('/course', (req, res, next) => {
+    res.render('course-page');
+})
+
 router.get('/', (req, res, next) => {
     res.render('welcome-page');
 });
