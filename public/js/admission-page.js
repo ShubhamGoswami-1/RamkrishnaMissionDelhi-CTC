@@ -42,8 +42,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.getElementById('completeAdmission').addEventListener('click', () => {
-            alert('Admission process completed!');
-            // Add your logic to handle the final submission
+
+            fetch('/api/v1/admission/add-new-admission', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Include any necessary data for the admission process here
+                    studentId: selectedStudentId,
+                    courseId: selectedCourseId,
+                    batchId: selectedBatchId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Admission process completed!');
+                    window.location.href = '/all-admission'; // Redirect to the all-admissions page
+                } else {
+                    alert('Error completing the admission process: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error completing the admission process');
+            });
+            // alert('Admission process completed!');
         });
     }
 

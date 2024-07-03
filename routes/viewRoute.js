@@ -26,6 +26,10 @@ router.get('/admission', (req, res, next) => {
     res.render('admission-page');
 })
 
+router.get('/all-admission', (req, res, next) => {
+    res.render('all-admissions');
+})
+
 router.get('/', (req, res, next) => {
     res.render('welcome-page');
 });
