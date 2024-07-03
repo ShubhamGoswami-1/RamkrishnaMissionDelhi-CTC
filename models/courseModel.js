@@ -4,7 +4,7 @@ const validator = require('validator');
 const courseSchema = new mongoose.Schema({
   name: {
     type: String,
-    enum: ["Spanish", "French", "English"],
+    enum: ["Spanish", "French", "English", "Sanskrit", "Music"],
     required: [true, 'Please enter the class name!']
   },
   fees: {

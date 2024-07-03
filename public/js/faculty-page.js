@@ -44,21 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error fetching faculties:', error));
 
-    // Function to filter faculty based on search category
-    // function filterFaculty() {
-    //     let filter = searchInput.value.toLowerCase();
-    //     let category = searchCategory.value;
-    //     let tr = facultyTable.getElementsByTagName("tr");
-
-    //     for (let i = 1; i < tr.length; i++) {
-    //         let td = tr[i].getElementsByTagName("td")[category === 'name' ? 0 : category === 'email' ? 1 : category === 'phoneNo' ? 2 : 3];
-    //         if (td) {
-    //             let textValue = td.textContent || td.innerText;
-    //             tr[i].style.display = textValue.toLowerCase().includes(filter) ? "" : "none";
-    //         }
-    //     }
-    // }
-
     // Show the form modal when 'Add Faculty' button is clicked
     addFacultyButton.onclick = function() {
         facultyFormModal.style.display = "block";

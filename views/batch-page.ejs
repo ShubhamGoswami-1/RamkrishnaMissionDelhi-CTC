@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ramakrishna Mission Language and Culture School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/faculty-page.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <a href="/students">Students</a>
+        <a href="/faculty">Faculty</a>
+        <a href="/batch">Batch</a>
+        <a href="/course">Course</a>
+        <a href="/admission">Admission</a>
+        <a href="/fees">Fees</a>
+    </div>
+    <div class="main-content">
+        <h2>Batch</h2>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <img src="/images/filter-blue-icon.jpeg" alt="Filter Icon" id="filterIcon">
+            <div class="search-dropdown" id="searchDropdown">
+                <select id="searchCategory">
+                    <option value="title">Title</option>
+                    <option value="facultyName">Faculty</option>
+                    <option value="timing">Timing</option>
+                    <option value="startingDate">Starting Date</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table id="batchTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Faculty</th>
+                        <th>Timing</th>
+                        <th>Starting Date</th>
+                        <th>Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic rows will be inserted here -->
+                </tbody>
+            </table>
+            <button id="addBatchButton">Add New Batch</button>
+        </div>
+    </div>
+
+    <!-- The Modal for adding new batch -->
+    <div id="batchFormModal" class="form-container">
+        <div class="form-content">
+            <span class="close">&times;</span>
+            <h2>Add New Batch</h2>
+            <form id="batchForm" method="POST" action="/api/v1/batch/add-new-batch">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+                
+                <label for="facultyId">Faculty:</label>
+                <select id="facultyId" name="facultyId" required>
+                    <!-- Faculty options will be populated dynamically -->
+                </select>
+                
+                <label for="timing">Timing:</label>
+                <input type="text" id="timing" name="timing" required>
+
+                <label for="startingDate">Starting Date:</label>
+                <input type="date" id="startingDate" name="startingDate" required>
+                
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address">
+                
+                <button type="submit">Add Batch</button>
+            </form>
+        </div>
+    </div>
+    <script src="/js/batch-page.js"></script>
+</body>
+</html>
