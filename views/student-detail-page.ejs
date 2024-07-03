@@ -6,7 +6,6 @@
     <title>Dashboard - Ramakrishna Mission Language and Culture School</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/student-detail-page.css">
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net;"> -->
 </head>
 <body>
     <div class="sidebar">
@@ -20,7 +19,49 @@
         <a href="/fees">Fees</a>
     </div>
     <div class="main-content" data-student-id="<%= studentId %>">
-        <h2>Students <%= studentId %></h2>
+        <h2>Student Details</h2>
+
+        <!-- Personal Details Container -->
+        <div class="details-container">
+            <h3>Personal Details</h3>
+            <form id="personalDetailsForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name"><br>
+                <label for="fathersName">Father's Name:</label>
+                <input type="text" id="fathersName" name="fathersName"><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email"><br>
+                <label for="aadhaarNo">Aadhaar No:</label>
+                <input type="text" id="aadhaarNo" name="aadhaarNo"><br>
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone"><br>
+                <label for="address">Address:</label>
+                <textarea id="address" name="address"></textarea><br>
+                <button type="button" id="saveDetailsButton">Save Details</button>
+            </form>
+        </div>
+
+        <!-- Batch/Course IDs Container -->
+        <div class="details-container">
+            <h3>Batch/Course IDs</h3>
+            <table id="batchCourseTable">
+                <thead>
+                    <tr>
+                        <th>Batch/Course ID</th>
+                        <th>Batch/Course Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Batch/Course details will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Fees Container -->
+        <div class="details-container">
+            <h3>Fees</h3>
+            <!-- Fees details can be added here -->
+        </div>
     </div>
     <script src="/js/student-detail-page.js"></script>
 </body>
