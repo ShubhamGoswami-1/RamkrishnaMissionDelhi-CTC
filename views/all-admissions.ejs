@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Ramakrishna Mission Language and Culture School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/all-admissions.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <a href="/students">Students</a>
+        <a href="/faculty">Faculty</a>
+        <a href="/batch">Batch</a>
+        <a href="/course">Course</a>
+        <a href="/admission">Admission</a>
+        <a href="/fees">Fees</a>
+    </div>
+    <div class="main-content">
+        <h2>Admissions</h2>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <img src="/images/filter-blue-icon.jpeg" alt="Filter Icon" id="filterIcon">
+            <div class="search-dropdown" id="searchDropdown">
+                <select id="searchCategory">
+                    <option value="studentName">Student Name</option>
+                    <option value="courseName">Course</option>
+                    <option value="batchName">Batch</option>
+                    <option value="admissionDate">Admission Date</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table id="admissionTable">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Course</th>
+                        <th>Batch</th>
+                        <th>Admission Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic rows will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="/js/all-admissions.js"></script>
+</body>
+</html>

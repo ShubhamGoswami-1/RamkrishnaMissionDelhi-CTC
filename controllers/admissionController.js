@@ -2,11 +2,11 @@ const Admission = require('./../models/admissionModel');
 const Student = require('./../models/studentModel');
 const Batch = require('./../models/batchModel');
 
-const catchAsyc = require('./../utils/catchAsync');
+const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
-exports.newAdmission = catchAsyc(async(req, res, next) => {
-    const { studentId, courseId, batchId, formNo } = req.body;
+exports.newAdmission = catchAsync(async(req, res, next) => {
+    const { studentId, courseId, batchId } = req.body;
 
     const student = await Student.findOne({ _id: studentId });
     const batch = await Batch.findOne({ _id: batchId });
@@ -21,9 +21,11 @@ exports.newAdmission = catchAsyc(async(req, res, next) => {
     
     const newAdmission = await Admission.create({
         studentId,
+        studentName : student.name,
         courseId,
+        courseName: courseId.name,
         batchId,
-        formNo
+        batchTitle: batch.title
     });
 
     // Do neccessary steps
@@ -51,4 +53,32 @@ exports.newAdmission = catchAsyc(async(req, res, next) => {
         status: 'success',
         newAdmission
     })
+});
+
+exports.getAllAdmissions = catchAsync(async (req, res, next) => {
+    const admissions = await Admission.find();
+
+    res.status(200).json({
+        status: "success",
+        admissions
+    });
+})
+
+exports.searchAdmission = catchAsync(async (req, res, next) => {
+    const { searchText, category } = req.query;
+    const query = {};
+    if(!category){
+        category = studentName
+    }
+    if(searchText){
+        query[category] = { $regex: new RegExp(searchText, "i") };   
+    }
+    let admissions = await Student.find(query)
+    .sort({ [category]: 1})
+    .limit(10);
+
+    res.status(200).json({
+        status: "success",
+        admissions
+    });
 })
