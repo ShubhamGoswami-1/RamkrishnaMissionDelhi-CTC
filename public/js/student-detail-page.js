@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    console.log(data.student); // Log the student details to the console
+                    console.log("Student Data: ",data.student); // Log the student details to the console
                 } else {
                     console.error('Error fetching student details:', data.error);
                 }
