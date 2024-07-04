@@ -89,9 +89,10 @@ body {
     margin-top: 20px;
 }
 
-.table-container {
-    overflow-y: scroll;
-    max-height: 60vh;
+
+.table-container{
+    overflow-y: auto;
+    height: 50vh;
 }
 
 table {
@@ -100,9 +101,12 @@ table {
     margin-bottom: 20px;
 }
 
-table,
-th,
-td {
+thead{
+    position: sticky;
+    top: 0;
+}
+
+table, th, td {
     border: 1px solid #ddd;
 }
 
@@ -173,7 +177,7 @@ tr:hover {
 
 button {
     padding: 10px 20px;
-    background-color: #004de6;
+    background-color: #e65c00;
     color: white;
     font-size: 16px;
     border: none;
@@ -182,5 +186,5 @@ button {
 }
 
 button:hover {
-    background-color: rgb(25, 138, 237);
+    background-color: #ff704d;
 }
