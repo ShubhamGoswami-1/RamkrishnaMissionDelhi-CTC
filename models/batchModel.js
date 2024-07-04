@@ -27,6 +27,10 @@ const batchSchema = new mongoose.Schema({
   startingDate: {
     type: String
   },
+  studentIds: {
+    type: [String],
+    default: ''
+  },
   active: {
     type: Boolean,
     default: true
