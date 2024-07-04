@@ -76,3 +76,18 @@ exports.searchBatch = catchAsync(async (req, res, next) => {
         batches
     });
 })
+
+exports.getBatch = catchAsync(async (req, res, next) => {
+    const batchId = req.params.batchId;
+
+    const batch = await Faculty.findById(batchId);
+
+    if(!batch){
+        return next(new AppError(`No faculty found with id:${batchId}`, 404));
+    }
+
+    res.status(200).json({
+        status: "success",
+        batch
+    })
+}) 

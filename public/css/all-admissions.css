@@ -82,15 +82,15 @@ tr:hover {
     border-radius: 4px;
 }
 .search-container {
-    position: relative;
+    /* position: relative; */
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
 .search-dropdown {
-    position: absolute;
+    /* position: absolute;
     top: 100%;
-    left: 0;
+    left: 0; */
     z-index: 1;
     display: none;
     background-color: #fff;
@@ -105,7 +105,7 @@ tr:hover {
     width: 35px;
     height: 35px;
     cursor: pointer;
-    margin-left: 10px;
+    margin: 0 10px;
 }
 .search-dropdown select {
     width: 100%;
