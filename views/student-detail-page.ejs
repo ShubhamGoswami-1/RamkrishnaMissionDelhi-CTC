@@ -12,7 +12,6 @@
         <h2>Dashboard</h2>
         <a href="/students">Students</a>
         <a href="/faculty">Faculty</a>
-        <a href="/batch">Batch</a>
         <a href="/course">Course</a>
         <a href="/new-admission">New Admission</a>
         <a href="/all-admissions">All Admission</a>
@@ -25,42 +24,55 @@
         <div class="details-container">
             <h3>Personal Details</h3>
             <form id="personalDetailsForm">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name"><br>
-                <label for="fathersName">Father's Name:</label>
-                <input type="text" id="fathersName" name="fathersName"><br>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email"><br>
-                <label for="aadhaarNo">Aadhaar No:</label>
-                <input type="text" id="aadhaarNo" name="aadhaarNo"><br>
-                <label for="phone">Phone:</label>
-                <input type="text" id="phone" name="phone"><br>
-                <label for="address">Address:</label>
-                <textarea id="address" name="address"></textarea><br>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="fathersName">Father's Name:</label>
+                        <input type="text" id="fathersName" name="fathersName">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="aadhaarNo">Aadhaar No:</label>
+                        <input type="text" id="aadhaarNo" name="aadhaarNo">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone:</label>
+                        <input type="text" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address:</label>
+                        <textarea id="address" name="address"></textarea>
+                    </div>
+                </div>
                 <button type="button" id="saveDetailsButton">Save Details</button>
             </form>
         </div>
 
         <!-- Batch/Course IDs Container -->
         <div class="details-container">
-            <h3>Batch/Course IDs</h3>
+            <h3>Enrolled Courses</h3>
             <table id="batchCourseTable">
                 <thead>
                     <tr>
                         <th>Batch/Course ID</th>
                         <th>Batch/Course Name</th>
+                        <th>Fees Paid</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Batch/Course details will be populated here -->
                 </tbody>
             </table>
-        </div>
-
-        <!-- Fees Container -->
-        <div class="details-container">
-            <h3>Fees</h3>
-            <!-- Fees details can be added here -->
         </div>
     </div>
     <script src="/js/student-detail-page.js"></script>

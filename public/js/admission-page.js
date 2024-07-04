@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const stepSymbols = document.querySelectorAll('.step-symbol');
     let currentStep = 0;
     let selectedCourseId = null;
-    let selectedStudentId = null; 
+    let selectedStudentId = null;
     let selectedBatchId = null;
 
     function showStep(stepIndex) {
@@ -101,6 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearchDropdown('filterStudentIcon', 'searchStudentDropdown');
     initSearchDropdown('filterBatchIcon', 'searchBatchDropdown');
 
+    function handleRowClick(event, checkbox) {
+        if (event.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+            handleSingleSelect(checkbox, checkbox.name);
+        }
+    }
+
     function populateStudentsTable(students) {
         const tbody = studentsTable.querySelector('tbody');
         tbody.innerHTML = ''; // Clear existing rows
@@ -117,6 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${student.phone}</td>
                 <td>${student.address}</td>
             `;
+
+            const checkbox = row.querySelector('input[type="checkbox"]');
+            row.addEventListener('click', (event) => handleRowClick(event, checkbox));
 
             tbody.appendChild(row);
         });
@@ -140,12 +150,18 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 const coursesTableBody = document.querySelector('#coursesTable tbody');
-                coursesTableBody.innerHTML = data.courses.map(course => `
-                    <tr>
+                coursesTableBody.innerHTML = data.courses.map(course => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                         <td><input type="checkbox" name="selectedCourse" value="${course._id}" onclick="handleSingleSelect(this, 'selectedCourse')"></td>
                         <td>${course.name}</td>
-                    </tr>
-                `).join('');
+                    `;
+
+                    const checkbox = row.querySelector('input[type="checkbox"]');
+                    row.addEventListener('click', (event) => handleRowClick(event, checkbox));
+
+                    return row.outerHTML;
+                }).join('');
             });
     }
 
@@ -154,15 +170,21 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 const batchesTableBody = document.querySelector('#batchesTable tbody');
-                batchesTableBody.innerHTML = data.batches.map(batch => `
-                    <tr>
+                batchesTableBody.innerHTML = data.batches.map(batch => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                         <td><input type="checkbox" name="selectedBatch" value="${batch._id}" onclick="handleSingleSelect(this, 'selectedBatch')"></td>
                         <td>${batch.title}</td>
                         <td>${batch.facultyName}</td>
                         <td>${batch.timing}</td>
                         <td>${batch.startDate}</td>
-                    </tr>
-                `).join('');
+                    `;
+
+                    const checkbox = row.querySelector('input[type="checkbox"]');
+                    row.addEventListener('click', (event) => handleRowClick(event, checkbox));
+
+                    return row.outerHTML;
+                }).join('');
             });
     }
 
@@ -193,16 +215,22 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.status === 'success') {
                     const studentsTableBody = document.querySelector('#studentsTable tbody');
-                    studentsTableBody.innerHTML = data.students.map(student => `
-                        <tr>
+                    studentsTableBody.innerHTML = data.students.map(student => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
                             <td><input type="checkbox" name="selectedStudent" value="${student._id}" onclick="handleSingleSelect(this, 'selectedStudent')"></td>
                             <td>${student.name}</td>
                             <td>${student.fathersName}</td>
                             <td>${student.aadhaarNo}</td>
                             <td>${student.phone}</td>
                             <td>${student.address}</td>
-                        </tr>
-                    `).join('');
+                        `;
+
+                        const checkbox = row.querySelector('input[type="checkbox"]');
+                        row.addEventListener('click', (event) => handleRowClick(event, checkbox));
+
+                        return row.outerHTML;
+                    }).join('');
                 } else {
                     console.error('Error fetching students:', data.error);
                 }
@@ -221,15 +249,21 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.status === 'success') {
                     const batchesTableBody = document.querySelector('#batchesTable tbody');
-                    batchesTableBody.innerHTML = data.batches.map(batch => `
-                        <tr>
+                    batchesTableBody.innerHTML = data.batches.map(batch => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
                             <td><input type="checkbox" name="selectedBatch" value="${batch._id}" onclick="handleSingleSelect(this, 'selectedBatch')"></td>
                             <td>${batch.title}</td>
                             <td>${batch.facultyName}</td>
                             <td>${batch.timing}</td>
                             <td>${batch.startDate}</td>
-                        </tr>
-                    `).join('');
+                        `;
+
+                        const checkbox = row.querySelector('input[type="checkbox"]');
+                        row.addEventListener('click', (event) => handleRowClick(event, checkbox));
+
+                        return row.outerHTML;
+                    }).join('');
                 } else {
                     console.error('Error fetching batches:', data.error);
                 }
@@ -247,12 +281,18 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.status === 'success') {
                     const coursesTableBody = document.querySelector('#coursesTable tbody');
-                    coursesTableBody.innerHTML = data.courses.map(course => `
-                        <tr>
+                    coursesTableBody.innerHTML = data.courses.map(course => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
                             <td><input type="checkbox" name="selectedCourse" value="${course._id}" onclick="handleSingleSelect(this, 'selectedCourse')"></td>
                             <td>${course.name}</td>
-                        </tr>
-                    `).join('');
+                        `;
+
+                        const checkbox = row.querySelector('input[type="checkbox"]');
+                        row.addEventListener('click', (event) => handleRowClick(event, checkbox));
+
+                        return row.outerHTML;
+                    }).join('');
                 } else {
                     console.error('Error fetching courses:', data.error);
                 }
