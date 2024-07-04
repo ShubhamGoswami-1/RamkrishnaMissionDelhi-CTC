@@ -21,9 +21,10 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
         return next(new AppError(`batch didnt existed or is inActive`, 404));
     }
     
+    console.log("Student", )
     const newAdmission = await Admission.create({
         studentId,
-        studentName : student.name,
+        studentName: student.name,
         courseId,
         courseName: course.name,
         batchId,
@@ -32,6 +33,7 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
     });
 
     // Do neccessary steps
+
     // 1. Add the batch assigned to the student's batchIds array
     if(!student.batchIds){
         const batchIds = [];
@@ -50,7 +52,17 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
         student.course_admissionIds.push(newAdmission._id);
     }
 
+    // 3. Add the studentId to the batch's studentIds array
+    if(!batch.studentIds){
+        const studentIds = [];
+        studentIds.push(student._id);
+        batch.studentIds = studentIds;
+    } else {
+        batch.studentIds.push(studentId);
+    }
+
     await student.save();
+    await batch.save();
 
     res.status(201).json({
         status: 'success',

@@ -1,4 +1,5 @@
 const Student = require("./../models/studentModel");
+const Batch = require("./../models/batchModel");
 
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
@@ -82,3 +83,20 @@ exports.searchStudent = catchAsync(async (req, res, next) => {
         students
     });
 })
+
+exports.getStudentBatches = catchAsync(async (req, res, next) => {
+    const studentId = req.body.studentId;
+
+    const student = await Student.findById(studentId);
+
+    if(!student){
+        return next(new AppError(`No student found with _id:${studentId}`), 404);
+    }
+
+    const batches = await Batch.find({ _id: { $in: student.batchIds }});
+
+    res.status(200).json({
+        status: "success",
+        batches
+    });
+});
