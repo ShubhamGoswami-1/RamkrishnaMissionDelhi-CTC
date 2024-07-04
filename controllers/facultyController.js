@@ -56,3 +56,19 @@ exports.searchFaulty = catchAsync(async (req, res, next) => {
         faculties
     });
 })
+
+exports.getFaculty = catchAsync(async (req, res, next) => {
+
+    const facultyId = req.params.facultyId;
+
+    const faculty = await Faculty.findById(facultyId);
+
+    if(!faculty){
+        return next(new AppError(`No faculty found with id:${facultyId}`, 404));
+    }
+
+    res.status(200).json({
+        status: "success",
+        faculty
+    })
+})
