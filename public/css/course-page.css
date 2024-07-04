@@ -8,6 +8,8 @@ body {
     height: 100vh;
     overflow: hidden;
 }
+
+
 .sidebar {
     width: 150px;
     background-color: #e65c00;

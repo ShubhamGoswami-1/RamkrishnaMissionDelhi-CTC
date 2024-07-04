@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/course-page.css">
 </head>
+
 <body>
     <div class="sidebar">
         <h2>Dashboard</h2>
@@ -19,7 +21,7 @@
     </div>
     <div class="main-content">
         <h2>Course</h2>
-        
+
         <div class="table-container" id="courseContainer">
             <!-- Cards will be dynamically added here -->
             <button id="addCourseButton">Add New Course</button>
@@ -34,14 +36,15 @@
             <form id="facultyForm" method="POST" action="/api/v1/faculty/add-new-course">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
-                
+
                 <label for="fees">Fees:</label>
                 <input type="text" id="fees" name="fees" required>
-                
+
                 <button type="submit">Add Course</button>
             </form>
         </div>
     </div>
     <script src="/js/course-page.js"></script>
 </body>
+
 </html>
