@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to open the add student form modal
     function openForm() {
-        studentFormModal.style.display = "block";
+        studentFormModal.style.display = "flex";
     }
 
     // Function to close the add student form modal

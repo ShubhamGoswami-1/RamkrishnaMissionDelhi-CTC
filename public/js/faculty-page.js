@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show the form modal when 'Add Faculty' button is clicked
     addFacultyButton.onclick = function() {
-        facultyFormModal.style.display = "block";
+        facultyFormModal.style.display = "flex";
     };
 
     // Close the modal when the 'x' button is clicked

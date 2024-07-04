@@ -74,9 +74,25 @@ tr:hover {
     background-color: #f5f5f5;
     cursor: pointer;
 }
+
+#facultyFormModal{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+  display: none;
+}
+
 .form-content {
+    display: grid;
+    position: relative;
     background-color: #fefefe;
-    margin: 45% auto;
+    margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 90%;
@@ -85,7 +101,7 @@ tr:hover {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 .form-content input {
-    width: calc(100% - 40px);
+    width: calc(100% - 1vw);
     margin-bottom: 6px;
     padding: 8px;
     font-size: 14px;
@@ -93,6 +109,7 @@ tr:hover {
     border-radius: 4px;
 }
 .form-content h2 {
+    justify-self: center;
     margin-top: 0;
     color: #e65c00;
 }
@@ -113,9 +130,24 @@ tr:hover {
 .form-content button:hover {
     background-color: #ff704d;
 }
+
+#facultyFormModal #facultyForm{
+    grid-gap: 1vw;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+#facultyFormModal #facultyForm button{
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
 .close {
+    position: absolute;
+    top: 3%;
+    right: 3%;
     color: #aaa;
-    float: right;
+    /* float: right; */
     font-size: 28px;
     font-weight: bold;
 }
@@ -128,7 +160,7 @@ tr:hover {
 
 #addFacultyButton {
     padding: 10px 20px;
-    background-color: #004de6;
+    background-color: #e65c00;
     color: white;
     font-size: 16px;
     border: none;
@@ -136,7 +168,7 @@ tr:hover {
     cursor: pointer;
 }
 #addFacultyButton:hover {
-    background-color: rgb(25, 138, 237);
+    background-color: #ff704d;
 }
 .search-container input[type="text"] {
     flex: 1;

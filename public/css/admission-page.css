@@ -84,6 +84,11 @@ body {
     margin-top: 20px;
 }
 
+.table-container{
+    overflow-y: scroll;
+    max-height: 60vh;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
