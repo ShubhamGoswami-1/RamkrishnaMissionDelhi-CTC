@@ -9,22 +9,29 @@ document.addEventListener('DOMContentLoaded', function() {
     function populateAdmissionTable(admissions) {
         const tbody = admissionTable.querySelector('tbody');
         tbody.innerHTML = ''; // Clear existing rows
-
+    
         admissions.forEach(admission => {
             const row = document.createElement('tr');
             row.dataset.admissionId = admission._id; // Assuming _id is your admission's unique identifier
-
+    
+            // Parse the DateOfAdmission string into a Date object
+            const dateOfAdmission = new Date(admission.DateOfAdmission);
+    
+            // Format the date as DD-MM-YYYY
+            const formattedDate = `${dateOfAdmission.getDate().toString().padStart(2, '0')}-${(dateOfAdmission.getMonth() + 1).toString().padStart(2, '0')}-${dateOfAdmission.getFullYear()}`;
+    
             row.innerHTML = `
                 <td>${admission.studentName}</td>
                 <td>${admission.courseName}</td>
                 <td>${admission.batchTitle}</td>
-                <td>${admission.DateOfAdmission}</td>
+                <td>${formattedDate}</td>
                 <td>${admission.formNo}</td>
             `;
-
+    
             tbody.appendChild(row);
         });
     }
+    
 
     // Fetch all admissions when page loads
     fetch('/api/v1/admission/get-all-admissions')
