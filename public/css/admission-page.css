@@ -10,27 +10,25 @@ body {
 }
 
 .sidebar {
-    width: 150px;
+    width: 30vh;
     background-color: #e65c00;
     color: white;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 2vh;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
-
 .sidebar h2 {
     font-size: 24px;
     margin-bottom: 20px;
     text-align: center;
 }
-
 .sidebar a {
     color: white;
     text-decoration: none;
-    margin: 4px 0;
+    margin: 0.5vh 0;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 1.5vh;
     text-align: center;
     background-color: rgb(235, 127, 11);
 }
