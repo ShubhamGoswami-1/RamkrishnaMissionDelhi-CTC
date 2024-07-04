@@ -153,11 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 coursesTableBody.innerHTML = data.courses.map(course => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td><input type="radio" name="selectedCourse" value="${course._id}" onclick="handleSingleSelect(this, 'selectedCourse')"></td>
+                        <td><input type="checkbox" name="selectedCourse" value="${course._id}" onclick="handleSingleSelect(this, 'selectedCourse')"></td>
                         <td>${course.name}</td>
                     `;
 
-                    const checkbox = row.querySelector('input[type="radio"]');
+                    const checkbox = row.querySelector('input[type="checkbox"]');
                     row.addEventListener('click', (event) => handleRowClick(event, checkbox));
 
                     return row.outerHTML;
@@ -173,14 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 batchesTableBody.innerHTML = data.batches.map(batch => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td><input type="radio" name="selectedBatch" value="${batch._id}" onclick="handleMultipleSelect(this, 'selectedBatch')"></td>
+                        <td><input type="checkbox" name="selectedBatch" value="${batch._id}" onclick="handleMultipleSelect(this, 'selectedBatch')"></td>
                         <td>${batch.title}</td>
                         <td>${batch.facultyName}</td>
                         <td>${batch.timing}</td>
                         <td>${batch.startingDate}</td>
                     `;
 
-                    const checkbox = row.querySelector('input[type="radio"]');
+                    const checkbox = row.querySelector('input[type="checkbox"]');
                     row.addEventListener('click', (event) => handleRowClick(event, checkbox));
 
                     return row.outerHTML;
@@ -264,14 +264,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     batchesTableBody.innerHTML = data.batches.map(batch => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td><input type="radio" name="selectedBatch" value="${batch._id}" onclick="handleMultipleSelect(this, 'selectedBatch')"></td>
+                            <td><input type="checkbox" name="selectedBatch" value="${batch._id}" onclick="handleMultipleSelect(this, 'selectedBatch')"></td>
                             <td>${batch.title}</td>
                             <td>${batch.facultyName}</td>
                             <td>${batch.timing}</td>
                             <td>${batch.startingDate}</td>
                         `;
 
-                        const checkbox = row.querySelector('input[type="radio"]');
+                        const checkbox = row.querySelector('input[type="checkbox"]');
                         row.addEventListener('click', (event) => handleRowClick(event, checkbox));
 
                         return row.outerHTML;

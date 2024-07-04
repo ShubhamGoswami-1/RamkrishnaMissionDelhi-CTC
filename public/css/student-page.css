@@ -9,7 +9,7 @@ body {
     overflow: hidden;
 }
 .sidebar {
-    width: 150px;
+    width: 30vh;
     background-color: #e65c00;
     color: white;
     display: flex;
@@ -37,12 +37,12 @@ body {
 .main-content {
     flex: 1;
     padding: 20px;
-    background-image: url('/images/missionlogo.png');
+    background: #FFDEAD;
+    background-image: url('/images/logo-rkm.png');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    background-blend-mode: overlay; /* Adjust blend mode for dim effect */
-    opacity: 0.9; /* Adjust opacity for overall dimming */
+    opacity: 0.9;
 }
 .main-content h2 {
     margin-bottom: 20px;
