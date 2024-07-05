@@ -100,3 +100,22 @@ exports.getStudentBatches = catchAsync(async (req, res, next) => {
         batches
     });
 });
+
+exports.editStudentDetails = catchAsync(async (req, res, next) => {
+    const studentId = req.params.studentId;
+
+    const student = await Student.findById(studentId);
+
+    if(!student){
+        return next(new AppError(`student not found with _id:${studentId}`, 404));
+    }
+
+    const updatedObj = {...req.body};
+
+    const updatedStudent = await student.updateOne({ updatedObj }, { new: true });
+
+    res.status(200).json({
+        status: "success",
+        updatedStudent
+    });
+});
