@@ -11,7 +11,8 @@ const batchSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    default: [true, "Enter the name for the batch"]
+    default: '',
+    required: [true, "Enter the name for the batch"]
   },
   facultyId: {
     type: mongoose.Schema.Types.ObjectId,
