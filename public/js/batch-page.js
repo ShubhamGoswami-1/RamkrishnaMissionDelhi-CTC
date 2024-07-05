@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show the form modal when 'Add Batch' button is clicked
     addBatchButton.onclick = function() {
-        batchFormModal.style.display = "block";
+        batchFormModal.style.display = "flex";
 
         // Fetch all faculties to populate the dropdown
         fetch('/api/v1/faculty/get-all-faculties')

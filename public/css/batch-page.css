@@ -76,16 +76,44 @@ tr:hover {
     background-color: #f5f5f5;
     cursor: pointer;
 }
+#batchFormModal{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+  display: none;
+}
+
+#batchFormModal #batchForm{
+    grid-gap: 1vw;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+#batchFormModal #batchForm button{
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+/* Adjustments to form styling */
 .form-content {
+    display: grid;
+    position: relative;
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 90%;
+    width: 90%; /* Adjusted width */
     max-width: 700px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
 .form-content input {
     width: calc(100% - 40px);
     margin-bottom: 6px;
@@ -94,7 +122,9 @@ tr:hover {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 .form-content h2 {
+    justify-self: center;
     margin-top: 0;
     color: #e65c00;
 }
@@ -116,8 +146,11 @@ tr:hover {
     background-color: #ff704d;
 }
 .close {
+    position: absolute;
+    top: 3%;
+    right: 3%;
     color: #aaa;
-    float: right;
+    /* float: right; */
     font-size: 28px;
     font-weight: bold;
 }
