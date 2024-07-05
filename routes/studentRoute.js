@@ -8,6 +8,8 @@ router.post('/add-new-student', studentController.addNewStudent);
 router.get('/get-student/:studentId', studentController.getStudent);
 router.get('/get-all-students', studentController.getAllStudents);
 router.get('/search', studentController.searchStudent);
+router.get('/get-student-batches', studentController.getStudentBatches);
+router.get('/edit-student/:studentId', studentController.editStudentDetails);
 
 
 module.exports = router;
