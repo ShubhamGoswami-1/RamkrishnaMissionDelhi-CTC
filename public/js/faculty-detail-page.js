@@ -30,8 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const updatedDetails = {
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
+            aadhaarNo: document.getElementById('aadhaarNo').value,
             phone: document.getElementById('phone').value,
-            department: document.getElementById('department').value,
+            address: document.getElementById('address').value,
         };
 
         fetch(`/api/v1/faculty/edit-faculty/${facultyId}`, {
@@ -58,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
     saveButton.addEventListener('click', function() {
         saveFacultyDetails(facultyId);
     });
-
 
     // Call the function to fetch and display faculty details
     if (facultyId) {

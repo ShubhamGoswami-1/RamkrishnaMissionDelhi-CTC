@@ -166,8 +166,16 @@ tr:hover {
     cursor: pointer;
 }
 
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
 
-#addFacultyButton {
+#addFacultyButton, #downloadExcelButton {
     padding: 10px 20px;
     background-color: #e65c00;
     color: white;
@@ -176,8 +184,9 @@ tr:hover {
     border-radius: 5px;
     cursor: pointer;
 }
-#addFacultyButton:hover {
-    background-color: #ff704d;
+
+#addFacultyButton:hover, #downloadExcelButton:hover {
+    background-color: #f08239;
 }
 .search-container input[type="text"] {
     flex: 1;

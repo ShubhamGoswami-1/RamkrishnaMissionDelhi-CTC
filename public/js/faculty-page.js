@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const addFacultyButton = document.getElementById('addFacultyButton');
     const facultyFormModal = document.getElementById('facultyFormModal');
     const closeButtons = document.querySelectorAll('.close');
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${faculty.address}</td>
             `;
 
-            row.addEventListener('click', function(){
+            row.addEventListener('click', function () {
                 viewFacultyDetails(faculty._id);
             });
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-// Fetch all faculties when page loads
+    // Fetch all faculties when page loads
     fetch('/api/v1/faculty/get-all-faculties')
         .then(response => response.json())
         .then(data => {
@@ -48,24 +48,24 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error fetching faculties:', error));
 
-    function viewFacultyDetails(facultyId){
+    function viewFacultyDetails(facultyId) {
         window.location.href = `/faculty/details/${facultyId}`;
     }
-        
+
     // Show the form modal when 'Add Faculty' button is clicked
-    addFacultyButton.onclick = function() {
+    addFacultyButton.onclick = function () {
         facultyFormModal.style.display = "flex";
     };
 
     // Close the modal when the 'x' button is clicked
     closeButtons.forEach(button => {
-        button.onclick = function() {
+        button.onclick = function () {
             facultyFormModal.style.display = "none";
         }
     });
 
     // Close the modal when clicking outside the form content
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == facultyFormModal) {
             facultyFormModal.style.display = "none";
         }
@@ -75,16 +75,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // searchInput.addEventListener('input', filterFaculty);
 
     // Toggle the search category dropdown
-    filterIcon.addEventListener('click', function(event) {
+    filterIcon.addEventListener('click', function (event) {
         searchDropdown.classList.toggle('active');
     });
 
-    searchCategory.addEventListener('change', function() {
+    searchCategory.addEventListener('change', function () {
         searchInput.dispatchEvent(new Event('input')); // Trigger the search when the category changes
     });
 
     // Handle search functionality
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', function () {
         let filter = this.value.toLowerCase();
         let category = searchCategory.value;
 
@@ -113,5 +113,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => console.error('Error fetching faculties:', error));
         }
     });
+
+    function downloadExcelFile() {
+        window.location.href = '/api/v1/faculty/download-faculty';
+    }
+
+    // Add event listener to download button
+    const downloadButton = document.getElementById('downloadExcelButton');
+    downloadButton.addEventListener('click', downloadExcelFile);
 
 });

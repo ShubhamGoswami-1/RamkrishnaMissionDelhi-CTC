@@ -124,4 +124,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    
+    function downloadExcelFile() {
+        window.location.href = '/api/v1/student/download-students';
+    }
+
+    // Add event listener to download button
+    const downloadButton = document.getElementById('downloadExcelButton');
+    downloadButton.addEventListener('click', downloadExcelFile);
+    
 });

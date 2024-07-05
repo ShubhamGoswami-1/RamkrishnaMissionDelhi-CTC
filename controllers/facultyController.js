@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+const xlsx = require('xlsx');
 const Faculty = require('./../models/facultyModel');
 
 const catchAsync = require("./../utils/catchAsync");
@@ -83,15 +86,53 @@ exports.editFacultyDetails = catchAsync(async (req, res, next) => {
     const faculty = await Faculty.findById(facultyId);
 
     if (!faculty) {
-        return next(new AppError(`Faculty not found with _id:${facultyId}`, 404));
+        return next(new AppError(`Faculty not found with _id: ${facultyId}`, 404));
     }
 
     const updatedObj = { ...req.body };
 
-    const updatedFaculty = await faculty.updateOne(updatedObj, { new: true });
+    // Update the faculty details
+    const updatedFaculty = await Faculty.findByIdAndUpdate(facultyId, updatedObj, { new: true, runValidators: true });
 
     res.status(200).json({
-        status: "success",
+        status: 'success',
         updatedFaculty
+    });
+});
+
+exports.downloadFacultyExcel = catchAsync(async (req, res, next) => {
+    const faculties = await Faculty.find();
+
+    if (!faculties.length) {
+        return next(new AppError('No students found', 404));
+    }
+
+    const data = faculties.map(faculty => ({
+        Name: faculty.name,
+        AadhaarNo: faculty.aadhaarNo,
+        Phone: faculty.phone,
+        Address: faculty.address,
+        Email: faculty.email,
+    }));
+
+    const workSheet = xlsx.utils.json_to_sheet(data);
+    const workBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(workBook, workSheet, 'Faculty');
+
+    // Use a valid temporary directory
+    const dir = path.join(__dirname, '../tmp');
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
+    const filePath = path.join(dir, 'faculty.xlsx');
+    xlsx.writeFile(workBook, filePath);
+
+    res.download(filePath, 'faculty.xlsx', (err) => {
+        if (err) {
+            return next(new AppError('Error downloading file', 500));
+        }
+        // Delete the file after download
+        fs.unlinkSync(filePath);
     });
 });

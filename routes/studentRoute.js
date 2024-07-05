@@ -10,6 +10,7 @@ router.get('/get-all-students', studentController.getAllStudents);
 router.get('/search', studentController.searchStudent);
 router.get('/get-student-batches/:studentId', studentController.getStudentBatches);
 router.patch('/edit-student/:studentId', studentController.editStudentDetails);
+router.get('/download-students', studentController.downloadStudentsExcel);
 
 
 module.exports = router;

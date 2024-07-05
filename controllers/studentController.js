@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+const xlsx = require('xlsx');
 const Student = require("./../models/studentModel");
 const Batch = require("./../models/batchModel");
 
@@ -120,5 +123,43 @@ exports.editStudentDetails = catchAsync(async (req, res, next) => {
     res.status(200).json({
         status: "success",
         updatedStudent
+    });
+});
+
+exports.downloadStudentsExcel = catchAsync(async (req, res, next) => {
+    const students = await Student.find();
+
+    if (!students.length) {
+        return next(new AppError('No students found', 404));
+    }
+
+    const data = students.map(student => ({
+        Name: student.name,
+        Father_Name: student.fathersName,
+        Email: student.email,
+        AadhaarNo: student.aadhaarNo,
+        Phone: student.phone,
+        Address: student.address,
+    }));
+
+    const workSheet = xlsx.utils.json_to_sheet(data);
+    const workBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(workBook, workSheet, 'Students');
+
+    // Use a valid temporary directory
+    const dir = path.join(__dirname, '../tmp');
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
+    const filePath = path.join(dir, 'students.xlsx');
+    xlsx.writeFile(workBook, filePath);
+
+    res.download(filePath, 'students.xlsx', (err) => {
+        if (err) {
+            return next(new AppError('Error downloading file', 500));
+        }
+        // Delete the file after download
+        fs.unlinkSync(filePath);
     });
 });
