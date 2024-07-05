@@ -53,7 +53,9 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -76,7 +78,7 @@ tr:hover {
 }
 .form-content {
     background-color: #fefefe;
-    margin: 45% auto;
+    margin: auto;
     padding: 20px;
     border: 1px solid #888;
     width: 90%;

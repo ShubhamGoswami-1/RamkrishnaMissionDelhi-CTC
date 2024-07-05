@@ -64,11 +64,34 @@ exports.getFaculty = catchAsync(async (req, res, next) => {
     const faculty = await Faculty.findById(facultyId);
 
     if(!faculty){
+        console.log("facultyId is  :", facultyId);
         return next(new AppError(`No faculty found with id:${facultyId}`, 404));
     }
 
+    console.log("facultyId is  :", facultyId);
     res.status(200).json({
         status: "success",
         faculty
     })
 })
+
+
+exports.editFacultyDetails = catchAsync(async (req, res, next) => {
+    const facultyId = req.params.facultyId;
+
+    // Find the faculty by ID
+    const faculty = await Faculty.findById(facultyId);
+
+    if (!faculty) {
+        return next(new AppError(`Faculty not found with _id:${facultyId}`, 404));
+    }
+
+    const updatedObj = { ...req.body };
+
+    const updatedFaculty = await faculty.updateOne(updatedObj, { new: true });
+
+    res.status(200).json({
+        status: "success",
+        updatedFaculty
+    });
+});

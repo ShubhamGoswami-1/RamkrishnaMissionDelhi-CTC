@@ -30,6 +30,11 @@ router.get('/faculty', (req, res, next) => {
     res.render('faculty-page');
 })
 
+router.get('/faculty/details/:facultyId', (req, res, next) => {
+    const facultyId = req.params.facultyId; // Access facultyId from the route parameters
+    res.render('faculty-detail-page', { facultyId: facultyId });
+});
+
 router.get('/course', (req, res, next) => {
     res.render('course-page');
 })

@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    const mainContent = document.querySelector('.main-content');
+    const studentId = mainContent.getAttribute('data-student-id');
 
     // Function to fetch and display student details
     function viewStudentDetails(studentId) {
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('address').value = student.address;
 
                     // Fetch and display batches
-                    fetchBatches(student.batchIds);
+                    fetchBatches(student._id);
                 } else {
                     console.error('Error fetching student details:', data.error);
                 }
@@ -24,27 +26,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to fetch and display batches
-    function fetchBatches(batchIds) {
-        batchIds.forEach(batchId => {
-            fetch(`/api/v1/batch/get-batch/${batchId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        const batch = data.batch;
-                        const tableBody = document.querySelector('#batchCourseTable tbody');
+    function fetchBatches(studentId) {
+        fetch(`/api/v1/student/get-student-batches/${studentId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const batches = data.batches; // Changed from batch to batches
+                    const tableBody = document.querySelector('#batchCourseTable tbody');
+                    tableBody.innerHTML = ''; // Clear existing rows
+    
+                    // Loop through each batch and create a table row
+                    batches.forEach(batch => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${batch._id}</td>
                             <td>${batch.title}</td>
+                            <td>${batch.courseName}</td>
+                            <td>${batch.facultyName}</td>
+                            <td>${batch.timing}</td>
+                            <td>${batch.startingDate}</td>
                         `;
                         tableBody.appendChild(row);
-                    } else {
-                        console.error('Error fetching batch details:', data.error);
-                    }
-                })
-                .catch(error => console.error('Error fetching batch details:', error));
-        });
-    }
+                    });
+                } else {
+                    console.error('Error fetching batch details:', data.error);
+                }
+            })
+            .catch(error => console.error('Error fetching batch details:', error));
+    }    
 
     // Function to save edited personal details
     function savePersonalDetails(studentId) {
@@ -57,8 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
             address: document.getElementById('address').value,
         };
 
-        fetch(`/api/v1/student/update-student/${studentId}`, {
-            method: 'PUT',
+        fetch(`/api/v1/student/edit-student/${studentId}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -68,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.status === 'success') {
                 alert('Details updated successfully');
+                // Redirect to /students route
+                window.location.href = '/students';
             } else {
                 console.error('Error updating details:', data.error);
             }
@@ -75,17 +86,13 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error updating details:', error));
     }
 
-    // Get the student ID from the data attribute in the main-content div
-    const mainContent = document.querySelector('.main-content');
-    const studentId = mainContent.getAttribute('data-student-id');
+    const saveButton = document.getElementById('saveDetailsButton');
+    saveButton.addEventListener('click', function() {
+        savePersonalDetails(studentId);
+    });
 
     // Call the function to fetch and display student details
     if (studentId) {
         viewStudentDetails(studentId);
     }
-
-    // Add event listener to save details button
-    document.getElementById('saveDetailsButton').addEventListener('click', function() {
-        savePersonalDetails(studentId);
-    });
 });

@@ -85,7 +85,7 @@ exports.searchStudent = catchAsync(async (req, res, next) => {
 })
 
 exports.getStudentBatches = catchAsync(async (req, res, next) => {
-    const studentId = req.body.studentId;
+    const studentId = req.params.studentId;
 
     const student = await Student.findById(studentId);
 
@@ -104,15 +104,18 @@ exports.getStudentBatches = catchAsync(async (req, res, next) => {
 exports.editStudentDetails = catchAsync(async (req, res, next) => {
     const studentId = req.params.studentId;
 
+    // Find the student by ID
     const student = await Student.findById(studentId);
 
-    if(!student){
-        return next(new AppError(`student not found with _id:${studentId}`, 404));
+    if (!student) {
+        return next(new AppError(`Student not found with _id: ${studentId}`, 404));
     }
 
-    const updatedObj = {...req.body};
-
-    const updatedStudent = await student.updateOne({ updatedObj }, { new: true });
+    // Update the student with the new details
+    const updatedStudent = await Student.findByIdAndUpdate(studentId, req.body, {
+        new: true,
+        runValidators: true,
+    });
 
     res.status(200).json({
         status: "success",

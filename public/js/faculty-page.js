@@ -28,6 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${faculty.address}</td>
             `;
 
+            row.addEventListener('click', function(){
+                viewFacultyDetails(faculty._id);
+            });
+
             tbody.appendChild(row);
         });
     }
@@ -44,6 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error fetching faculties:', error));
 
+    function viewFacultyDetails(facultyId){
+        window.location.href = `/faculty/details/${facultyId}`;
+    }
+        
     // Show the form modal when 'Add Faculty' button is clicked
     addFacultyButton.onclick = function() {
         facultyFormModal.style.display = "flex";
