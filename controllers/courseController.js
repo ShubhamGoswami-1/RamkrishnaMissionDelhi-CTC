@@ -15,6 +15,7 @@ exports.addNewCourse = catchAsync(async (req, res, next) => {
         status: "success",
         newCourse
     });
+    // res.redirect("/course");
 })
 
 exports.getAllCourses = catchAsync(async (req, res, next) => {

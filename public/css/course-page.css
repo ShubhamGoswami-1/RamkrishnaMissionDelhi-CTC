@@ -9,7 +9,6 @@ body {
     overflow: hidden;
 }
 
-
 .sidebar {
     width: 30vh;
     background-color: #e65c00;
@@ -19,11 +18,13 @@ body {
     padding: 2vh;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
+
 .sidebar h2 {
     font-size: 24px;
     margin-bottom: 20px;
     text-align: center;
 }
+
 .sidebar a {
     color: white;
     text-decoration: none;
@@ -33,9 +34,11 @@ body {
     text-align: center;
     background-color: rgb(235, 127, 11);
 }
+
 .sidebar a:hover {
     background-color: #ff704d;
 }
+
 .main-content {
     flex: 1;
     padding: 20px;
@@ -46,6 +49,7 @@ body {
     background-repeat: no-repeat;
     opacity: 0.9;
 }
+
 .main-content h2 {
     margin-bottom: 20px;
     color: #e65c00;
@@ -60,41 +64,53 @@ body {
     font-weight: 700;
 }
 
-.container{
-    background-color: rgba(255, 255, 255, 0.8);
+.container {
+    background-color: rgba(255, 255, 255, 0.7);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .table-container {
-    /* background-color: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1); */
     display: flex;
-    /* flex-wrap: wrap; */
+    flex-wrap: wrap;
     justify-content: space-between;
 }
 
 .course-card {
-    background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin: 10px;
-    padding: 20px;
     width: calc(30% - 40px);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: calc((75vw / 3) - 80px); /* Ensures the card is square */
 }
 
 .course-card h3 {
-    margin: 0 0 10px;
+    margin: 0;
     font-weight: 700;
+    color: white; /* Text color for better contrast */
 }
 
-.course-card p {
-    margin: 0;
+.first-color { 
+	background: #ececec; 
+}
+	
+.second-color { 
+	background: #9fd3c7; 
+}
+
+.third-color { 
+	background: #385170; 
+}
+
+.fourth-color { 
+	background: #142d4c; 
 }
 
 #courseFormModal {
@@ -120,6 +136,7 @@ body {
     max-width: 500px;
     border-radius: 10px;
 }
+
 .form-content input, .form-content select {
     width: calc(100% - 40px); /* Adjusted input width */
     margin-bottom: 6px; /* Smaller margin */
@@ -128,10 +145,12 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 .form-content h2 {
     margin-top: 0;
     color: #e65c00;
 }
+
 .form-content label {
     display: block;
     margin-bottom: 5px;
@@ -147,6 +166,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .form-content button:hover {
     background-color: #ff704d;
 }
@@ -165,8 +185,7 @@ body {
     cursor: pointer;
 }
 
-
-#addCourseButton{
+#addCourseButton {
     padding: 10px 20px;
     background-color: #e65c00;
     color: white;
@@ -175,6 +194,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+
 #addCourseButton:hover {
     background-color: #ff704d;
 }
