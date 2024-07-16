@@ -2,7 +2,7 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #fff3e6;
+    background-color: rgb(255, 243, 229);
     color: #333;
     display: flex;
     height: 100vh;
@@ -61,7 +61,7 @@ body {
 }
 
 .container{
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 245, 229, 0.9);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);

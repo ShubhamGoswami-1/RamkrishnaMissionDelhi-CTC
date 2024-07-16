@@ -91,3 +91,14 @@ exports.getBatch = catchAsync(async (req, res, next) => {
         batch
     })
 }) 
+
+exports.getBatchesOfCourse = catchAsync(async (req, res, next) => {
+    const courseId = req.params.courseId;
+
+    const batches = await Batch.find({ courseId });
+
+    res.status(200).json({
+        status: "success",
+        batches
+    });
+})
