@@ -51,7 +51,7 @@
                                 <th>Address</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="studentsTableBody">
                             <!-- Dynamic rows will be inserted here -->
                         </tbody>
                     </table>
@@ -59,26 +59,22 @@
                 <div class="navigation-buttons">
                     <button id="toStep2">Next</button>
                 </div>
-            </div>            
+            </div>
 
             <div class="step" id="step2">
-                <h2>Select Course</h2>
-                <div class="search-container">
-                    <input type="text" id="searchCourseInput" placeholder="Search...">
-                </div>
-                <div class="table-container">
-                    <table id="coursesTable">
-                        <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>Course Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dynamic rows will be inserted here -->
-                        </tbody>
-                    </table>
-                </div>
+                <h2>Admission Details</h2>
+                <form id="admissionDetailsForm">
+                    <div class="form-group">
+                        <label for="formNo">Form Number:</label>
+                        <input type="text" id="formNo" name="formNo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="courseSelect">Select Course:</label>
+                        <select id="courseSelect" name="courseSelect" required>
+                            <!-- Dynamic course options will be inserted here -->
+                        </select>
+                    </div>
+                </form>
                 <div class="navigation-buttons">
                     <button id="backToStep1">Back</button>
                     <button id="toStep3">Next</button>
@@ -87,7 +83,7 @@
 
             <div class="step" id="step3">
                 <h2>Select Batch</h2>
-                <div class="search-container">
+                <!-- <div class="search-container">
                     <input type="text" id="searchBatchInput" placeholder="Search...">
                     <img src="/images/filter-blue-icon.jpeg" alt="Filter Icon" id="filterBatchIcon">
                     <div class="search-dropdown" id="searchBatchDropdown">
@@ -98,7 +94,7 @@
                             <option value="startDate">Start Date</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
                 <div class="table-container">
                     <table id="batchesTable">
                         <thead>
@@ -110,7 +106,7 @@
                                 <th>Start Date</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="batchesTableBody">
                             <!-- Dynamic rows will be inserted here -->
                         </tbody>
                     </table>

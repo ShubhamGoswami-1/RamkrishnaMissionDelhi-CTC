@@ -89,8 +89,7 @@ body {
     margin-top: 20px;
 }
 
-
-.table-container{
+.table-container {
     overflow-y: auto;
     height: 50vh;
 }
@@ -101,7 +100,7 @@ table {
     margin-bottom: 20px;
 }
 
-thead{
+thead {
     position: sticky;
     top: 0;
 }
@@ -110,8 +109,7 @@ table, th, td {
     border: 1px solid #ddd;
 }
 
-th,
-td {
+th, td {
     padding: 12px;
     text-align: left;
 }
@@ -135,16 +133,12 @@ tr:hover {
 }
 
 .search-container {
-    /* position: relative; */
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
 
 .search-dropdown {
-    /* position: absolute;
-    top: 100%;
-    left: 0; */
     z-index: 1;
     display: none;
     background-color: #fff;
@@ -187,4 +181,23 @@ button {
 
 button:hover {
     background-color: #ff704d;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }

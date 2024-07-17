@@ -1,12 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const studentsTable = document.getElementById('studentsTable');
-
     const steps = document.querySelectorAll('.step');
     const stepSymbols = document.querySelectorAll('.step-symbol');
     let currentStep = 0;
     let selectedCourseId = null;
-    let selectedStudentIds = [];
-    let selectedBatchIds = [];
+    let selectedStudentId = null;
+    let selectedBatchId = null;
 
     function showStep(stepIndex) {
         steps.forEach((step, index) => {
@@ -17,6 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initStepNavigation() {
         document.getElementById('toStep2').addEventListener('click', () => {
+            if (!selectedStudentId) {
+                alert('Please select a student');
+                return;
+            }
             currentStep = 1;
             showStep(currentStep);
         });
@@ -27,14 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.getElementById('toStep3').addEventListener('click', () => {
-            const selectedCourse = document.querySelector('input[name="selectedCourse"]:checked');
-            if (selectedCourse) {
-                selectedCourseId = selectedCourse.value;
+            const formNo = document.getElementById('formNo').value;
+            const courseDropdown = document.getElementById('courseSelect');
+            selectedCourseId = courseDropdown.value;
+
+            if (formNo && selectedCourseId) {
                 fetchBatches(selectedCourseId);
                 currentStep = 2;
                 showStep(currentStep);
             } else {
-                alert('Please select a course');
+                alert('Please fill out the form and select a course');
             }
         });
 
@@ -44,40 +48,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.getElementById('completeAdmission').addEventListener('click', () => {
-            const selectedBatches = document.querySelectorAll('input[name="selectedBatch"]:checked');
-            selectedBatchIds = Array.from(selectedBatches).map(checkbox => checkbox.value);
+            const selectedStudent = document.querySelector('input[name="selectedStudent"]:checked');
+            const selectedBatch = document.querySelector('input[name="selectedBatch"]:checked');
 
-            if (selectedStudentIds.length && selectedCourseId && selectedBatchIds.length) {
-                selectedStudentIds.forEach(studentId => {
-                    selectedBatchIds.forEach(batchId => {
-                        fetch('/api/v1/admission/add-new-admission', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                studentId: studentId,
-                                courseId: selectedCourseId,
-                                batchId: batchId
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                alert('Admission process completed!');
-                                window.location.href = '/all-admissions'; // Redirect to the all-admissions page
-                            } else {
-                                alert('Error completing the admission process: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Error completing the admission process');
-                        });
-                    });
+            if (selectedStudent && selectedBatch && selectedCourseId) {
+                const studentId = selectedStudent.value;
+                const batchId = selectedBatch.value;
+
+                fetch('/api/v1/admission/add-new-admission', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentId: studentId,
+                        courseId: selectedCourseId,
+                        batchId: batchId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Admission process completed!');
+                        window.location.href = '/all-admissions'; // Redirect to the all-admissions page
+                    } else {
+                        alert('Error completing the admission process: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error completing the admission process');
                 });
             } else {
-                alert('Please select at least one student, course, and batch to complete the admission process');
+                alert('Please select a student, course, and batch to complete the admission process');
             }
         });
     }
@@ -85,31 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
     showStep(currentStep);
     initStepNavigation();
 
-    function initSearchDropdown(dropdownId, searchCategoryId) {
-        const filterIcon = document.getElementById(dropdownId);
-        const searchDropdown = document.getElementById(searchCategoryId);
-
-        filterIcon.addEventListener('click', () => {
-            searchDropdown.classList.toggle('active');
-        });
-    }
-
-    initSearchDropdown('filterStudentIcon', 'searchStudentDropdown');
-    initSearchDropdown('filterBatchIcon', 'searchBatchDropdown');
-
-    function handleRowClick(event, checkbox) {
+    function handleRowClick(event, checkbox, type) {
         if (event.target !== checkbox) {
             checkbox.checked = !checkbox.checked;
-            if (checkbox.name === 'selectedCourse') {
-                handleSingleSelect(checkbox, 'selectedCourse');
-            } else {
-                handleMultipleSelect(checkbox, checkbox.name);
-            }
+            handleSingleSelect(checkbox, type);
         }
     }
 
     function populateStudentsTable(students) {
-        const tbody = studentsTable.querySelector('tbody');
+        const tbody = document.getElementById('studentsTableBody');
         tbody.innerHTML = ''; // Clear existing rows
 
         students.forEach(student => {
@@ -117,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.dataset.studentId = student._id; // Assuming _id is your student's unique identifier
 
             row.innerHTML = `
-                <td><input type="checkbox" name="selectedStudent" value="${student._id}" onclick="handleMultipleSelect(this, 'selectedStudent')"></td>
+                <td><input type="radio" name="selectedStudent" value="${student._id}"></td>
                 <td>${student.name}</td>
                 <td>${student.fathersName}</td>
                 <td>${student.aadhaarNo}</td>
@@ -125,192 +112,105 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${student.address}</td>
             `;
 
-            const checkbox = row.querySelector('input[type="checkbox"]');
-            row.addEventListener('click', (event) => handleRowClick(event, checkbox));
+            row.addEventListener('click', (event) => handleRowClick(event, row.querySelector('input[name="selectedStudent"]'), 'student'));
 
             tbody.appendChild(row);
         });
     }
 
-    function fetchStudents() {
-        fetch('/api/v1/student/get-all-students')
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    populateStudentsTable(data.students); // Populate table with fetched students
-                } else {
-                    console.error('Error fetching students:', data.error);
-                }
-            })
-            .catch(error => console.error('Error fetching students:', error));
-    }
-
-    function fetchCourses() {
-        fetch('/api/v1/course/get-all-courses')
-            .then(response => response.json())
-            .then(data => {
-                const coursesTableBody = document.querySelector('#coursesTable tbody');
-                coursesTableBody.innerHTML = data.courses.map(course => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><input type="checkbox" name="selectedCourse" value="${course._id}" onclick="handleSingleSelect(this, 'selectedCourse')"></td>
-                        <td>${course.name}</td>
-                    `;
-
-                    const checkbox = row.querySelector('input[type="checkbox"]');
-                    row.addEventListener('click', (event) => handleRowClick(event, checkbox));
-
-                    return row.outerHTML;
-                }).join('');
-            });
+    function handleSingleSelect(checkbox, type) {
+        if (checkbox.checked) {
+            if (type === 'student') {
+                selectedStudentId = checkbox.value;
+            } else if (type === 'batch') {
+                selectedBatchId = checkbox.value;
+            }
+        } else {
+            if (type === 'student') {
+                selectedStudentId = null;
+            } else if (type === 'batch') {
+                selectedBatchId = null;
+            }
+        }
     }
 
     function fetchBatches(courseId) {
-        fetch(`/api/v1/batch/get-all-batches?courseId=${courseId}`)
+        fetch(`/api/v1/batch/get-batches-by-course/${courseId}`)
             .then(response => response.json())
             .then(data => {
-                const batchesTableBody = document.querySelector('#batchesTable tbody');
-                batchesTableBody.innerHTML = data.batches.map(batch => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><input type="checkbox" name="selectedBatch" value="${batch._id}" onclick="handleMultipleSelect(this, 'selectedBatch')"></td>
-                        <td>${batch.title}</td>
-                        <td>${batch.facultyName}</td>
-                        <td>${batch.timing}</td>
-                        <td>${batch.startingDate}</td>
-                    `;
-
-                    const checkbox = row.querySelector('input[type="checkbox"]');
-                    row.addEventListener('click', (event) => handleRowClick(event, checkbox));
-
-                    return row.outerHTML;
-                }).join('');
+                if (data.status === 'success') {
+                    populateBatchesTable(data.batches);
+                } else {
+                    alert('Error fetching batches: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error fetching batches');
             });
     }
 
-    fetchStudents();
-    fetchCourses();
+    function populateBatchesTable(batches) {
+        const tbody = document.getElementById('batchesTableBody');
+        tbody.innerHTML = ''; // Clear existing rows
 
-    function handleSingleSelect(checkbox, name) {
-        const checkboxes = document.getElementsByName(name);
-        checkboxes.forEach(cb => {
-            if (cb !== checkbox) cb.checked = false;
+        batches.forEach(batch => {
+            const row = document.createElement('tr');
+            row.dataset.batchId = batch._id; // Assuming _id is your batch's unique identifier
+
+            row.innerHTML = `
+                <td><input type="radio" name="selectedBatch" value="${batch._id}"></td>
+                <td>${batch.title}</td>
+                <td>${batch.facultyName}</td>
+                <td>${batch.timing}</td>
+                <td>${batch.startingDate}</td>
+            `;
+
+            row.addEventListener('click', (event) => handleRowClick(event, row.querySelector('input[name="selectedBatch"]'), 'batch'));
+
+            tbody.appendChild(row);
+        });
+    }
+
+    // Fetch courses and populate the dropdown
+    fetch('/api/v1/course/get-all-courses')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const courses = data.courses;
+                const courseDropdown = document.getElementById('courseSelect');
+
+                // Clear any existing options
+                courseDropdown.innerHTML = '';
+
+                // Create and append option elements for each course
+                courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course._id;
+                    option.textContent = course.name;
+                    courseDropdown.appendChild(option);
+                });
+            } else {
+                alert('Error fetching courses: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error fetching courses');
         });
 
-        if (name === 'selectedCourse') {
-            selectedCourseId = checkbox.checked ? checkbox.value : null;
-        }
-    }
-
-    function handleMultipleSelect(checkbox, name) {
-        if (name === 'selectedStudent') {
-            if (checkbox.checked) {
-                selectedStudentIds.push(checkbox.value);
+    // Initial fetch of students to populate the table
+    fetch('/api/v1/student/get-all-students')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                populateStudentsTable(data.students);
             } else {
-                selectedStudentIds = selectedStudentIds.filter(id => id !== checkbox.value);
+                alert('Error fetching students: ' + data.message);
             }
-        } else if (name === 'selectedBatch') {
-            if (checkbox.checked) {
-                selectedBatchIds.push(checkbox.value);
-            } else {
-                selectedBatchIds = selectedBatchIds.filter(id => id !== checkbox.value);
-            }
-        }
-    }
-
-    function filterStudents() {
-        const filter = document.getElementById('searchStudentInput').value.toLowerCase();
-        const category = document.getElementById('searchStudentCategory').value;
-
-        fetch(`/api/v1/student/search?searchText=${filter}&category=${category}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const studentsTableBody = document.querySelector('#studentsTable tbody');
-                    studentsTableBody.innerHTML = data.students.map(student => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><input type="checkbox" name="selectedStudent" value="${student._id}" onclick="handleMultipleSelect(this, 'selectedStudent')"></td>
-                            <td>${student.name}</td>
-                            <td>${student.fathersName}</td>
-                            <td>${student.aadhaarNo}</td>
-                            <td>${student.phone}</td>
-                            <td>${student.address}</td>
-                        `;
-
-                        const checkbox = row.querySelector('input[type="checkbox"]');
-                        row.addEventListener('click', (event) => handleRowClick(event, checkbox));
-
-                        return row.outerHTML;
-                    }).join('');
-                } else {
-                    console.error('Error fetching students:', data.error);
-                }
-            })
-            .catch(error => console.error('Error fetching students:', error));
-    }
-
-    document.getElementById('searchStudentInput').addEventListener('input', filterStudents);
-
-    function filterBatches() {
-        const filter = document.getElementById('searchBatchInput').value.toLowerCase();
-        const category = document.getElementById('searchBatchCategory').value;
-
-        fetch(`/api/v1/batch/search?searchText=${filter}&category=${category}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const batchesTableBody = document.querySelector('#batchesTable tbody');
-                    batchesTableBody.innerHTML = data.batches.map(batch => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><input type="checkbox" name="selectedBatch" value="${batch._id}" onclick="handleMultipleSelect(this, 'selectedBatch')"></td>
-                            <td>${batch.title}</td>
-                            <td>${batch.facultyName}</td>
-                            <td>${batch.timing}</td>
-                            <td>${batch.startingDate}</td>
-                        `;
-
-                        const checkbox = row.querySelector('input[type="checkbox"]');
-                        row.addEventListener('click', (event) => handleRowClick(event, checkbox));
-
-                        return row.outerHTML;
-                    }).join('');
-                } else {
-                    console.error('Error fetching batches:', data.error);
-                }
-            })
-            .catch(error => console.error('Error fetching batches:', error));
-    }
-
-    document.getElementById('searchBatchInput').addEventListener('input', filterBatches);
-
-    function filterCourses() {
-        const filter = document.getElementById('searchCourseInput').value.toLowerCase();
-
-        fetch(`/api/v1/course/search?searchText=${filter}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const coursesTableBody = document.querySelector('#coursesTable tbody');
-                    coursesTableBody.innerHTML = data.courses.map(course => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><input type="checkbox" name="selectedCourse" value="${course._id}" onclick="handleSingleSelect(this, 'selectedCourse')"></td>
-                            <td>${course.name}</td>
-                        `;
-
-                        const checkbox = row.querySelector('input[type="checkbox"]');
-                        row.addEventListener('click', (event) => handleRowClick(event, checkbox));
-
-                        return row.outerHTML;
-                    }).join('');
-                } else {
-                    console.error('Error fetching courses:', data.error);
-                }
-            })
-            .catch(error => console.error('Error fetching courses:', error));
-    }
-
-    document.getElementById('searchCourseInput').addEventListener('input', filterCourses);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error fetching students');
+        });
 });
