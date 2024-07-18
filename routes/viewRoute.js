@@ -14,6 +14,10 @@ router.get('/students', (req, res, next) => {
     res.render('students-page');
 })
 
+router.get('/fees', (req, res, next) => {
+    res.render('fees-page');
+})
+
 router.get('/students/details/:studentId', (req, res, next) => {
     const studentId = req.params.studentId; // Access studentId from the route parameters
     res.render('student-detail-page', { studentId: studentId });
