@@ -163,3 +163,27 @@ exports.downloadStudentsExcel = catchAsync(async (req, res, next) => {
         fs.unlinkSync(filePath);
     });
 });
+
+exports.getBatchDetailsOfStudents = catchAsync(async (req, res, next) => {
+    const batchId = req.params.batchId;
+
+    const students = await Student.find({
+        'batchIds.batchId': batchId
+    }).select('name email batchIds');
+
+    // Filter the batchIds array to include only the specific batchId
+    const studentsWithSpecificBatchId = students.map(student => {
+        const studentObj = student.toObject();
+        const filteredBatchIds = studentObj.batchIds.filter(batch => batch.batchId.toString() === batchId);
+
+        return {
+            ...studentObj,
+            batchIds: filteredBatchIds
+        };
+    });
+
+    res.status(200).json({
+        status: 'success',
+        students: studentsWithSpecificBatchId
+    });
+})

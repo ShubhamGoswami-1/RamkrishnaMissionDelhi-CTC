@@ -1,5 +1,6 @@
 const Course = require("../models/courseModel");
 
+const AppError = require("../utils/appError");
 const catchAsync = require('../utils/catchAsync');
 
 exports.addNewCourse = catchAsync(async (req, res, next) => {
@@ -42,5 +43,20 @@ exports.searchCourse = catchAsync(async (req, res, next) => {
     res.status(200).json({
         status: "success",
         courses
+    });
+})
+
+exports.getCourseFees = catchAsync(async (req, res, next) => {
+    const courseId = req.params.courseId;
+
+    const course = await Course.findById(courseId).select('fees');
+
+    if(!course){
+        return next(new AppError('No course found with this id', 404));
+    }
+
+    res.status(200).json({
+        status: "success",
+        fees: +course.fees
     });
 })

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchDropdown = document.getElementById('searchDropdown');
     const batchForm = document.getElementById('batchForm');
     const facultySelect = document.getElementById('facultyId');
+    const feesInput = document.getElementById('fees'); // Add this line to select the fees input
 
     // Function to populate table rows with batch data
     function populateBatchTable(batches) {
@@ -27,6 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${batch.facultyName}</td>
                 <td>${batch.timing}</td>
                 <td>${batch.startingDate}</td>
+                <td>${batch.studentIds.length}</td>
+                <td>${batch.fees * batch.studentIds.length}</td>
+                <td>${(batch.fees * batch.studentIds.length) + (batch.studentIds.length * (batch.fees * 0.18))}</td>
+                <td>${0}</td>
+                <td>${0}</td>
                 <td>${batch.active}</td>
             `;
 
@@ -61,6 +67,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show the form modal when 'Add Batch' button is clicked
     addBatchButton.onclick = function() {
         batchFormModal.style.display = "flex";
+
+        // Fetch course fees to set the default value in the fees input
+        fetch(`/api/v1/course/get-course-fees/${courseId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    feesInput.value = data.fees; // Set the fetched fees as the default value
+                } else {
+                    console.error('Error fetching course fees:', data.error);
+                }
+            })
+            .catch(error => console.error('Error fetching course fees:', error));
 
         // Fetch all faculties to populate the dropdown
         fetch('/api/v1/faculty/get-all-faculties')
