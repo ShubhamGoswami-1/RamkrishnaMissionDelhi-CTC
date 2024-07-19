@@ -32,6 +32,10 @@ const batchSchema = new mongoose.Schema({
     type: [String],
     default: ''
   },
+  fees: {
+    type: String,
+    default: ''
+  },
   active: {
     type: Boolean,
     default: true

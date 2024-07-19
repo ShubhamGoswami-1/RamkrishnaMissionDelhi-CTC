@@ -41,7 +41,27 @@ const studentSchema = new mongoose.Schema({
     required: [true, "Enter the address"]
   },
   batchIds: {
-    type: [String], 
+    // type: [String], 
+    type: [
+      {
+        batchId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'batch'
+        },
+        feesWithGST: {
+          type: Number,
+          default: 0
+        },        
+        feesPaid: {
+          type: Number,
+          default: 0
+        },
+        paidAmtList: {
+          type: [Number],
+          default: []
+        }
+      }
+    ]
     /* 
     {
       courseId: {
