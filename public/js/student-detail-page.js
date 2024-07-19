@@ -1,6 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const mainContent = document.querySelector('.main-content');
-    const studentId = mainContent.getAttribute('data-student-id');
+    // const studentId = mainContent.getAttribute('data-student-id');
+    const studentId = document.querySelector('.main-content').getAttribute('data-student-id');
+    if (studentId) {
+        fetchBatches(studentId);
+    }
+
+    document.querySelector('#batchCourseTable').addEventListener('click', function (event) {
+        const row = event.target.closest('tr');
+        if (row) {
+            const batchId = row.cells[0].innerText;
+            fetchTransactions(studentId, batchId);
+        }
+    });
 
     // Function to fetch and display student details
     function viewStudentDetails(studentId) {
@@ -31,20 +43,19 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    const batches = data.batches; // Changed from batch to batches
+                    const batches = data.batches;
                     const tableBody = document.querySelector('#batchCourseTable tbody');
                     tableBody.innerHTML = ''; // Clear existing rows
-    
+
                     // Loop through each batch and create a table row
                     batches.forEach(batch => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${batch._id}</td>
-                            <td>${batch.title}</td>
-                            <td>${batch.courseName}</td>
-                            <td>${batch.facultyName}</td>
-                            <td>${batch.timing}</td>
-                            <td>${batch.startingDate}</td>
+                        <td>${batch.title}</td>
+                        <td>${batch.courseName}</td>
+                        <td>${batch.facultyName}</td>
+                        <td>${batch.timing}</td>
+                        <td>${batch.startingDate}</td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -53,7 +64,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
             .catch(error => console.error('Error fetching batch details:', error));
-    }    
+    }
+
+    function fetchTransactions(studentId, batchId) {
+        fetch(`/api/v1/student/get-transactions/${studentId}/${batchId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const transactions = data.transactions;
+                    const tableBody = document.querySelector('#transactionTable tbody');
+                    tableBody.innerHTML = ''; // Clear existing rows
+
+                    // Loop through each transaction and create a table row
+                    transactions.forEach(transaction => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${transaction._id}</td>
+                            <td>${transaction.amount}</td>
+                            <td>${transaction.date}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error('Error fetching transaction details:', data.error);
+                }
+            })
+            .catch(error => console.error('Error fetching transaction details:', error));
+    }
 
     // Function to save edited personal details
     function savePersonalDetails(studentId) {
@@ -73,21 +110,21 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(updatedDetails),
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Details updated successfully');
-                // Redirect to /students route
-                window.location.href = '/students';
-            } else {
-                console.error('Error updating details:', data.error);
-            }
-        })
-        .catch(error => console.error('Error updating details:', error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Details updated successfully');
+                    // Redirect to /students route
+                    window.location.href = '/students';
+                } else {
+                    console.error('Error updating details:', data.error);
+                }
+            })
+            .catch(error => console.error('Error updating details:', error));
     }
 
     const saveButton = document.getElementById('saveDetailsButton');
-    saveButton.addEventListener('click', function() {
+    saveButton.addEventListener('click', function () {
         savePersonalDetails(studentId);
     });
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/student-detail-page.css">
 </head>
+
 <body>
     <div class="sidebar">
         <h2>Dashboard</h2>
@@ -14,7 +16,7 @@
         <a href="/faculty">Faculty</a>
         <a href="/course">Course</a>
         <a href="/new-admission">New Admission</a>
-        <a href="/all-admissions">All Admission</a>
+        <a href="/all-admissions">All Admissions</a>
         <a href="/fees">Fees</a>
     </div>
     <div class="main-content" data-student-id="<%= studentId %>">
@@ -58,27 +60,43 @@
             </form>
         </div>
 
-        <!-- Batch/Course IDs Container -->
-        <div class="details-container">
-            <h3>Enrolled Courses</h3>
-            <table id="batchCourseTable">
-                <thead>
-                    <tr>
-                        <th>Batch/Course ID</th>
-                        <th>Batch/Course Title</th>
-                        <th>Course Name</th>
-                        <th>Faculty Name</th>
-                        <th>Timing</th>
-                        <th>Starting Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Batch/Course details will be populated here -->
-                </tbody>
-            </table>
+        <!-- Enrolled Courses Container -->
+        <div class="details-container enrolled-courses">
+            <div class="batches">
+                <h3>Enrolled Courses</h3>
+                <table id="batchCourseTable">
+                    <thead>
+                        <tr>
+                            <th>Batch/Course Title</th>
+                            <th>Course Name</th>
+                            <th>Faculty Name</th>
+                            <th>Timing</th>
+                            <th>Starting Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Batch/Course details will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="transactions">
+                <h3>Transactions</h3>
+                <table id="transactionTable">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Transactions will be populated here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
-
     </div>
     <script src="/js/student-detail-page.js"></script>
 </body>
+
 </html>
