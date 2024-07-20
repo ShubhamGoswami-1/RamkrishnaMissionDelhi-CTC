@@ -6,7 +6,7 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
 exports.addNewBatch = catchAsync(async (req, res, next) => {
-    const { courseId, facultyId, title, timing, startingDate } = req.body;
+    const { courseId, facultyId, title, timing, startingDate, fees } = req.body;
 
     const faculty = await Faculty.findOne({ _id: facultyId });
     const course = await Course.findOne({ _id: courseId });
@@ -28,7 +28,8 @@ exports.addNewBatch = catchAsync(async (req, res, next) => {
         facultyName: faculty.name,
         title,
         timing,
-        startingDate
+        startingDate,
+        fees
     });
 
     if(!faculty.batchIds){

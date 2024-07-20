@@ -62,28 +62,6 @@ const studentSchema = new mongoose.Schema({
         }
       }
     ]
-    /* 
-    {
-      courseId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course',
-        required: [true, 'Enter the courseId']
-      },
-      admissionDate: {
-        type: Date,
-        default: Date.now()
-      },
-      batchId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Batch',
-        required: [true, 'Enter the batchId']
-      },
-      formNo: {
-        type: String,
-        required: [true, "Need to fill the form number"]
-      }
-    }
-    */
   },
   course_admissionIds: {
     type: [String]

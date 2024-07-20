@@ -27,6 +27,6 @@ const transactionSchema = new mongoose.Schema({
     timestamps: true
 })
 
-const Batch = mongoose.model('Transaction', batchSchema);
+const Transaction = mongoose.model('Transaction', transactionSchema);
 
-module.exports = Batch;
+module.exports = Transaction;

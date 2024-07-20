@@ -31,15 +31,22 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
         formNo
     });
 
-    // Do neccessary steps
+    // Do neccessary steps:
+    // Calculate feesWithGST
+    const feesWithGST = batch.fees + (batch.fees * 0.18);
 
     // 1. Add the batch assigned to the student's batchIds array
-    if(!student.batchIds){
-        const batchIds = [];
-        batchIds.push(batchId.toString());
-        student.batchIds = batchIds;
+    const batchEntry = {
+        batchId: batchId,
+        feesWithGST: feesWithGST,
+        feesPaid: 0,
+        paidAmtList: []
+    };
+
+    if (!student.batchIds) {
+        student.batchIds = [batchEntry];
     } else {
-        student.batchIds.push(batchId);
+        student.batchIds.push(batchEntry);
     }
 
     // 2. Add the admission._id to the student course_admissionIds array

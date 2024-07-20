@@ -18,6 +18,7 @@ const courseRouter = require("./routes/courseRoute");
 const facultyRouter = require("./routes/facultyRoute");
 const studentRouter = require("./routes/studentRoute");
 const admissionRouter = require("./routes/admissionRoute");
+const paymentRouter = require("./routes/paymentRoute");
 
 const app = express();
 
@@ -80,6 +81,7 @@ app.use('/api/v1/course', courseRouter);
 app.use('/api/v1/faculty', facultyRouter);
 app.use('/api/v1/student', studentRouter);
 app.use('/api/v1/admission', admissionRouter);
+app.use('/api/v1/payment', paymentRouter);
 
 // VIEWS
 app.use('/', viewRouter);
