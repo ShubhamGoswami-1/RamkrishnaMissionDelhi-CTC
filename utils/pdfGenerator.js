@@ -49,7 +49,7 @@ const generateReceiptPDF = (transaction, student, batch, totalFeesPaid, newPayme
     const items = [
         {
             sno: 1,
-            particular: 'Computer Fee',
+            particular: `${batch.courseName} Fees`,
             sac: '9992',
             fee: batch.fees,
             cgst: batch.fees * 0.09,
