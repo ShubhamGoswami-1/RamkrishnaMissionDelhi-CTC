@@ -31,6 +31,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/receipts', express.static(path.join(__dirname, 'receipts')));
 
 // Set security HTTP headers
 app.use(helmet());

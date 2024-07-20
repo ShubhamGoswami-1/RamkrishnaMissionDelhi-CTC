@@ -40,6 +40,7 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
         batchId: batchId,
         feesWithGST: feesWithGST,
         feesPaid: 0,
+        feesDue: feesWithGST,
         paidAmtList: []
     };
 

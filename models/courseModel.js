@@ -8,7 +8,7 @@ const courseSchema = new mongoose.Schema({
     required: [true, 'Please enter the class name!']
   },
   fees: {
-    type: String,
+    type: Number,
     required: [true, "Enter the fees for the class"],
   }
 }, {

@@ -56,6 +56,10 @@ const studentSchema = new mongoose.Schema({
           type: Number,
           default: 0
         },
+        feesDue: {
+          type: Number,
+          default: 0
+        },
         paidAmtList: {
           type: [Number],
           default: []
@@ -64,7 +68,8 @@ const studentSchema = new mongoose.Schema({
     ]
   },
   course_admissionIds: {
-    type: [String]
+    type: [String],
+    default: []
   },
   education: {
     type: String

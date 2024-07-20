@@ -10,8 +10,8 @@ const transactionSchema = new mongoose.Schema({
         ref: 'batch'
     },
     newPayment: {
-        type: String,
-        default: ''
+        type: Number,
+        default: 0
     },
     feesPaid: {
         type: Number,

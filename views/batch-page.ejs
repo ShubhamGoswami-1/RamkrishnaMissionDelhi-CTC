@@ -63,7 +63,7 @@
         <div class="form-content">
             <span class="close">&times;</span>
             <h2>Add New Batch</h2>
-            <form id="batchForm" method="POST" action="/api/v1/batch/add-new-batch">
+            <form id="batchForm" method="POST" action="/api/v1/batch/add-new-batch/courseId/<%= courseId %>">
                 <div class="formElement">
                     <label for="title">Title:</label>
                     <input type="text" id="title" name="title" value="<%= courseName %>">

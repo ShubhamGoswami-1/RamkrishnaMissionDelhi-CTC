@@ -1,9 +1,10 @@
-const Batch = require("../models/batchModel");
+const Batch = require("./../models/batchModel");
 const Transaction = require("./../models/transactionModel");
 const Student = require('./../models/studentModel');
 
-const AppError = require("../utils/appError");
-const catchAsync = require("../utils/catchAsync");
+const AppError = require("./../utils/appError");
+const catchAsync = require("./../utils/catchAsync");
+const generateReceiptPDF = require('./../utils/pdfGenerator');
 
 exports.newPayment = catchAsync(async (req, res, next) => {
     const studentId = req.params.studentId;
@@ -25,7 +26,7 @@ exports.newPayment = catchAsync(async (req, res, next) => {
     const newPaymentAmount = parseFloat(newPayment);
 
     let totalFeesPaid = newPaymentAmount;
-    let feesWithGST = batch.fees + (batch.fees * 0.18);
+    let feesWithGST = +batch.fees + (batch.fees * 0.18);
     let dueAmt = feesWithGST - newPaymentAmount;
 
     // Check if the student already has this batch in batchIds
@@ -40,7 +41,7 @@ exports.newPayment = catchAsync(async (req, res, next) => {
 
         // Calculate the updated due amount
         dueAmt = batchEntry.feesWithGST - totalFeesPaid;
-        batchEntry.dueAmt = dueAmt;
+        batchEntry.feesDue = dueAmt;
 
         student.batchIds[batchIndex] = batchEntry;
     } else {
@@ -50,7 +51,7 @@ exports.newPayment = catchAsync(async (req, res, next) => {
             feesWithGST: feesWithGST,
             feesPaid: newPaymentAmount,
             paidAmtList: [newPaymentAmount],
-            dueAmt: dueAmt
+            feesDue: dueAmt
         };
 
         student.batchIds.push(newBatchEntry);
@@ -67,9 +68,12 @@ exports.newPayment = catchAsync(async (req, res, next) => {
 
     await student.save();
 
+    const pdfPath = generateReceiptPDF(transaction, student, batch, totalFeesPaid, newPaymentAmount, feesWithGST, dueAmt);
+
     res.status(201).json({
         status: 'success',
-        transaction
+        transaction,
+        pdfUrl: `/receipts/${transaction._id}.pdf`
     });
 });
 
