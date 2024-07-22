@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => console.error('Error searching batches:', error));
         } else {
             // If the search input is cleared, fetch all batches again
-            fetch(`/api/v1/batch/get-all-batches?courseId=${courseId}`)
+            fetch(`/api/v1/batch/get-batches-by-course/${courseId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
