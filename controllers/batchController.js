@@ -54,7 +54,20 @@ exports.addNewBatch = catchAsync(async (req, res, next) => {
 })
 
 exports.getAllBatches = catchAsync(async(req, res, next) => {
-    const { courseId } = req.query;
+    const { studentId } = req.params;
+
+    const batches = await Batch.find({
+        studentIds: { $in: [studentId] }
+    });
+
+    res.status(200).json({
+        status: "success",
+        batches
+    });
+})
+
+exports.getBatchesOfCourse = catchAsync(async (req, res, next) => {
+    const courseId = req.params.courseId;
 
     const batches = await Batch.find({ courseId });
 
@@ -97,14 +110,3 @@ exports.getBatch = catchAsync(async (req, res, next) => {
         batch
     })
 }) 
-
-exports.getBatchesOfCourse = catchAsync(async (req, res, next) => {
-    const courseId = req.params.courseId;
-
-    const batches = await Batch.find({ courseId });
-
-    res.status(200).json({
-        status: "success",
-        batches
-    });
-})

@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const mainContent = document.querySelector('.main-content');
-    // const studentId = mainContent.getAttribute('data-student-id');
-    const studentId = document.querySelector('.main-content').getAttribute('data-student-id');
+    const studentId = mainContent.getAttribute('data-student-id');
     if (studentId) {
         fetchBatches(studentId);
     }
@@ -9,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('#batchCourseTable').addEventListener('click', function (event) {
         const row = event.target.closest('tr');
         if (row) {
-            const batchId = row.cells[0].innerText;
+            const batchId = row.getAttribute('data-batch-id');
             fetchTransactions(studentId, batchId);
         }
     });
@@ -39,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to fetch and display batches
     function fetchBatches(studentId) {
-        fetch(`/api/v1/student/get-student-batches/${studentId}`)
+        fetch(`/api/v1/batch/get-all-batches-Of-Student/${studentId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
@@ -50,12 +49,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Loop through each batch and create a table row
                     batches.forEach(batch => {
                         const row = document.createElement('tr');
+                        row.setAttribute('data-batch-id', batch._id);
                         row.innerHTML = `
-                        <td>${batch.title}</td>
-                        <td>${batch.courseName}</td>
-                        <td>${batch.facultyName}</td>
-                        <td>${batch.timing}</td>
-                        <td>${batch.startingDate}</td>
+                            <td>${batch.title}</td>
+                            <td>${batch.courseName}</td>
+                            <td>${batch.facultyName}</td>
+                            <td>${batch.timing}</td>
+                            <td>${batch.startingDate}</td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchTransactions(studentId, batchId) {
-        fetch(`/api/v1/student/get-transactions/${studentId}/${batchId}`)
+        fetch(`/api/v1/payment/getAllTransactions/studentId/${studentId}/batchId/${batchId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
@@ -80,8 +80,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${transaction._id}</td>
-                            <td>${transaction.amount}</td>
-                            <td>${transaction.date}</td>
+                            <td>${transaction.newPayment}</td>
+                            <td>${transaction.feesPaid}</td>
+                            <td>${transaction.dueAmt}</td>
+                            <td>${transaction.createdAt}</td>
                         `;
                         tableBody.appendChild(row);
                     });

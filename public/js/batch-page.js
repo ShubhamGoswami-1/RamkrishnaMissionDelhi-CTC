@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fetch all batches when page loads
-    fetch(`/api/v1/batch/get-all-batches?courseId=${courseId}`)
+    fetch(`/api/v1/batch/get-batches-by-course/${courseId}`)
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
