@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('phone').value = faculty.phone;
 
                     // Fetch and display batches
-                    // fetchBatches(faculty.batchIds);
+                    fetchBatches(faculty.batchIds);
                 } else {
                     console.error('Error fetching faculty details:', data.error);
                 }
@@ -53,6 +53,53 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => console.error('Error updating details:', error));
+    }
+
+    function populateBatchTable(batches) {
+        const batchTableBody = document.querySelector('#batchCourseTable tbody');
+        batchTableBody.innerHTML = '';
+
+        batches.forEach(batch => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${batch.courseName}</td>
+                <td>${batch.title}</td>
+                <td>${batch.timing}</td>
+                <td>${batch.startingDate}</td>
+                <td>${batch.studentIds.length}</td>
+                <td>${batch.fees}</td>
+                <td>${undefined}</td> 
+                <td>${undefined}</td>
+                <td>${undefined}</td>
+                <td>${batch.active}</td>
+            `;
+            batchTableBody.appendChild(row);
+        });
+    }
+
+    function fetchBatches(batchIds) {
+        const batchPromises = batchIds.map(batchId =>
+            fetch(`/api/v1/batch/getBatch/${batchId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        return data.batch;
+                    } else {
+                        console.error('Error fetching batch details:', data.error);
+                        return null;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching batch details:', error);
+                    return null;
+                })
+        );
+
+        Promise.all(batchPromises).then(batches => {
+            // Filter out any null values in case of errors
+            const validBatches = batches.filter(batch => batch !== null);
+            populateBatchTable(validBatches);
+        });
     }
 
     const saveButton = document.getElementById('saveDetailsButton');
