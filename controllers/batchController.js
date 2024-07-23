@@ -7,7 +7,7 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
 exports.addNewBatch = catchAsync(async (req, res, next) => {
-    const { facultyId, title, timing, startingDate, fees } = req.body;
+    const { facultyId, title, timing, startingDate, fees, GST } = req.body; // Include GST
 
     const courseId = req.params.courseId;
     
@@ -19,9 +19,9 @@ exports.addNewBatch = catchAsync(async (req, res, next) => {
         return next(new AppError(`No faculty found with this id:${facultyId}`));
     }
 
-    // Check if the facultyId is valid/existing 
+    // Check if the courseId is valid/existing 
     if(!course){
-        return next(new AppError(`No course found with this id:${courseId}`))
+        return next(new AppError(`No course found with this id:${courseId}`));
     }
 
     const newBatch = await Batch.create({
@@ -32,7 +32,8 @@ exports.addNewBatch = catchAsync(async (req, res, next) => {
         title,
         timing,
         startingDate,
-        fees
+        fees,
+        GST // Save GST value
     });
 
     if(!faculty.batchIds){
@@ -49,10 +50,7 @@ exports.addNewBatch = catchAsync(async (req, res, next) => {
         status: "success",
         newBatch
     });
-
-    // res.redirect('/batch'); Al the redirect should be omitted
-    
-})
+});
 
 exports.getAllBatches = catchAsync(async(req, res, next) => {
     const { studentId } = req.params;

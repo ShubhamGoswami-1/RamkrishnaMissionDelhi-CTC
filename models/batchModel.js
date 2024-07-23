@@ -39,6 +39,10 @@ const batchSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true
+  },
+  GST: {
+    type: Number,
+    default: 18 // Default value is 18
   }
 }, {
     collection: "batch",
