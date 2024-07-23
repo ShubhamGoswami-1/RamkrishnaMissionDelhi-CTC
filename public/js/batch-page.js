@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const mainContent = document.querySelector('.main-content');
     const courseId = mainContent.getAttribute('data-course-id');
     const addBatchButton = document.getElementById('addBatchButton');
@@ -13,24 +13,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const facultySelect = document.getElementById('facultyId');
     const feesInput = document.getElementById('fees'); // Add this line to select the fees input
 
+
+    function formatCurrency(amount) {
+        return amount.toLocaleString('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
     // Function to populate table rows with batch data
     function populateBatchTable(batches) {
         const tbody = batchTable.querySelector('tbody');
         tbody.innerHTML = ''; // Clear existing rows
+        batches = batches.sort((a, b) => new Date(b.startingDate) - new Date(a.startingDate));
 
         batches.forEach(batch => {
             const row = document.createElement('tr');
             row.dataset.batchId = batch._id; // Assuming _id is your batch's unique identifier
+            const formattedDate = new Date(batch.startingDate).toLocaleDateString('en-IN');
+            const totalFeesAmount = batch.fees * batch.studentIds.length;
+            const totalFeesWithGSTAmount = totalFeesAmount + (batch.studentIds.length * (batch.fees * 0.18));
+            const totalFees = formatCurrency(totalFeesAmount);
+            const totalFeesWithGST = formatCurrency(totalFeesWithGSTAmount);
 
             // Example: Populate table cells with batch data
             row.innerHTML = `
                 <td>${batch.title}</td>
                 <td>${batch.facultyName}</td>
                 <td>${batch.timing}</td>
-                <td>${batch.startingDate}</td>
+                <td>${formattedDate}</td>
                 <td>${batch.studentIds.length}</td>
-                <td>${batch.fees * batch.studentIds.length}</td>
-                <td>${(batch.fees * batch.studentIds.length) + (batch.studentIds.length * (batch.fees * 0.18))}</td>
+                <td>${totalFees}</td>
+                <td>${totalFeesWithGST}</td>
                 <td>${0}</td>
                 <td>${0}</td>
                 <td>${batch.active}</td>
@@ -65,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error fetching batches:', error));
 
     // Show the form modal when 'Add Batch' button is clicked
-    addBatchButton.onclick = function() {
+    addBatchButton.onclick = function () {
         batchFormModal.style.display = "flex";
 
         // Fetch course fees to set the default value in the fees input
@@ -96,20 +112,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close the modal when the 'x' button is clicked
     closeButtons.forEach(button => {
-        button.onclick = function() {
+        button.onclick = function () {
             batchFormModal.style.display = "none";
         }
     });
 
     // Close the modal when clicking outside the form content
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == batchFormModal) {
             batchFormModal.style.display = "none";
         }
     };
 
     // Handle search functionality
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', function () {
         let filter = this.value.toLowerCase();
         let category = searchCategory.value;
 
@@ -140,11 +156,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Toggle the search category dropdown
-    filterIcon.addEventListener('click', function(event) {
+    filterIcon.addEventListener('click', function (event) {
         searchDropdown.classList.toggle('active');
     });
 
-    searchCategory.addEventListener('change', function() {
+    searchCategory.addEventListener('change', function () {
         searchInput.dispatchEvent(new Event('input')); // Trigger the search when the category changes
     });
 });
