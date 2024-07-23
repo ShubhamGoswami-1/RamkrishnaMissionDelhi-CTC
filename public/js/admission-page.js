@@ -50,8 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('completeAdmission').addEventListener('click', () => {
             const selectedStudent = document.querySelector('input[name="selectedStudent"]:checked');
             const selectedBatch = document.querySelector('input[name="selectedBatch"]:checked');
+            const formNo = document.getElementById('formNo').value;
 
-            if (selectedStudent && selectedBatch && selectedCourseId) {
+            if (selectedStudent && selectedBatch && selectedCourseId && formNo) {
                 const studentId = selectedStudent.value;
                 const batchId = selectedBatch.value;
 
@@ -63,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({
                         studentId: studentId,
                         courseId: selectedCourseId,
-                        batchId: batchId
+                        batchId: batchId,
+                        formNo: formNo // Include formNo in the request
                     })
                 })
                 .then(response => response.json())
