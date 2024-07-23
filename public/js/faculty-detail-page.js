@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         batches.forEach(batch => {
             console.log("Batch Details: ", batch);
+            console.log("**********");
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${batch.courseName}</td>
@@ -69,9 +70,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${batch.startingDate}</td>
                 <td>${batch.studentIds.length}</td>
                 <td>${batch.fees}</td>
-                <td>${undefined}</td> 
-                <td>${undefined}</td>
-                <td>${undefined}</td>
+                <td>${(batch.fees + (batch.fees * (batch.GST/100)))}</td>
+                <td>${(batch.fees * batch.studentIds.length)}</td> 
+                <td>${((batch.fees + (batch.fees * (batch.GST/100))) * batch.studentIds.length)}</td> 
+                <td>${batch.totalFeesPaid}</td>
+                <td>${((batch.fees + (batch.fees * (batch.GST/100))) * batch.studentIds.length) - batch.totalFeesPaid}</td>
                 <td>${batch.active}</td>
             `;
             batchTableBody.appendChild(row);
