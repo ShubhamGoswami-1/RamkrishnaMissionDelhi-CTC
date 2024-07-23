@@ -9,5 +9,8 @@ router.get('/get-all-batches-Of-Student/:studentId', batchController.getAllBatch
 router.get('/getBatch/:batchId', batchController.getBatch);
 router.get('/search', batchController.searchBatch);
 router.get('/get-batches-by-course/:courseId', batchController.getBatchesOfCourse);
+router
+  .route('/getBatchDetails')
+  .post(batchController.getBatchDetails);
 
 module.exports = router;

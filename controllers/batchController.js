@@ -1,6 +1,7 @@
 const Batch = require('./../models/batchModel');
 const Course = require('../models/courseModel');
 const Faculty = require('./../models/facultyModel');
+const Student = require("./../models/studentModel");
 
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
@@ -110,3 +111,33 @@ exports.getBatch = catchAsync(async (req, res, next) => {
         batch
     })
 }) 
+
+exports.getBatchDetails = catchAsync( async (req, res, next) => {
+    const { batchIds } = req.body;
+
+    const batchDetails = await Promise.all(
+      batchIds.map(async (batchId) => {
+        const batch = await Batch.findById(batchId);
+        if (!batch) return null;
+
+        const students = await Student.find({ 'batchIds.batchId': batchId });
+
+        const totalFeesPaid = students.reduce((total, student) => {
+          const batchInfo = student.batchIds.find(batch => batch.batchId.toString() === batchId.toString());
+          return total + (batchInfo ? batchInfo.feesPaid : 0);
+        }, 0);
+
+        return {
+          ...batch._doc,
+          totalFeesPaid
+        };
+      })
+    );
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        batchDetails: batchDetails.filter(batch => batch !== null)
+      }
+    });
+});

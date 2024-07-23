@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         batchTableBody.innerHTML = '';
 
         batches.forEach(batch => {
+            console.log("Batch Details: ", batch);
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${batch.courseName}</td>
@@ -78,29 +79,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function fetchBatches(batchIds) {
-        const batchPromises = batchIds.map(batchId =>
-            fetch(`/api/v1/batch/getBatch/${batchId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        return data.batch;
-                    } else {
-                        console.error('Error fetching batch details:', data.error);
-                        return null;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching batch details:', error);
-                    return null;
-                })
-        );
-
-        Promise.all(batchPromises).then(batches => {
-            // Filter out any null values in case of errors
-            const validBatches = batches.filter(batch => batch !== null);
-            populateBatchTable(validBatches);
+        fetch('/api/v1/batch/getBatchDetails', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ batchIds })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                populateBatchTable(data.data.batchDetails);
+            } else {
+                console.error('Error fetching batch details:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching batch details:', error);
         });
     }
+    
 
     const saveButton = document.getElementById('saveDetailsButton');
     saveButton.addEventListener('click', function() {
