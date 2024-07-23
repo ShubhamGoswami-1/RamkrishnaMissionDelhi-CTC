@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchDropdown = document.getElementById('searchDropdown');
     const batchForm = document.getElementById('batchForm');
     const facultySelect = document.getElementById('facultyId');
-    const feesInput = document.getElementById('fees'); // Add this line to select the fees input
-
+    const feesInput = document.getElementById('fees');
+    const GSTInput = document.getElementById('GST'); // Add this line to select the GST input
 
     function formatCurrency(amount) {
         return amount.toLocaleString('en-IN', {
@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
             row.dataset.batchId = batch._id; // Assuming _id is your batch's unique identifier
             const formattedDate = new Date(batch.startingDate).toLocaleDateString('en-IN');
             const totalFeesAmount = batch.fees * batch.studentIds.length;
-            const totalFeesWithGSTAmount = totalFeesAmount + (batch.studentIds.length * (batch.fees * 0.18));
+            const totalFeesWithGSTAmount = totalFeesAmount + (batch.studentIds.length * (batch.fees * (batch.GST / 100)));
             const totalFees = formatCurrency(totalFeesAmount);
-            const totalFeesWithGST = formatCurrency(totalFeesWithGSTAmount);
+            const totalFeesWithGST = `${formatCurrency(totalFeesWithGSTAmount)} (${batch.GST}%)`;
 
             // Example: Populate table cells with batch data
             row.innerHTML = `
