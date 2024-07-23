@@ -7,6 +7,7 @@
     <title>Dashboard - Ramakrishna Mission Language and Culture School</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/student-detail-page.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 
 <body>
@@ -67,8 +68,8 @@
                 <table id="batchCourseTable">
                     <thead>
                         <tr>
-                            <th>Batch/Course Title</th>
                             <th>Course Name</th>
+                            <th>Batch Title</th>
                             <th>Faculty Name</th>
                             <th>Timing</th>
                             <th>Starting Date</th>
@@ -79,25 +80,50 @@
                     </tbody>
                 </table>
             </div>
-            <div class="transactions">
+            <div class="transactions" id="transactionsContainer" style="display: none;">
                 <h3>Transactions</h3>
-                <table id="transactionTable">
-                    <thead>
-                        <tr>
-                            <th>Transaction ID</th>
-                            <th>New Payment</th>
-                            <th>Fees Paid</th>
-                            <th>Due</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Transactions will be populated here -->
-                    </tbody>
-                </table>
+                <div class="transaction-table-container">
+                    <table id="transactionTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>New Payment</th>
+                                <th>Fees Paid</th>
+                                <th>Due</th>
+                                <th>Receipt ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Transactions will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <button id="makeTransactionButton">Make Transaction</button>
             </div>
         </div>
     </div>
+
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>New Transaction</h3>
+            <form id="transactionForm">
+                <input type="hidden" id="modalStudentId">
+                <input type="hidden" id="modalBatchId">
+                <div class="form-group">
+                    <label for="newPayment">New Payment:</label>
+                    <input type="number" id="newPayment" name="newPayment" step="0.01">
+                </div>
+                <button type="button" id="submitTransactionButton">Submit</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Ensure jQuery is included before your custom script -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="/js/student-detail-page.js"></script>
 </body>
 
