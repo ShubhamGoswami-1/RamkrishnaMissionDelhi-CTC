@@ -32,13 +32,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const studentId = row.getAttribute('data-student-id');
 
             if (currentlySelectedStudentId === studentId) {
+                console.log(" If the same student is clicked again")
                 // If the same student is clicked again
                 document.querySelector('.transactions').style.display = 'none';
                 row.style.width = 'auto'; // Reset width of batch table row
-                currentlySelectedBatchId = null; // Clear selection
+                currentlySelectedStudentId = null; // Clear selection
             } else {
                 // If a different batch is clicked
-                fetchTransactions(batchId, studentId);
+                fetchTransactions(studentId, batchId);
 
                 // Set hidden fields in the modal
                 document.getElementById('modalStudentId').value = studentId;
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Show transactions and expand table
                 document.querySelector('.transactions').style.display = 'block';
                 row.style.width = '100%'; // Set width of batch table row to full width
-                currentlySelectedBatchId = batchId; // Set currently selected batch ID
+                currentlySelectedStudentId = studentId; // Set currently selected batch ID
             }
         }
     });
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.status === 'success') {
                         alert('Transaction successfully created!');
                         transactionModal.style.display = 'none';
-                        fetchBatches(studentId); // Refresh the batches list
+                        fetchStudents(batchId); // Refresh the batches list
                         fetchTransactions(studentId, batchId); // Refresh the transactions list
                     } else {
                         console.error('Error creating transaction:', data.error);
@@ -101,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${student.name}</td>
                             <td>${student.phone}</td>
                             <td>${student.aadhaarNo}</td>
+                            <td>${student.address}</td>
                             <td>${student.address}</td>
                         `;
                         tableBody.appendChild(row);
