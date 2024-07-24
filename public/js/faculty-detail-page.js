@@ -60,8 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
         batchTableBody.innerHTML = '';
 
         batches.forEach(batch => {
-            console.log("Batch Details: ", batch);
-            console.log("**********");
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${batch.courseName}</td>

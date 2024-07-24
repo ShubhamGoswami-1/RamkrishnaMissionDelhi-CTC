@@ -139,3 +139,39 @@ exports.getBatchDetails = catchAsync( async (req, res, next) => {
       }
     });
 });
+
+exports.getBatchesByCourse = catchAsync(async (req, res, next) => {
+    const { courseId } = req.params;
+
+    // Find batches related to the given course ID
+    const batches = await Batch.find({ courseId });
+
+    // If no batches are found, return an error
+    if (!batches.length) {
+        return next(new AppError('No batches found for this course.', 404));
+    }
+
+    // Get batch details and calculate total fees paid by students in each batch
+    const batchDetails = await Promise.all(
+        batches.map(async (batch) => {
+            const students = await Student.find({ 'batchIds.batchId': batch._id });
+
+            const totalFeesPaid = students.reduce((total, student) => {
+                const batchInfo = student.batchIds.find(b => b.batchId.toString() === batch._id.toString());
+                return total + (batchInfo ? batchInfo.feesPaid : 0);
+            }, 0);
+
+            return {
+                ...batch._doc,
+                totalFeesPaid
+            };
+        })
+    );
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            batchDetails
+        }
+    });
+});

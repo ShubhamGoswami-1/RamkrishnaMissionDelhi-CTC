@@ -45,10 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${batch.timing}</td>
                 <td>${formattedDate}</td>
                 <td>${batch.studentIds.length}</td>
-                <td>${totalFees}</td>
-                <td>${totalFeesWithGST}</td>
-                <td>${0}</td>
-                <td>${0}</td>
+                <td>${batch.fees}</td>
+                <td>${(batch.fees + (batch.fees * (batch.GST/100)))}</td>
+                <td>${(batch.fees * batch.studentIds.length)}</td> 
+                <td>${((batch.fees + (batch.fees * (batch.GST/100))) * batch.studentIds.length)}</td> 
+                <td>${batch.totalFeesPaid}</td>
+                <td>${((batch.fees + (batch.fees * (batch.GST/100))) * batch.studentIds.length) - batch.totalFeesPaid}</td>
                 <td>${batch.active}</td>
             `;
 
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                populateBatchTable(data.batches); // Populate table with fetched batches
+                populateBatchTable(data.data.batchDetails); // Populate table with fetched batches
             } else {
                 console.error('Error fetching batches:', data.error);
             }
