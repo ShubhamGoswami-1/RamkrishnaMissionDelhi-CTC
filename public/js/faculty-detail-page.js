@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
     const mainContent = document.querySelector('.main-content');
     const facultyId = mainContent.getAttribute('data-faculty-id');
 
@@ -12,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Function to fetch and display faculty details
     function viewFacultyDetails(facultyId) {
         fetch(`/api/v1/faculty/getFaculty/${facultyId}`)
             .then(response => response.json())
@@ -25,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('address').value = faculty.address;
                     document.getElementById('phone').value = faculty.phone;
 
-                    // Fetch and display batches
                     fetchBatches(faculty.batchIds);
                 } else {
                     console.error('Error fetching faculty details:', data.error);
@@ -34,34 +31,86 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error fetching faculty details:', error));
     }
 
-
     function saveFacultyDetails(facultyId) {
-        const updatedDetails = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            aadhaarNo: document.getElementById('aadhaarNo').value,
-            phone: document.getElementById('phone').value,
-            address: document.getElementById('address').value,
-        };
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 
-        fetch(`/api/v1/faculty/edit-faculty/${facultyId}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedDetails),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Details updated successfully');
-                // Redirect to /faculty route
-                window.location.href = '/faculty';
-            } else {
-                console.error('Error updating details:', data.error);
-            }
-        })
-        .catch(error => console.error('Error updating details:', error));
+        let isValid = true;
+
+        const name = document.getElementById('name');
+        const email = document.getElementById('email');
+        const phoneNo = document.getElementById('phone');
+        const aadhaarNo = document.getElementById('aadhaarNo');
+        const address = document.getElementById('address');
+
+        // Name validation
+        if (name.value.trim() === '') {
+            document.getElementById('nameError').textContent = 'Name cannot be empty.';
+            isValid = false;
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        if (!emailRegex.test(email.value.trim())) {
+            document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+            isValid = false;
+        }
+
+        // Phone Number validation
+        const phoneNoValue = phoneNo.value.trim();
+        const phoneNoRegex = /^\d{10}$/;
+        if (phoneNoValue === '') {
+            document.getElementById('phoneError').textContent = 'Phone number cannot be empty.';
+            isValid = false;
+        } else if (!phoneNoRegex.test(phoneNoValue)) {
+            document.getElementById('phoneError').textContent = 'Phone number must be exactly 10 digits.';
+            isValid = false;
+        }
+
+        // Aadhaar Number validation
+        const aadhaarNoValue = aadhaarNo.value.trim();
+        const aadhaarNoRegex = /^\d{12}$/;
+        if (aadhaarNoValue === '') {
+            document.getElementById('aadhaarNoError').textContent = 'Aadhaar number cannot be empty.';
+            isValid = false;
+        } else if (!aadhaarNoRegex.test(aadhaarNoValue)) {
+            document.getElementById('aadhaarNoError').textContent = 'Aadhaar number must be exactly 12 digits.';
+            isValid = false;
+        }
+
+        // Address validation
+        if (address.value.trim() === '') {
+            document.getElementById('addressError').textContent = 'Address cannot be empty.';
+            isValid = false;
+        }
+
+        if (isValid) {
+            const updatedDetails = {
+                name: name.value,
+                email: email.value,
+                aadhaarNo: aadhaarNo.value,
+                phone: phoneNo.value,
+                address: address.value,
+            };
+
+            fetch(`/api/v1/faculty/edit-faculty/${facultyId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedDetails),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Details updated successfully');
+                    window.location.href = '/faculty';
+                } else {
+                    console.error('Error updating details:', data.error);
+                }
+            })
+            .catch(error => console.error('Error updating details:', error));
+        }
     }
 
     function populateBatchTable(batches) {
@@ -69,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
         batchTableBody.innerHTML = '';
 
         batches.forEach(batch => {
-            
             const row = document.createElement('tr');
             const formattedDate = new Date(batch.startingDate).toLocaleDateString('en-IN');
             const batchFees = formatCurrency(batch.fees);
@@ -89,8 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${batch.studentIds.length}</td>
                 <td>${batchFees}</td>
                 <td>${batchFeesWithGST}</td>
-                <td>${totalFees}</td> 
-                <td>${totalFeesWithGST}</td> 
+                <td>${totalFees}</td>
+                <td>${totalFeesWithGST}</td>
                 <td>${totalFeesPaid}</td>
                 <td>${totalFeesDue}</td>
                 <td>${batch.active}</td>
@@ -119,14 +167,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error fetching batch details:', error);
         });
     }
-    
 
     const saveButton = document.getElementById('saveDetailsButton');
     saveButton.addEventListener('click', function() {
         saveFacultyDetails(facultyId);
     });
 
-    // Call the function to fetch and display faculty details
     if (facultyId) {
         viewFacultyDetails(facultyId);
     }

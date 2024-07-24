@@ -237,3 +237,9 @@ tr:hover {
     border-radius: 0;
     background-color: #fff;
 }
+
+.error-message {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 0.25em;
+}

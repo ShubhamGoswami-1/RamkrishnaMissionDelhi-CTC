@@ -14,7 +14,7 @@
         <a href="/faculty">Faculty</a>
         <a href="/course">Course</a>
         <a href="/new-admission">New Admission</a>
-        <a href="/all-admissions">All Admission</a>
+        <a href="/all-admissions">All Admissions</a>
         <a href="/fees">Fees</a>
     </div>
     <div class="main-content" data-faculty-id="<%= facultyId %>">
@@ -28,26 +28,31 @@
                     <div class="form-group">
                         <label for="name">Name:</label>
                         <input type="text" id="name" name="name">
+                        <span id="nameError" class="error-message"></span>
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
                         <input type="email" id="email" name="email">
+                        <span id="emailError" class="error-message"></span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="aadhaarNo">Aadhaar No:</label>
                         <input type="text" id="aadhaarNo" name="aadhaarNo">
+                        <span id="aadhaarNoError" class="error-message"></span>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone:</label>
                         <input type="text" id="phone" name="phone">
+                        <span id="phoneError" class="error-message"></span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="address">Address:</label>
                         <textarea id="address" name="address"></textarea>
+                        <span id="addressError" class="error-message"></span>
                     </div>
                 </div>
                 <button type="button" id="saveDetailsButton">Save Details</button>
