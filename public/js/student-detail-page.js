@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     batches = batches.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                     const tableBody = document.querySelector('#batchCourseTable tbody');
                     tableBody.innerHTML = ''; // Clear existing rows
-                    
+
                     batches.forEach(batch => {
                         const formattedDate = new Date(batch.createdAt).toLocaleDateString('en-IN');
                         const row = document.createElement('tr');
@@ -173,34 +173,103 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error fetching transaction details:', error));
     }
 
+    function validateEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        return emailPattern.test(email);
+    }    
+
+    function validateAadhaar(aadhaarNo) {
+        return aadhaarNo.length === 12;
+    }
+
+    function validatePhone(phone) {
+        return phone.length === 10;
+    }
+    
+    function validateFields() {
+        let isValid = true;
+
+        // Check if required fields are empty
+        if (document.getElementById('name').value.trim() === '') {
+            isValid = false;
+            document.getElementById('nameError').style.display = 'block';
+        } else {
+            document.getElementById('nameError').style.display = 'none';
+        }
+
+        if (document.getElementById('fathersName').value.trim() === '') {
+            isValid = false;
+            document.getElementById('fathersNameError').style.display = 'block';
+        } else {
+            document.getElementById('fathersNameError').style.display = 'none';
+        }
+
+        if (document.getElementById('address').value.trim() === '') {
+            isValid = false;
+            document.getElementById('addressError').style.display = 'block';
+        } else {
+            document.getElementById('addressError').style.display = 'none';
+        }
+
+        // Check email, Aadhaar, and phone validations
+        const email = document.getElementById('email').value;
+        if (!validateEmail(email)) {
+            isValid = false;
+            document.getElementById('emailError').style.display = 'block';
+        } else {
+            document.getElementById('emailError').style.display = 'none';
+        }
+
+        const aadhaarNo = document.getElementById('aadhaarNo').value;
+        if (!validateAadhaar(aadhaarNo)) {
+            isValid = false;
+            document.getElementById('aadhaarError').style.display = 'block';
+        } else {
+            document.getElementById('aadhaarError').style.display = 'none';
+        }
+
+        const phone = document.getElementById('phone').value;
+        if (!validatePhone(phone)) {
+            isValid = false;
+            document.getElementById('phoneError').style.display = 'block';
+        } else {
+            document.getElementById('phoneError').style.display = 'none';
+        }
+
+        return isValid;
+    }
 
     function savePersonalDetails(studentId) {
-        const updatedDetails = {
-            name: document.getElementById('name').value,
-            fathersName: document.getElementById('fathersName').value,
-            email: document.getElementById('email').value,
-            aadhaarNo: document.getElementById('aadhaarNo').value,
-            phone: document.getElementById('phone').value,
-            address: document.getElementById('address').value,
-        };
+        if (validateFields()) {
+            const updatedDetails = {
+                name: document.getElementById('name').value,
+                fathersName: document.getElementById('fathersName').value,
+                email: document.getElementById('email').value,
+                aadhaarNo: document.getElementById('aadhaarNo').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+            };
 
-        fetch(`/api/v1/student/edit-student/${studentId}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedDetails),
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert('Details updated successfully');
-                    window.location.href = '/students';
-                } else {
-                    console.error('Error updating details:', data.error);
-                }
+            fetch(`/api/v1/student/edit-student/${studentId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedDetails),
             })
-            .catch(error => console.error('Error updating details:', error));
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Details updated successfully');
+                        window.location.href = '/students';
+                    } else {
+                        console.error('Error updating details:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error updating details:', error));
+        } else {
+            alert('Please correct the errors in the form.');
+        }
     }
 
     const saveButton = document.getElementById('saveDetailsButton');

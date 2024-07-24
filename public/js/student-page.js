@@ -10,9 +10,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const aadhaarNoInput = document.getElementById('aadhaarNo');
     const phoneInput = document.getElementById('phone');
     const emailInput = document.getElementById('email');
+    const nameInput = document.getElementById('name');
+    const fathersNameInput = document.getElementById('fathersName');
+    const addressInput = document.getElementById('address');
     const emailError = document.getElementById('emailError');
     const aadhaarError = document.getElementById('aadhaarError');
     const phoneError = document.getElementById('phoneError');
+    const nameError = document.getElementById('nameError');
+    const fathersNameError = document.getElementById('fathersNameError');
+    const addressError = document.getElementById('addressError');
     const studentForm = document.getElementById('studentForm');
 
     // Function to filter students based on search category
@@ -157,6 +163,29 @@ document.addEventListener('DOMContentLoaded', function() {
     studentForm.addEventListener('submit', function(event) {
         let isValid = true;
 
+        // Check if required fields are empty
+        if (nameInput.value.trim() === '') {
+            isValid = false;
+            nameError.style.display = 'block';
+        } else {
+            nameError.style.display = 'none';
+        }
+
+        if (fathersNameInput.value.trim() === '') {
+            isValid = false;
+            fathersNameError.style.display = 'block';
+        } else {
+            fathersNameError.style.display = 'none';
+        }
+
+        if (addressInput.value.trim() === '') {
+            isValid = false;
+            addressError.style.display = 'block';
+        } else {
+            addressError.style.display = 'none';
+        }
+
+        // Check email, Aadhaar, and phone validations
         if (!validateEmail(emailInput.value)) {
             isValid = false;
             emailError.style.display = 'block';
