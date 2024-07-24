@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Function to redirect to batch details page
+    function viewBatchDetails(batchId) {
+        window.location.href = `/batch/details/${batchId}`;
+    }
+
     // Function to populate table rows with batch data
     function populateBatchTable(batches) {
         const tbody = batchTable.querySelector('tbody');
@@ -59,6 +64,10 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
 
             // Example: Populate table cells with batch data
+            row.addEventListener('click', function () {
+                console.log("Hii");
+                viewBatchDetails(batch._id);
+            });
 
             tbody.appendChild(row);
         });

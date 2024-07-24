@@ -23,11 +23,15 @@ router.get('/students/details/:studentId', (req, res, next) => {
     res.render('student-detail-page', { studentId: studentId });
 });
 
-
 router.get('/batch', (req, res, next) => {
     const courseId = req.query.courseId;
     const courseName = req.query.courseName;
     res.render('batch-page', { courseId: courseId, courseName: courseName });
+});
+
+router.get('/batch/details/:batchId', (req, res, next) => {
+    const batchId = req.params.batchId; // Access studentId from the route parameters
+    res.render('batch-detail-page', { batchId: batchId });
 });
 
 router.get('/faculty', (req, res, next) => {

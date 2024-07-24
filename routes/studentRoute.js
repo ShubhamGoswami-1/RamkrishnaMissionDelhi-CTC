@@ -13,5 +13,4 @@ router.patch('/edit-student/:studentId', studentController.editStudentDetails);
 router.get('/getBatchDetailsOfStudents/:batchId', studentController.getBatchDetailsOfStudents);
 router.get('/download-students', studentController.downloadStudentsExcel);
 
-
 module.exports = router;

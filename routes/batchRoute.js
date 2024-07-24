@@ -13,4 +13,6 @@ router
   .route('/getBatchDetails')
   .post(batchController.getBatchDetails);
 
+router.get('/get-all-students-Of-Batch/:batchId', batchController.getBatchStudents)
+
 module.exports = router;

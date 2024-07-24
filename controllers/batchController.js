@@ -175,3 +175,27 @@ exports.getBatchesByCourse = catchAsync(async (req, res, next) => {
         }
     });
 });
+
+exports.getBatchStudents = catchAsync(async(req, res, next) => {
+    const batchId = req.params.batchId;
+
+    const batch = await Batch.findById(batchId);
+
+    if(!batch){
+        return  next(new AppError(`No batch found with _id:${batchId}`, 404));
+    }
+
+    // Find students whose IDs are in the batch's studentIds array
+    const students = await Student.find({ _id: { $in: batch.studentIds } })
+        .populate({
+            path: 'course_admissionIds', // Assuming admissionIds is an array of ObjectId references to Admission model
+            select: 'DateOfAdmission' // Select only the fields you need from Admission model
+        });
+
+    // Send the student data as a response
+    res.status(200).json({
+        status: 'success',
+        results: students.length,
+        data: { students }
+    });
+})
