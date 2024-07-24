@@ -7,6 +7,14 @@
     <title>Dashboard - Ramakrishna Mission Language and Culture School</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/student-page.css">
+    <style>
+        /* Simple CSS for error messages */
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 0.25em;
+        }
+    </style>
 </head>
 
 <body>
@@ -36,7 +44,6 @@
         </div>
 
         <div class="table-container-outer">
-
             <div class="table-container">
                 <table id="studentsTable">
                     <thead>
@@ -69,30 +76,30 @@
                 <div class="formElement">
                     <label for="name">Name:</label>
                     <input type="text" id="name" name="name">
-                    <span id="nameError" class="error-message" style="color:red; display:none;">Name is required</span>
+                    <div id="nameError" class="error-message"></div>
                 </div>
                 
                 <div class="formElement">
                     <label for="fathersName">Father's Name:</label>
                     <input type="text" id="fathersName" name="fathersName">
-                    <span id="fathersNameError" class="error-message" style="color:red; display:none;">Father's name is required</span>
+                    <div id="fathersNameError" class="error-message"></div>
                 </div>
 
                 <div class="formElement">
                     <label for="email">Email:</label>
                     <input type="text" id="email" name="email">
-                    <span id="emailError" class="error-message" style="color:red; display:none;">Invalid email address</span>
+                    <div id="emailError" class="error-message"></div>
                 </div>
                 
                 <div class="formElement">
                     <label for="aadhaarNo">Aadhaar Number:</label>
                     <input type="text" id="aadhaarNo" name="aadhaarNo" maxlength="12">
-                    <span id="aadhaarError" class="error-message" style="color:red; display:none;">Invalid Aadhaar number</span>
+                    <div id="aadhaarError" class="error-message"></div>
                 </div>
 
                 <div class="formElement">
                     <label for="gender">Gender:</label>
-                    <select id="gender" name="gender" required>
+                    <select id="gender" name="gender">
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="others">Others</option>
@@ -101,19 +108,19 @@
 
                 <div class="formElement">
                     <label for="dob">Date of Birth:</label>
-                    <input type="date" id="dob" name="dob" required>
+                    <input type="date" id="dob" name="dob">
                 </div>
 
                 <div class="formElement">
                     <label for="phone">Phone:</label>
-                    <input type="text" id="phone" name="phone" maxlength="10" required>
-                    <span id="phoneError" class="error-message" style="color:red; display:none;">Invalid phone number</span>
+                    <input type="text" id="phone" name="phone" maxlength="10">
+                    <div id="phoneError" class="error-message"></div>
                 </div>
 
                 <div class="formElement">
                     <label for="address">Address:</label>
-                    <input type="text" id="address" name="address" required>
-                    <span id="addressError" class="error-message" style="color:red; display:none;">Address is required</span>
+                    <input type="text" id="address" name="address">
+                    <div id="addressError" class="error-message"></div>
                 </div>
 
                 <div class="formElement">

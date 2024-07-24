@@ -5,20 +5,25 @@ const catchAsync = require('../utils/catchAsync');
 
 exports.addNewCourse = catchAsync(async (req, res, next) => {
     
-    const { name, fees } = req.body;
+    try {
+        const { name, fees } = req.body;
+        const newCourse = await Course.create({
+            name,
+            fees
+        });
 
-    const newCourse = await Course.create({
-        name,
-        fees
-    });
+        res.status(201).json({
+            status: 'success',
+            newCourse
+        });
 
-    // have to handle redirection in JS in order to bring back res.status
-    // res.status(201).json({
-    //     status: "success",
-    //     newCourse
-    // });
-
-    res.redirect('/course');
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        });
+    }
+    
 })
 
 exports.getAllCourses = catchAsync(async (req, res, next) => {

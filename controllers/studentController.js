@@ -8,7 +8,6 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 exports.addNewStudent = catchAsync(async (req, res, next) => {
-
     const { name, fathersName, email, aadhaarNo, gender, phone, dob, address, education, reference } = req.body;
 
     const studentObj = {
@@ -26,13 +25,12 @@ exports.addNewStudent = catchAsync(async (req, res, next) => {
 
     const newStudent = await Student.create(studentObj);
 
-    // res.status(201).json({
-    //     status: "success",
-    //     newStudent
-    // });
-
-    res.redirect('/students');
+    res.status(201).json({
+        status: 'success',
+        newStudent
+    });
 });
+
 
 exports.getStudent = catchAsync(async (req, res, next) => {
     const studentId = req.params.studentId;

@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     if (data.status === 'success') {
                         alert('Admission process completed!');
-                        window.location.href = '/all-admissions'; // Redirect to the all-admissions page
+                        window.location.href = '/all-admissions';
                     } else {
                         alert('Error completing the admission process: ' + data.message);
                     }

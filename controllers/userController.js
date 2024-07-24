@@ -9,7 +9,6 @@ const AppError = require('./../utils/appError');
 
 
 exports.signup = catchAsync(async (req, res, next) => {
-
   const { name, email, password } = req.body;
 
   // Check if required fields are provided
@@ -17,19 +16,28 @@ exports.signup = catchAsync(async (req, res, next) => {
     return next(new AppError('Name, email, and password are required.', 400));
   }
 
-  const newUser = await User.create({
-    name,
-    email,
-    password,
-  });
+  try {
+    const newUser = await User.create({
+      name,
+      email,
+      password,
+    });
 
-  // res.status(201).json({
-  //   status: "success",
-  //   newUser
-  // });
-
-  res.redirect('/students');
+    // Respond with status 201 and JSON data
+    res.status(201).json({
+      status: "success",
+      message: "User created successfully",
+      newUser
+    });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error"
+    });
+  }
 });
+
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;

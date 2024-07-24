@@ -176,7 +176,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (isValid) {
-            facultyForm.submit(); // Submit the form if all fields are valid
+            // Prepare form data for submission
+            const formData = {
+                name: name.value.trim(),
+                email: email.value.trim(),
+                phone: phoneNo.value.trim(),
+                aadhaarNo: aadhaarNo.value.trim(),
+                address: address.value.trim()
+            };
+
+            // Submit form data via fetch
+            fetch('/api/v1/faculty/add-new-faculty', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Close modal and refresh page to show updated list
+                        facultyFormModal.style.display = "none";
+                        location.reload(); // Refresh the page to see the new faculty in the table
+                    } else {
+                        // Handle errors (e.g., validation errors)
+                        if (data.message) {
+                            alert(data.message);
+                        }
+                    }
+                })
+                .catch(error => console.error('Error adding faculty:', error));
         }
     });
 
