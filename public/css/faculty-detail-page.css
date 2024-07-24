@@ -1,4 +1,4 @@
-body {
+body, html {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
@@ -6,8 +6,9 @@ body {
     color: #333;
     display: flex;
     height: 100vh;
-    overflow: hidden;
+    overflow: hidden; /* Prevent the body from scrolling */
 }
+
 .sidebar {
     width: 30vh;
     background-color: #e65c00;
@@ -16,12 +17,15 @@ body {
     flex-direction: column;
     padding: 2vh;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    flex-shrink: 0; /* Prevents sidebar from shrinking */
 }
+
 .sidebar h2 {
     font-size: 24px;
     margin-bottom: 20px;
     text-align: center;
 }
+
 .sidebar a {
     color: white;
     text-decoration: none;
@@ -31,9 +35,11 @@ body {
     text-align: center;
     background-color: rgb(235, 127, 11);
 }
+
 .sidebar a:hover {
     background-color: #ff704d;
 }
+
 .main-content {
     flex: 1;
     padding: 20px;
@@ -43,11 +49,14 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.9;
+    overflow-y: auto; /* Enable vertical scrolling */
 }
+
 .main-content h2 {
     margin-bottom: 20px;
     color: #e65c00;
 }
+
 .details-container {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
@@ -55,24 +64,29 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     margin-bottom: 20px;
 }
+
 .form-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
 }
+
 .form-group {
     flex: 1;
     display: flex;
     flex-direction: column;
     margin-right: 15px;
 }
+
 .form-group:last-child {
     margin-right: 0;
 }
+
 .form-group label {
     margin-bottom: 5px;
     font-weight: bold;
 }
+
 .form-group input, 
 .form-group textarea {
     padding: 10px;
@@ -80,9 +94,11 @@ body {
     border-radius: 5px;
     font-size: 16px;
 }
+
 textarea {
     resize: vertical;
 }
+
 #saveDetailsButton {
     padding: 10px 20px;
     background-color: #004de6;
@@ -93,25 +109,31 @@ textarea {
     cursor: pointer;
     margin-top: 10px;
 }
+
 #saveDetailsButton:hover {
     background-color: rgb(25, 138, 237);
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
+
 table, th, td {
     border: 1px solid #ddd;
 }
+
 th, td {
     padding: 12px;
     text-align: left;
 }
+
 th {
     background-color: #e65c00;
     color: white;
 }
+
 tr:hover {
     background-color: #f5f5f5;
     cursor: pointer;

@@ -152,10 +152,15 @@ exports.downloadStudentsExcel = catchAsync(async (req, res, next) => {
         fs.mkdirSync(dir, { recursive: true });
     }
 
-    const filePath = path.join(dir, 'students.xlsx');
+    // Get the system's local date and format it
+    const date = new Date();
+    const formattedDate = date.toLocaleDateString('en-GB').replace(/\//g, '-'); // e.g., "23-07-2024"
+    const fileName = `Students_${formattedDate}.xlsx`;
+    const filePath = path.join(dir, fileName);
+    
     xlsx.writeFile(workBook, filePath);
 
-    res.download(filePath, 'students.xlsx', (err) => {
+    res.download(filePath, fileName, (err) => {
         if (err) {
             return next(new AppError('Error downloading file', 500));
         }

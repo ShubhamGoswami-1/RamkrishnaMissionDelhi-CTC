@@ -3,6 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const mainContent = document.querySelector('.main-content');
     const facultyId = mainContent.getAttribute('data-faculty-id');
 
+    function formatCurrency(amount) {
+        return amount.toLocaleString('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
     // Function to fetch and display faculty details
     function viewFacultyDetails(facultyId) {
         fetch(`/api/v1/faculty/getFaculty/${facultyId}`)
@@ -60,19 +69,30 @@ document.addEventListener('DOMContentLoaded', function() {
         batchTableBody.innerHTML = '';
 
         batches.forEach(batch => {
+            
             const row = document.createElement('tr');
+            const formattedDate = new Date(batch.startingDate).toLocaleDateString('en-IN');
+            const batchFees = formatCurrency(batch.fees);
+            const totalFeesAmount = batch.fees * batch.studentIds.length;
+            const batchFeesWithGST = formatCurrency(batch.fees + (batch.fees * (batch.GST / 100)));
+            const totalFeesWithGSTAmount = totalFeesAmount + (batch.studentIds.length * (batch.fees * (batch.GST / 100)));
+            const totalFees = formatCurrency(totalFeesAmount);
+            const totalFeesWithGST = `${formatCurrency(totalFeesWithGSTAmount)} (${batch.GST}%)`;
+            const totalFeesPaid = formatCurrency(batch.totalFeesPaid);
+            const totalFeesDue = formatCurrency(((batch.fees + (batch.fees * (batch.GST / 100))) * batch.studentIds.length) - batch.totalFeesPaid);
+
             row.innerHTML = `
                 <td>${batch.courseName}</td>
                 <td>${batch.title}</td>
                 <td>${batch.timing}</td>
-                <td>${batch.startingDate}</td>
+                <td>${formattedDate}</td>
                 <td>${batch.studentIds.length}</td>
-                <td>${batch.fees}</td>
-                <td>${(batch.fees + (batch.fees * (batch.GST/100)))}</td>
-                <td>${(batch.fees * batch.studentIds.length)}</td> 
-                <td>${((batch.fees + (batch.fees * (batch.GST/100))) * batch.studentIds.length)}</td> 
-                <td>${batch.totalFeesPaid}</td>
-                <td>${((batch.fees + (batch.fees * (batch.GST/100))) * batch.studentIds.length) - batch.totalFeesPaid}</td>
+                <td>${batchFees}</td>
+                <td>${batchFeesWithGST}</td>
+                <td>${totalFees}</td> 
+                <td>${totalFeesWithGST}</td> 
+                <td>${totalFeesPaid}</td>
+                <td>${totalFeesDue}</td>
                 <td>${batch.active}</td>
             `;
             batchTableBody.appendChild(row);

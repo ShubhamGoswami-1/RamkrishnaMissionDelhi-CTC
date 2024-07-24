@@ -34,9 +34,13 @@ document.addEventListener('DOMContentLoaded', function () {
             row.dataset.batchId = batch._id; // Assuming _id is your batch's unique identifier
             const formattedDate = new Date(batch.startingDate).toLocaleDateString('en-IN');
             const totalFeesAmount = batch.fees * batch.studentIds.length;
+            const batchFees = formatCurrency(batch.fees);
+            const batchFeesWithGST = formatCurrency(batch.fees + (batch.fees * (batch.GST / 100)));
             const totalFeesWithGSTAmount = totalFeesAmount + (batch.studentIds.length * (batch.fees * (batch.GST / 100)));
             const totalFees = formatCurrency(totalFeesAmount);
             const totalFeesWithGST = `${formatCurrency(totalFeesWithGSTAmount)} (${batch.GST}%)`;
+            const totalFeesPaid = formatCurrency(batch.totalFeesPaid);
+            const totalFeesDue = formatCurrency(((batch.fees + (batch.fees * (batch.GST / 100))) * batch.studentIds.length) - batch.totalFeesPaid);
 
             // Example: Populate table cells with batch data
             row.innerHTML = `
@@ -45,14 +49,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${batch.timing}</td>
                 <td>${formattedDate}</td>
                 <td>${batch.studentIds.length}</td>
-                <td>${batch.fees}</td>
-                <td>${(batch.fees + (batch.fees * (batch.GST/100)))}</td>
-                <td>${(batch.fees * batch.studentIds.length)}</td> 
-                <td>${((batch.fees + (batch.fees * (batch.GST/100))) * batch.studentIds.length)}</td> 
-                <td>${batch.totalFeesPaid}</td>
-                <td>${((batch.fees + (batch.fees * (batch.GST/100))) * batch.studentIds.length) - batch.totalFeesPaid}</td>
+                <td>${batchFees}</td>
+                <td>${batchFeesWithGST}</td>
+                <td>${totalFees}</td> 
+                <td>${totalFeesWithGST}</td> 
+                <td>${totalFeesPaid}</td>
+                <td>${totalFeesDue}</td>
                 <td>${batch.active}</td>
             `;
+
+            // Example: Populate table cells with batch data
 
             tbody.appendChild(row);
         });

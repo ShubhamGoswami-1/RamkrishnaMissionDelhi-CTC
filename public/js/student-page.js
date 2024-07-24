@@ -7,6 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchCategory = document.getElementById('searchCategory');
     const filterIcon = document.getElementById('filterIcon');
     const searchDropdown = document.getElementById('searchDropdown');
+    const aadhaarNoInput = document.getElementById('aadhaarNo');
+    const phoneInput = document.getElementById('phone');
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    const aadhaarError = document.getElementById('aadhaarError');
+    const phoneError = document.getElementById('phoneError');
+    const studentForm = document.getElementById('studentForm');
 
     // Function to filter students based on search category
     function filterStudents() {
@@ -72,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error fetching students:', error));
 
-
     // Function to redirect to student details page
     function viewStudentDetails(studentId) {
         window.location.href = `/students/details/${studentId}`;
@@ -93,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.dispatchEvent(new Event('input')); // Trigger the search when the category changes
     });
 
-    // Handle search functionality
     searchInput.addEventListener('input', function() {
         let filter = this.value.toLowerCase();
         let category = searchCategory.value;
@@ -124,7 +129,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    
+    // Ensure only digits are allowed in Aadhaar Number and Phone fields
+    function restrictToDigits(event) {
+        event.target.value = event.target.value.replace(/\D/g, '');
+    }
+
+    aadhaarNoInput.addEventListener('input', restrictToDigits);
+    phoneInput.addEventListener('input', restrictToDigits);
+
+    // Validate email format
+    function validateEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        return emailPattern.test(email);
+    }    
+
+    // Validate Aadhaar number length
+    function validateAadhaar(aadhaarNo) {
+        return aadhaarNo.length === 12;
+    }
+
+    // Validate phone number length
+    function validatePhone(phone) {
+        return phone.length === 10;
+    }
+
+    // Handle form submission
+    studentForm.addEventListener('submit', function(event) {
+        let isValid = true;
+
+        if (!validateEmail(emailInput.value)) {
+            isValid = false;
+            emailError.style.display = 'block';
+        } else {
+            emailError.style.display = 'none';
+        }
+
+        if (!validateAadhaar(aadhaarNoInput.value)) {
+            isValid = false;
+            aadhaarError.style.display = 'block';
+        } else {
+            aadhaarError.style.display = 'none';
+        }
+
+        if (!validatePhone(phoneInput.value)) {
+            isValid = false;
+            phoneError.style.display = 'block';
+        } else {
+            phoneError.style.display = 'none';
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+
     function downloadExcelFile() {
         window.location.href = '/api/v1/student/download-students';
     }
@@ -132,5 +190,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listener to download button
     const downloadButton = document.getElementById('downloadExcelButton');
     downloadButton.addEventListener('click', downloadExcelFile);
-    
 });

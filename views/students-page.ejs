@@ -7,7 +7,6 @@
     <title>Dashboard - Ramakrishna Mission Language and Culture School</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/student-page.css">
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net;"> -->
 </head>
 
 <body>
@@ -50,7 +49,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         <!-- Dynamic rows will be inserted here -->
                     </tbody>
                 </table>
@@ -80,15 +78,14 @@
 
                 <div class="formElement">
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="text" id="email" name="email" required>
+                    <span id="emailError" class="error-message" style="color:red; display:none;">Invalid email address</span>
                 </div>
-                <!--                 
-                    <label for="photo">Photo URL:</label>
-                    <input type="text" id="photo" name="photo">
-                -->
+                
                 <div class="formElement">
                     <label for="aadhaarNo">Aadhaar Number:</label>
-                    <input type="text" id="aadhaarNo" name="aadhaarNo" minlength="12">
+                    <input type="text" id="aadhaarNo" name="aadhaarNo" maxlength="12" required>
+                    <span id="aadhaarError" class="error-message" style="color:red; display:none;">Invalid Aadhaar number</span>
                 </div>
 
                 <div class="formElement">
@@ -107,7 +104,8 @@
 
                 <div class="formElement">
                     <label for="phone">Phone:</label>
-                    <input type="text" id="phone" name="phone">
+                    <input type="text" id="phone" name="phone" maxlength="10" required>
+                    <span id="phoneError" class="error-message" style="color:red; display:none;">Invalid phone number</span>
                 </div>
 
                 <div class="formElement">
