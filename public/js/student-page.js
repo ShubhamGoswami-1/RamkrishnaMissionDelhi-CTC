@@ -63,10 +63,23 @@ document.addEventListener('DOMContentLoaded', function () {
         studentFormModal.style.display = "flex";
     }
 
-    // Function to close the add student form modal
-    function closeForm() {
-        studentFormModal.style.display = "none";
+
+    // Function to hide the modal
+    function hideModal() {
+        studentFormModal.style.display = 'none';
     }
+
+    // Add event listener to the button
+    studentFormModal.addEventListener('click', function () {
+        hideModal();
+    });
+
+    // Add event listener for the 'Esc' key
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' || event.key === 'Esc') {
+            hideModal();
+        }
+    });
 
     // Function to redirect to student details page
     function viewStudentDetails(studentId) {

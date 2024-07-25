@@ -16,6 +16,7 @@ body {
     flex-direction: column;
     padding: 2vh;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    margin-bottom: 2vh;
 }
 .sidebar h2 {
     font-size: 24px;
@@ -43,8 +44,9 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.9;
-    overflow: hidden;
+    overflow-y: auto;
     height: 100vh;
+    margin-bottom: 2vh;
 }
 .main-content h2 {
     margin-bottom: 20px;
@@ -56,6 +58,8 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow-y: auto;
+    max-height: 80vh;
+    margin-bottom: 2vh;
 }
 
 table {
@@ -78,26 +82,27 @@ tr:hover {
     background-color: #f5f5f5;
     cursor: pointer;
 }
-#batchFormModal{
+#batchFormModal {
     position: fixed;
     height: 100%;
     width: 100%;
     z-index: 10;
     top: 0;
     left: 0;
-    overflow: auto; 
-  background-color: rgb(0,0,0); 
-  background-color: rgba(0,0,0,0.4);
-  display: none;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    display: none;
+    margin-bottom: 2vh;
 }
 
-#batchFormModal #batchForm{
+#batchFormModal #batchForm {
     grid-gap: 1vw;
     display: grid;
     grid-template-columns: auto auto;
 }
 
-#batchFormModal #batchForm button{
+#batchFormModal #batchForm button {
     grid-column-start: 1;
     grid-column-end: 3;
 }
@@ -114,6 +119,7 @@ tr:hover {
     max-width: 700px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 2vh;
 }
 
 .form-content input {
@@ -152,7 +158,6 @@ tr:hover {
     top: 3%;
     right: 3%;
     color: #aaa;
-    /* float: right; */
     font-size: 28px;
     font-weight: bold;
 }
@@ -162,7 +167,6 @@ tr:hover {
     cursor: pointer;
 }
 
-
 #addFacultyButton {
     padding: 10px 20px;
     background-color: #004de6;
@@ -171,6 +175,7 @@ tr:hover {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-bottom: 2vh;
 }
 #addFacultyButton:hover {
     background-color: rgb(25, 138, 237);
@@ -183,16 +188,13 @@ tr:hover {
     border-radius: 4px;
 }
 .search-container {
-    /* position: relative;  */
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+    margin-bottom: 2vh;
 }
 
 .search-dropdown {
-    /* position: absolute;
-    top: 100%;
-    left: 0; */
     z-index: 1;
     display: none;
     background-color: #fff;
@@ -235,4 +237,18 @@ tr:hover {
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
     padding-top: 60px;
+}
+
+.popup-message {
+    position: fixed;
+    top: 5vh;
+    right: 3vw;
+    padding: 3vh 4vw;
+    background-color: rgba(1, 86, 1, 0.7);
+    color: white;
+    border-radius: 5px;
+    font-size: 3vh;
+    z-index: 1000;
+    transition: 0.5s;
+    opacity: 0.6;
 }

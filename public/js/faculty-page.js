@@ -60,6 +60,18 @@ document.addEventListener('DOMContentLoaded', function () {
         button.onclick = function () {
             facultyFormModal.style.display = "none";
         }
+
+        // Function to hide the modal
+        function hideModal() {
+            facultyFormModal.style.display = 'none';
+        }
+
+        // Add event listener for the 'Esc' key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' || event.key === 'Esc') {
+                hideModal();
+            }
+        });
     });
 
     // Close the modal when clicking outside the form content

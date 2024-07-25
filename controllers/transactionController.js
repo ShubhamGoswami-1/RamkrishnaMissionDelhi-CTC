@@ -10,6 +10,7 @@ exports.newPayment = catchAsync(async (req, res, next) => {
     const studentId = req.params.studentId;
     const batchId = req.params.batchId;
 
+    // Fetch student and batch details
     const student = await Student.findById(studentId);
 
     if (!student) {
@@ -17,7 +18,7 @@ exports.newPayment = catchAsync(async (req, res, next) => {
     }
 
     const batch = await Batch.findById(batchId);
-
+    
     if (!batch) {
         return next(new AppError('No batch found with this id', 404));
     }
@@ -25,15 +26,17 @@ exports.newPayment = catchAsync(async (req, res, next) => {
     const { newPayment } = req.body;
     const newPaymentAmount = parseFloat(newPayment);
 
-    let totalFeesPaid = newPaymentAmount;
-    let feesWithGST = +batch.fees + (batch.fees * 0.18);
-    let dueAmt = feesWithGST - newPaymentAmount;
+    // Calculate fees with GST
+    const feesWithGST = +batch.fees + (+batch.fees * 0.18);
 
-    // Check if the student already has this batch in batchIds
-    const batchIndex = student.batchIds.findIndex(batch => batch.batchId.toString() === batchId);
+    // Find the batch entry in student's batchIds
+    const batchIndex = student.batchIds.findIndex(batchEntry => batchEntry.batchId.toString() === batchId);
+
+    let totalFeesPaid = newPaymentAmount;
+    let dueAmt;
 
     if (batchIndex !== -1) {
-        // Batch found in student's batchIds, update the existing entry
+        // Existing batch entry found, update it
         const batchEntry = student.batchIds[batchIndex];
         totalFeesPaid += batchEntry.feesPaid;
         batchEntry.feesPaid = totalFeesPaid;
@@ -41,11 +44,15 @@ exports.newPayment = catchAsync(async (req, res, next) => {
 
         // Calculate the updated due amount
         dueAmt = batchEntry.feesWithGST - totalFeesPaid;
+        if (dueAmt < 0) dueAmt = 0; // Ensure due amount doesn't go negative
         batchEntry.feesDue = dueAmt;
 
         student.batchIds[batchIndex] = batchEntry;
     } else {
-        // Batch not found in student's batchIds, create a new entry
+        // New batch entry, add it
+        dueAmt = feesWithGST - newPaymentAmount;
+        if (dueAmt < 0) dueAmt = 0; // Ensure due amount doesn't go negative
+
         const newBatchEntry = {
             batchId: batchId,
             feesWithGST: feesWithGST,
@@ -55,6 +62,11 @@ exports.newPayment = catchAsync(async (req, res, next) => {
         };
 
         student.batchIds.push(newBatchEntry);
+    }
+
+    // Check if new payment exceeds the fees due
+    if (dueAmt < 0) {
+        return next(new AppError('Payment amount exceeds the fees due.', 400));
     }
 
     // Create a new transaction
@@ -68,6 +80,7 @@ exports.newPayment = catchAsync(async (req, res, next) => {
 
     await student.save();
 
+    // Generate receipt PDF (assuming function exists)
     const pdfPath = generateReceiptPDF(transaction, student, batch, totalFeesPaid, newPaymentAmount, feesWithGST, dueAmt);
 
     res.status(201).json({
@@ -76,6 +89,7 @@ exports.newPayment = catchAsync(async (req, res, next) => {
         pdfUrl: `/receipts/${transaction._id}.pdf`
     });
 });
+
 
 exports.feesTransactionsStudentInBatch = catchAsync(async(req, res, next) => {
     const batchId = req.params.batchId;

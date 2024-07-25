@@ -20,6 +20,18 @@ document.addEventListener('DOMContentLoaded', function () {
         transactionModal.style.display = 'none';
     });
 
+    // Function to hide the modal
+    function hideModal() {
+        transactionModal.style.display = 'none';
+    }
+
+    // Add event listener for the 'Esc' key
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' || event.key === 'Esc') {
+            hideModal();
+        }
+    });
+
     window.addEventListener('click', function (event) {
         if (event.target === transactionModal) {
             transactionModal.style.display = 'none';
@@ -52,35 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    submitTransactionButton.addEventListener('click', function () {
-        const studentId = document.getElementById('modalStudentId').value;
-        const batchId = document.getElementById('modalBatchId').value;
-        const newPayment = document.getElementById('newPayment').value;
-
-        if (newPayment) {
-            fetch(`/api/v1/payment/newPayment/studentId/${studentId}/batchId/${batchId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ newPayment }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Transaction successfully created!');
-                        transactionModal.style.display = 'none';
-                        fetchBatches(studentId); // Refresh the batches list
-                        fetchTransactions(studentId, batchId); // Refresh the transactions list
-                    } else {
-                        console.error('Error creating transaction:', data.error);
-                    }
-                })
-                .catch(error => console.error('Error creating transaction:', error));
-        } else {
-            alert('Please enter a payment amount.');
-        }
-    });
 
     function viewStudentDetails(studentId) {
         fetch(`/api/v1/student/get-student/${studentId}`)
@@ -176,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function validateEmail(email) {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
         return emailPattern.test(email);
-    }    
+    }
 
     function validateAadhaar(aadhaarNo) {
         return aadhaarNo.length === 12;
@@ -185,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function validatePhone(phone) {
         return phone.length === 10;
     }
-    
+
     function validateFields() {
         let isValid = true;
 
@@ -238,6 +221,70 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return isValid;
     }
+
+    function fetchStudentFeesDue(studentId) {
+        return fetch(`/api/v1/student/get-student/${studentId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    return data.student.batchIds.find(batch => batch.batchId === currentlySelectedBatchId).feesDue;
+                } else {
+                    console.error('Error fetching student details:', data.error);
+                    return null;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching student details:', error);
+                return null;
+            });
+    }
+
+    // Submit transaction button event listener
+    submitTransactionButton.addEventListener('click', async function () {
+        const studentId = document.getElementById('modalStudentId').value;
+        const batchId = document.getElementById('modalBatchId').value;
+        const newPayment = parseFloat(document.getElementById('newPayment').value);
+
+        if (isNaN(newPayment) || newPayment <= 0) {
+            alert('Please enter a valid payment amount.');
+            return;
+        }
+
+        const feesDue = await fetchStudentFeesDue(studentId);
+        if (feesDue === null) {
+            alert('Error fetching fees due. Please try again later.');
+            return;
+        }
+
+        if (newPayment > feesDue) {
+            alert('Payment amount exceeds the fees due.');
+            return;
+        }
+
+        if (newPayment) {
+            fetch(`/api/v1/payment/newPayment/studentId/${studentId}/batchId/${batchId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ newPayment }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Transaction successfully created!');
+                        transactionModal.style.display = 'none';
+                        fetchBatches(studentId); // Refresh the batches list
+                        fetchTransactions(studentId, batchId); // Refresh the transactions list
+                    } else {
+                        console.error('Error creating transaction:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error creating transaction:', error));
+        } else {
+            alert('Please enter a payment amount.');
+        }
+    });
 
     function savePersonalDetails(studentId) {
         if (validateFields()) {

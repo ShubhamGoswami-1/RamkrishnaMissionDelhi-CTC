@@ -178,4 +178,53 @@ document.addEventListener('DOMContentLoaded', function () {
     searchCategory.addEventListener('change', function () {
         searchInput.dispatchEvent(new Event('input')); // Trigger the search when the category changes
     });
+
+    // Function to show a popup message
+    function showPopupMessage(message, backgroundColor) {
+        const popup = document.createElement('div');
+        popup.textContent = message;
+        popup.className = 'popup-message';
+        popup.style.backgroundColor = backgroundColor;
+        document.body.appendChild(popup);
+
+        setTimeout(() => {
+            popup.remove();
+        }, 3000); // Show the popup for 3 seconds
+    }
+
+    // Check if the batch was added successfully from localStorage
+    if (localStorage.getItem('batchAdded') === 'true') {
+        showPopupMessage('Batch Added', 'rgba(0, 128, 0, 0.7)');
+        localStorage.removeItem('batchAdded');
+    }
+
+    // Handle form submission with Fetch API
+    batchForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(batchForm);
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+
+        fetch(`/api/v1/batch/add-new-batch/courseId/${courseId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formObject)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                batchFormModal.style.display = "none"; // Close the modal
+                localStorage.setItem('batchAdded', 'true'); // Set localStorage flag
+                window.location.reload(); // Reload the page
+            } else {
+                console.error('Error adding batch:', data.error);
+            }
+        })
+        .catch(error => console.error('Error adding batch:', error));
+    });
 });
