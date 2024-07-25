@@ -2,6 +2,7 @@ const Batch = require('./../models/batchModel');
 const Course = require('../models/courseModel');
 const Faculty = require('./../models/facultyModel');
 const Student = require("./../models/studentModel");
+const Admission = require('./../models/admissionModel');
 
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
@@ -176,26 +177,34 @@ exports.getBatchesByCourse = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getBatchStudents = catchAsync(async(req, res, next) => {
+exports.getBatchStudents = catchAsync(async (req, res, next) => {
     const batchId = req.params.batchId;
 
     const batch = await Batch.findById(batchId);
 
-    if(!batch){
-        return  next(new AppError(`No batch found with _id:${batchId}`, 404));
+    if (!batch) {
+        return next(new AppError(`No batch found with _id:${batchId}`, 404));
     }
 
     // Find students whose IDs are in the batch's studentIds array
-    const students = await Student.find({ _id: { $in: batch.studentIds } })
-        .populate({
-            path: 'course_admissionIds', // Assuming admissionIds is an array of ObjectId references to Admission model
-            select: 'DateOfAdmission' // Select only the fields you need from Admission model
-        });
+    const students = await Student.find({ _id: { $in: batch.studentIds } });
+
+    // Get the admission details for each student in the batch
+    const admissions = await Admission.find({ batchId, studentId: { $in: batch.studentIds } });
+
+    // Combine student and admission data
+    const studentData = students.map(student => {
+        const admission = admissions.find(adm => adm.studentId.equals(student._id));
+        return {
+            ...student.toObject(),
+            DateOfAdmission: admission ? admission.DateOfAdmission : null
+        };
+    });
 
     // Send the student data as a response
     res.status(200).json({
         status: 'success',
         results: students.length,
-        data: { students }
+        data: { students: studentData }
     });
-})
+});

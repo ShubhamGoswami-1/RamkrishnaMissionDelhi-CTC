@@ -96,12 +96,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         // const formattedDate = new Date(student.createdAt).toLocaleDateString('en-IN');
                         const row = document.createElement('tr');
                         row.setAttribute('data-student-id', student._id);
+                        const formatedAdmissionDate = new Date(student.DateOfAdmission).toLocaleDateString('en-IN');
                         row.innerHTML = `
                             <td>${student.name}</td>
                             <td>${student.phone}</td>
                             <td>${student.aadhaarNo}</td>
                             <td>${student.address}</td>
-                            <td>${student.address}</td>
+                            <td>${formatedAdmissionDate}</td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -133,12 +134,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                        <td>${formattedDate}</td>
-                        <td>${newPayment}</td>
-                        <td>${feesPaid}</td>
-                        <td>${dueAmt}</td>
-                        <td>${truncatedTransactionId}</td>
-                    `;
+                            <td>${formattedDate}</td>
+                            <td>${newPayment}</td>
+                            <td>${feesPaid}</td>
+                            <td>${dueAmt}</td>
+                            <td>${truncatedTransactionId}</td>
+                        `;
                         tableBody.appendChild(row);
                     });
 
