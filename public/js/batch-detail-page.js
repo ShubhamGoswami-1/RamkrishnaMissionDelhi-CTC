@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const studentId = row.getAttribute('data-student-id');
 
             if (currentlySelectedStudentId === studentId) {
-                console.log(" If the same student is clicked again")
                 // If the same student is clicked again
                 document.querySelector('.transactions').style.display = 'none';
                 row.style.width = 'auto'; // Reset width of batch table row
@@ -84,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function fetchStudents(batchId) {
-        console.log("BatchId: ", batchId);
         fetch(`/api/v1/batch/get-all-students-Of-Batch/${batchId}`)
             .then(response => response.json())
             .then(data => {
@@ -123,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     transactions = transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-                    console.log('Fetched transactions:', transactions); // Debugging line
                     const tableBody = document.querySelector('#transactionTable tbody');
                     tableBody.innerHTML = ''; // Clear existing rows
 

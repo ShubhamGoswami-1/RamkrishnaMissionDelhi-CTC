@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Example: Populate table cells with batch data
             row.addEventListener('click', function () {
-                console.log("Hii");
                 viewBatchDetails(batch._id);
             });
 
@@ -118,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    console.log("Faculties", data.faculties)
                     populateFacultyDropdown(data.faculties); // Populate dropdown with fetched faculties
                 } else {
                     console.error('Error fetching faculties:', data.error);

@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    populateBatchesTable(data.batches);
+                    populateBatchesTable(data.data.batchDetails);
                 } else {
                     alert('Error fetching batches: ' + data.message);
                 }
