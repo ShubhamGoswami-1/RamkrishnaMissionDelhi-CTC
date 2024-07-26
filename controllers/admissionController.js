@@ -96,18 +96,21 @@ exports.getAllAdmissions = catchAsync(async (req, res, next) => {
 exports.searchAdmission = catchAsync(async (req, res, next) => {
     const { searchText, category } = req.query;
     const query = {};
-    if(!category){
-        category = studentName
+    
+    // Use a default category if none is provided
+    const searchCategory = category || 'studentName';
+
+    if (searchText) {
+        query[searchCategory] = { $regex: new RegExp(searchText, "i") };   
     }
-    if(searchText){
-        query[category] = { $regex: new RegExp(searchText, "i") };   
-    }
-    let admissions = await Student.find(query)
-    .sort({ [category]: 1})
-    .limit(10);
+
+    // Find admissions based on the query
+    let admissions = await Admission.find(query)
+        .sort({ DateOfAdmission: -1 }) // Sort by admission date, descending
+        .limit(10); // Limit the number of results if needed
 
     res.status(200).json({
         status: "success",
         admissions
     });
-})
+});

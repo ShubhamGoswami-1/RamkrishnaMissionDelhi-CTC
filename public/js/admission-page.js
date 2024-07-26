@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const steps = document.querySelectorAll('.step');
     const stepSymbols = document.querySelectorAll('.step-symbol');
+    const searchStudentInput = document.getElementById('searchStudentInput');
+    const searchStudentCategory = document.getElementById('searchStudentCategory');
+    const filterStudentIcon = document.getElementById('filterStudentIcon');
+    const searchStudentDropdown = document.getElementById('searchStudentDropdown');
     let currentStep = 0;
     let selectedCourseId = null;
     let selectedStudentId = null;
@@ -216,5 +220,44 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             console.error('Error:', error);
             alert('Error fetching students');
+        });
+
+        searchStudentInput.addEventListener('input', function() {
+            let filter = this.value.toLowerCase();
+            let category = searchStudentCategory.value;
+    
+            if (filter.length > 0) {
+                fetch(`/api/v1/student/search?searchText=${filter}&category=${category}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            populateStudentsTable(data.students); // Populate table with search results
+                        } else {
+                            console.error('Error searching students:', data.error);
+                        }
+                    })
+                    .catch(error => console.error('Error searching students:', error));
+            } else {
+                // If the search input is cleared, fetch all students again
+                fetch('/api/v1/student/get-all-students')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            populateStudentsTable(data.students); // Populate table with all students
+                        } else {
+                            console.error('Error fetching students:', data.error);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching students:', error));
+            }
+        });
+    
+        // Toggle the search category dropdown
+        filterStudentIcon.addEventListener('click', function(event) {
+            searchStudentDropdown.classList.toggle('active');
+        });
+    
+        searchStudentCategory.addEventListener('change', function() {
+            searchStudentInput.dispatchEvent(new Event('input')); // Trigger the search when the category changes
         });
 });

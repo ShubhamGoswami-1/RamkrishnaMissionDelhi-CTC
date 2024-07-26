@@ -74,16 +74,9 @@ body {
 }
 
 .table-container {
-    /* background-color: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1); */
-    /* display: flex; */
-    /* flex-wrap: wrap; */
-    justify-content: space-between;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(3vw, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(4, 1fr); /* 3 columns of equal width */
+    gap: 4vh; /* Space between the cards */
     overflow-y: auto;
 }
 
@@ -92,10 +85,10 @@ body {
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 10px;
     padding: 20px;
-    /* width: calc(30% - 40px); */
     cursor: pointer;
+    /* Ensure each card respects the grid column width */
+    box-sizing: border-box;
 }
 
 .course-card h3 {
@@ -193,6 +186,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 2vh;
 }
 
 #addCourseButton:hover {
