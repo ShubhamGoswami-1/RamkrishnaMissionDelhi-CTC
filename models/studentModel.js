@@ -48,6 +48,11 @@ const studentSchema = new mongoose.Schema({
           type: mongoose.Schema.Types.ObjectId,
           ref: 'batch'
         },
+        discount: {
+          type: Number,
+          enum: [0, 15, 25, 50, 75],
+          default: 0
+        },
         feesWithGST: {
           type: Number,
           default: 0

@@ -7,7 +7,7 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 exports.newAdmission = catchAsync(async(req, res, next) => {
-    const { studentId, courseId, batchId, formNo } = req.body; // formNo
+    const { studentId, courseId, batchId, formNo, discount } = req.body; // formNo
 
     const student = await Student.findOne({ _id: studentId });
     const course = await Course.findById(courseId)
@@ -38,6 +38,7 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
     // 1. Add the batch assigned to the student's batchIds array
     const batchEntry = {
         batchId: batchId,
+        discount,
         feesWithGST: feesWithGST,
         feesPaid: 0,
         feesDue: feesWithGST,

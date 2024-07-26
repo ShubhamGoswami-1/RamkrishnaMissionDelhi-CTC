@@ -51,8 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedStudent = document.querySelector('input[name="selectedStudent"]:checked');
             const selectedBatch = document.querySelector('input[name="selectedBatch"]:checked');
             const formNo = document.getElementById('formNo').value;
+            const discount = document.getElementById('discount').value;
 
-            if (selectedStudent && selectedBatch && selectedCourseId && formNo) {
+            if (selectedStudent && selectedBatch && selectedCourseId && formNo && discount) {
                 const studentId = selectedStudent.value;
                 const batchId = selectedBatch.value;
 
@@ -65,7 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         studentId: studentId,
                         courseId: selectedCourseId,
                         batchId: batchId,
-                        formNo: formNo // Include formNo in the request
+                        formNo: formNo, // Include formNo in the request
+                        discount: discount
                     })
                 })
                 .then(response => response.json())
