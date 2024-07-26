@@ -200,6 +200,23 @@ tr:hover {
     background-color: #e65c00;
 }
 
+.enrolled-student-table-container {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.enrolled-student-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    position: relative;
+}
+
+.enrolled-student-table-container thead th {
+    position: sticky;
+    top: 0;
+    background-color: #e65c00;
+}
+
 /* Additional styles for the transaction modal */
 .modal {
     display: none;

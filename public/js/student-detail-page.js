@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(studentData => {
                 if (studentData.status === 'success') {
                     const studentName = studentData.student.name;
-                    console.log("Student Name: ", studentName);
     
                     fetch(`/api/v1/batch/get-all-batches-Of-Student/${studentId}`)
                         .then(response => response.json())
@@ -92,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 
                                 if (batch) {
                                     const batchTitle = batch.title;
-                                    console.log("Batch Name: ", batchTitle);
     
                                     // Display student name and batch title in the modal
                                     document.getElementById('studentName').textContent = studentName;
