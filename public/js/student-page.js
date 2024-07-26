@@ -186,24 +186,65 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function to filter students based on search category
-    function filterStudents() {
-        let filter = searchInput.value.toLowerCase();
-        let category = searchCategory.value;
-        let rows = studentsTable.querySelectorAll('tbody tr');
+    // function filterStudents() {
+    //     let filter = searchInput.value.toLowerCase();
+    //     let category = searchCategory.value;
+    //     let rows = studentsTable.querySelectorAll('tbody tr');
 
-        rows.forEach(row => {
-            let cell = row.querySelector(`td:nth-child(${category === 'name' ? 1 : category === 'fathersName' ? 2 : category === 'aadhaarNo' ? 3 : category === 'phone' ? 4 : 5})`);
-            if (cell.innerText.toLowerCase().includes(filter)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
+    //     rows.forEach(row => {
+    //         let cell = row.querySelector(`td:nth-child(${category === 'name' ? 1 : category === 'fathersName' ? 2 : category === 'aadhaarNo' ? 3 : category === 'phone' ? 4 : 5})`);
+    //         if (cell.innerText.toLowerCase().includes(filter)) {
+    //             row.style.display = '';
+    //         } else {
+    //             row.style.display = 'none';
+    //         }
+    //     });
+    // }
+
+    // Handle search functionality
+    // searchInput.addEventListener('input', filterStudents);
+    // searchCategory.addEventListener('change', filterStudents);
+
+
+    function searchStudents() {
+        const filter = searchInput.value;
+        const category = searchCategory.value;
+
+        if (filter.length > 0) {
+            fetch(`/api/v1/student/search?searchText=${encodeURIComponent(filter)}&category=${category}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        populateStudentsTable(data.students); // Populate table with search results
+                    } else {
+                        console.error('Error searching students:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error searching students:', error));
+        } else {
+            // If the search input is cleared, fetch all students again
+            fetch('/api/v1/student/get-all-students')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        populateStudentsTable(data.students); // Populate table with all students
+                    } else {
+                        console.error('Error fetching students:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error fetching students:', error));
+        }
     }
 
     // Handle search functionality
-    searchInput.addEventListener('input', filterStudents);
-    searchCategory.addEventListener('change', filterStudents);
+    searchInput.addEventListener('input', searchStudents);
+    searchCategory.addEventListener('change', searchStudents);
+
+    // Handle filter icon click
+    filterIcon.addEventListener('click', function() {
+        searchDropdown.classList.toggle('active');
+    });
+
 
     // Handle filter icon click
     filterIcon.addEventListener('click', function () {
