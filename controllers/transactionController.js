@@ -20,8 +20,10 @@ exports.newPayment = catchAsync(async (req, res, next) => {
     if (!batch) {
         return next(new AppError('No batch found with this id', 404));
     }
-
     const newPaymentAmount = parseFloat(newPayment);
+
+    // Calculate fees with GST
+    // student.batchIds[batchId].discount
     const feesWithGST = +batch.fees + (+batch.fees * 0.18);
 
     const batchIndex = student.batchIds.findIndex(batchEntry => batchEntry.batchId.toString() === batchId);

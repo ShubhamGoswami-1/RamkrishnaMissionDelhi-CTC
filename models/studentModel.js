@@ -50,7 +50,10 @@ const studentSchema = new mongoose.Schema({
         },
         discount: {
           type: Number,
-          enum: [0, 15, 25, 50, 75],
+          enum: {
+            values: [0, 15, 25, 50, 75],
+            message: 'Please select from these values: 0, 15, 25, 50, 75'
+          },
           default: 0
         },
         feesWithGST: {
