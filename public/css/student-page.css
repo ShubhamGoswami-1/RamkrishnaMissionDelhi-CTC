@@ -43,7 +43,6 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.9;
-    height: 100vh;
     overflow-y: auto;
 }
 .main-content h2 {

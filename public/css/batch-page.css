@@ -45,8 +45,6 @@ body {
     background-repeat: no-repeat;
     opacity: 0.9;
     overflow-y: auto;
-    height: 100vh;
-    margin-bottom: 2vh;
 }
 .main-content h2 {
     margin-bottom: 20px;
@@ -59,13 +57,13 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow-y: auto;
     max-height: 80vh;
-    margin-bottom: 2vh;
+    margin-bottom: 4vh;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 table, th, td {
     border: 1px solid #ddd;
@@ -93,7 +91,7 @@ tr:hover {
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
     display: none;
-    margin-bottom: 2vh;
+    /* margin-bottom: 2vh; */
 }
 
 #batchFormModal #batchForm {
@@ -119,7 +117,6 @@ tr:hover {
     max-width: 700px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin-bottom: 2vh;
 }
 
 .form-content input {

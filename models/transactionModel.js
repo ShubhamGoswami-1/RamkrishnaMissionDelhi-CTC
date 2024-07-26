@@ -20,12 +20,17 @@ const transactionSchema = new mongoose.Schema({
     dueAmt: {
         type: Number,
         default: 0
+    },
+    paymentType: {
+        type: String,
+        enum: ['Online', 'Cash'],
+        required: true
     }
 }, {
     collection: "transaction",
     versionKey: false,
     timestamps: true
-})
+});
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
