@@ -36,21 +36,39 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify(data),
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Redirect to the course page on successful creation
-                    window.location.href = '/course';
-                } else {
-                    alert('Error adding course: ' + (data.message || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error adding course.');
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                localStorage.setItem('courseAdded', 'true');
+                window.location.href = '/course';
+            } else {
+                alert('Error adding course: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error adding course.');
+        });
     });
+
+    // Check if course was added and show popup message
+    if (localStorage.getItem('courseAdded') === 'true') {
+        localStorage.removeItem('courseAdded');
+        showPopupMessage('Course Added');
+    }
 });
+
+function showPopupMessage(message) {
+    const popup = document.createElement('div');
+    popup.className = 'popup-message';
+    popup.textContent = message;
+    document.body.appendChild(popup);
+
+    setTimeout(() => {
+        popup.style.opacity = '0';
+        setTimeout(() => document.body.removeChild(popup), 500);
+    }, 3000);
+}
 
 async function fetchCourses() {
     const courseContainer = document.getElementById('courseContainer');

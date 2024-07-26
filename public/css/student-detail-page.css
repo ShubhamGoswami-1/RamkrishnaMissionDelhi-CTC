@@ -200,6 +200,23 @@ tr:hover {
     background-color: #e65c00;
 }
 
+.course-enrolled-container {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.course-enrolled-container table {
+    width: 100%;
+    border-collapse: collapse;
+    position: relative;
+}
+
+.course-enrolled-container thead th {
+    position: sticky;
+    top: 0;
+    background-color: #e65c00;
+}
+
 /* Additional styles for the transaction modal */
 .modal {
     display: none;

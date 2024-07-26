@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const studentId = urlParams.get('studentId') || mainContent.getAttribute('data-student-id');
     let currentlySelectedBatchId = null;
+    const confirmationModal = document.getElementById('confirmationModal');
+    const cancelTransactionButton = document.getElementById('cancelTransactionButton');
+    const confirmTransactionButton = document.getElementById('confirmTransactionButton');
+    const transactionForm = document.getElementById('transactionForm');
 
     if (studentId) {
         fetchBatches(studentId);
@@ -21,20 +25,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to hide the modal
-    function hideModal() {
-        transactionModal.style.display = 'none';
+    function hideModal(modal) {
+        modal.style.display = 'none';
     }
 
     // Add event listener for the 'Esc' key
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape' || event.key === 'Esc') {
-            hideModal();
+            hideModal(transactionModal);
+            hideModal(confirmationModal);
         }
     });
 
     window.addEventListener('click', function (event) {
         if (event.target === transactionModal) {
-            transactionModal.style.display = 'none';
+            hideModal(transactionModal);
+        }
+        if (event.target === confirmationModal) {
+            hideModal(confirmationModal);
         }
     });
 
@@ -56,6 +64,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('modalStudentId').value = studentId;
                 document.getElementById('modalBatchId').value = batchId;
 
+                // Fetch and display student name and batch title
+                fetchStudentAndBatchDetails(studentId, batchId);
+
                 // Show transactions and expand table
                 document.querySelector('.transactions').style.display = 'block';
                 row.style.width = '100%'; // Set width of batch table row to full width
@@ -64,7 +75,43 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
+    function fetchStudentAndBatchDetails(studentId, batchId) {
+        fetch(`/api/v1/student/get-student/${studentId}`)
+            .then(response => response.json())
+            .then(studentData => {
+                if (studentData.status === 'success') {
+                    const studentName = studentData.student.name;
+                    console.log("Student Name: ", studentName);
+    
+                    fetch(`/api/v1/batch/get-all-batches-Of-Student/${studentId}`)
+                        .then(response => response.json())
+                        .then(batchData => {
+                            if (batchData.status === 'success') {
+                                // Find the clicked batch by its ID
+                                const batch = batchData.batches.find(b => b._id === batchId);
+                                
+                                if (batch) {
+                                    const batchTitle = batch.title;
+                                    console.log("Batch Name: ", batchTitle);
+    
+                                    // Display student name and batch title in the modal
+                                    document.getElementById('studentName').textContent = studentName;
+                                    document.getElementById('batchTitle').textContent = batchTitle;
+                                } else {
+                                    console.error('Batch not found in the batch data.');
+                                }
+                            } else {
+                                console.error('Error fetching batch details:', batchData.error);
+                            }
+                        })
+                        .catch(error => console.error('Error fetching batch details:', error));
+                } else {
+                    console.error('Error fetching student details:', studentData.error);
+                }
+            })
+            .catch(error => console.error('Error fetching student details:', error));
+    }
+    
     function viewStudentDetails(studentId) {
         fetch(`/api/v1/student/get-student/${studentId}`)
             .then(response => response.json())
@@ -136,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const newPayment = `₹${parseFloat(transaction.newPayment).toFixed(2)}`;
                         const feesPaid = `₹${parseFloat(transaction.feesPaid).toFixed(2)}`;
                         const dueAmt = `₹${parseFloat(transaction.dueAmt).toFixed(2)}`;
+                        const paymentType = transaction.paymentType || 'N/A';
 
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -143,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td>${newPayment}</td>
                         <td>${feesPaid}</td>
                         <td>${dueAmt}</td>
+                        <td>${paymentType}</td>
                         <td>${truncatedTransactionId}</td>
                     `;
                         tableBody.appendChild(row);
@@ -155,6 +204,65 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error fetching transaction details:', error));
     }
+
+    submitTransactionButton.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default form submission
+        confirmationModal.style.display = 'block'; // Show the confirmation modal
+    });
+
+    cancelTransactionButton.addEventListener('click', function () {
+        hideModal(confirmationModal); // Hide the confirmation modal
+    });
+
+    confirmTransactionButton.addEventListener('click', async function () {
+        const studentId = document.getElementById('modalStudentId').value;
+        const batchId = document.getElementById('modalBatchId').value;
+        const newPayment = parseFloat(document.getElementById('newPayment').value);
+        const paymentType = document.getElementById('paymentType').value;
+        const newPaymentField = document.getElementById('newPayment');
+
+        if (isNaN(newPayment) || newPayment <= 0) {
+            alert('Please enter a valid payment amount.');
+            return;
+        }
+
+        const feesDue = await fetchStudentFeesDue(studentId);
+        if (feesDue === null) {
+            alert('Error fetching fees due. Please try again later.');
+            return;
+        }
+
+        if (newPayment > feesDue) {
+            alert('Payment amount exceeds the fees due.');
+            return;
+        }
+
+        if (newPayment) {
+            fetch(`/api/v1/payment/newPayment/studentId/${studentId}/batchId/${batchId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ newPayment, paymentType }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Transaction successfully created!');
+                        hideModal(confirmationModal); // Hide the confirmation modal
+                        transactionModal.style.display = 'none'; // Hide the transaction modal
+                        fetchBatches(studentId); // Refresh the batches list
+                        fetchTransactions(studentId, batchId); // Refresh the transactions list
+                        newPaymentField.value = ''; // Clear the new payment field
+                    } else {
+                        console.error('Error creating transaction:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error creating transaction:', error));
+        } else {
+            alert('Please enter a payment amount.');
+        }
+    });
 
     function validateEmail(email) {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -237,86 +345,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Error fetching student details:', error);
                 return null;
             });
-    }
-
-    // Submit transaction button event listener
-    submitTransactionButton.addEventListener('click', async function () {
-        const studentId = document.getElementById('modalStudentId').value;
-        const batchId = document.getElementById('modalBatchId').value;
-        const newPayment = parseFloat(document.getElementById('newPayment').value);
-
-        if (isNaN(newPayment) || newPayment <= 0) {
-            alert('Please enter a valid payment amount.');
-            return;
-        }
-
-        const feesDue = await fetchStudentFeesDue(studentId);
-        if (feesDue === null) {
-            alert('Error fetching fees due. Please try again later.');
-            return;
-        }
-
-        if (newPayment > feesDue) {
-            alert('Payment amount exceeds the fees due.');
-            return;
-        }
-
-        if (newPayment) {
-            fetch(`/api/v1/payment/newPayment/studentId/${studentId}/batchId/${batchId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ newPayment }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Transaction successfully created!');
-                        transactionModal.style.display = 'none';
-                        fetchBatches(studentId); // Refresh the batches list
-                        fetchTransactions(studentId, batchId); // Refresh the transactions list
-                    } else {
-                        console.error('Error creating transaction:', data.error);
-                    }
-                })
-                .catch(error => console.error('Error creating transaction:', error));
-        } else {
-            alert('Please enter a payment amount.');
-        }
-    });
-
-    function savePersonalDetails(studentId) {
-        if (validateFields()) {
-            const updatedDetails = {
-                name: document.getElementById('name').value,
-                fathersName: document.getElementById('fathersName').value,
-                email: document.getElementById('email').value,
-                aadhaarNo: document.getElementById('aadhaarNo').value,
-                phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value,
-            };
-
-            fetch(`/api/v1/student/edit-student/${studentId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedDetails),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Details updated successfully');
-                        window.location.href = '/students';
-                    } else {
-                        console.error('Error updating details:', data.error);
-                    }
-                })
-                .catch(error => console.error('Error updating details:', error));
-        } else {
-            alert('Please correct the errors in the form.');
-        }
     }
 
     const saveButton = document.getElementById('saveDetailsButton');
