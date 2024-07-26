@@ -113,6 +113,28 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error fetching batch details:', error));
     }
 
+    function viewBatchDetails(batchId) {
+        fetch(`/api/v1/batch/getBatch/${batchId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const batch = data.batch;
+                    document.getElementById('name').value = batch.title;
+                    document.getElementById('fathersName').value = batch.timing;
+                    document.getElementById('email').value = batch.fees;
+                    document.getElementById('aadhaarNo').value = batch.GST;
+                    // document.getElementById('phone').value = batch.phone;
+                    document.getElementById('address').value = batch.active;
+
+                    // Fetch and display students
+                    fetchStudents(batch._id);
+                } else {
+                    console.error('Error fetching student details:', data.error);
+                }
+            })
+            .catch(error => console.error('Error fetching student details:', error));
+    }
+
     function fetchTransactions(studentId, batchId) {
         fetch(`/api/v1/payment/getAllTransactions/studentId/${studentId}/batchId/${batchId}`)
             .then(response => response.json())
@@ -150,4 +172,9 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error fetching transaction details:', error));
     }
+
+    if(batchId){
+        viewBatchDetails(batchId)
+    }
+
 });

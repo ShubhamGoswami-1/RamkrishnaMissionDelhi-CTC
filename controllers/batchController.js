@@ -226,3 +226,7 @@ exports.getBatchStudents = catchAsync(async (req, res, next) => {
         data: { students: studentData }
     });
 });
+
+exports.updateBatch = catchAsync(async (req, res, next) => {
+    
+})
