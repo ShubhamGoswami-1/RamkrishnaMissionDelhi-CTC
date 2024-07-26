@@ -111,28 +111,37 @@ exports.getBatch = catchAsync(async (req, res, next) => {
     })
 }) 
 
-exports.getBatchDetails = catchAsync( async (req, res, next) => {
+exports.getBatchDetails = catchAsync(async (req, res, next) => {
     const { batchIds } = req.body;
-
+  
     const batchDetails = await Promise.all(
       batchIds.map(async (batchId) => {
         const batch = await Batch.findById(batchId);
         if (!batch) return null;
-
+  
+        // Find all students in the batch
         const students = await Student.find({ 'batchIds.batchId': batchId });
-
-        const totalFeesPaid = students.reduce((total, student) => {
-          const batchInfo = student.batchIds.find(batch => batch.batchId.toString() === batchId.toString());
-          return total + (batchInfo ? batchInfo.feesPaid : 0);
-        }, 0);
-
+  
+        // Calculate total fees paid and expected total fees with GST
+        let totalFeesPaid = 0;
+        let expectedTotalFeesWithGST = 0;
+  
+        students.forEach(student => {
+          const batchInfo = student.batchIds.find(b => b.batchId.toString() === batchId.toString());
+          if (batchInfo) {
+            totalFeesPaid += batchInfo.feesPaid;
+            expectedTotalFeesWithGST += batchInfo.feesWithGST;
+          }
+        });
+  
         return {
           ...batch._doc,
-          totalFeesPaid
+          totalFeesPaid,
+          expectedTotalFeesWithGST
         };
       })
     );
-
+  
     res.status(200).json({
       status: 'success',
       data: {
@@ -140,6 +149,7 @@ exports.getBatchDetails = catchAsync( async (req, res, next) => {
       }
     });
 });
+  
 
 exports.getBatchesByCourse = catchAsync(async (req, res, next) => {
     const { courseId } = req.params;
@@ -152,19 +162,26 @@ exports.getBatchesByCourse = catchAsync(async (req, res, next) => {
         return next(new AppError('No batches found for this course.', 404));
     }
 
-    // Get batch details and calculate total fees paid by students in each batch
+    // Get batch details and calculate total fees paid and expected total fees with GST
     const batchDetails = await Promise.all(
         batches.map(async (batch) => {
             const students = await Student.find({ 'batchIds.batchId': batch._id });
 
-            const totalFeesPaid = students.reduce((total, student) => {
+            let totalFeesPaid = 0;
+            let expectedTotalFeesWithGST = 0;
+
+            students.forEach(student => {
                 const batchInfo = student.batchIds.find(b => b.batchId.toString() === batch._id.toString());
-                return total + (batchInfo ? batchInfo.feesPaid : 0);
-            }, 0);
+                if (batchInfo) {
+                    totalFeesPaid += batchInfo.feesPaid;
+                    expectedTotalFeesWithGST += batchInfo.feesWithGST;
+                }
+            });
 
             return {
                 ...batch._doc,
-                totalFeesPaid
+                totalFeesPaid,
+                expectedTotalFeesWithGST
             };
         })
     );
@@ -176,6 +193,7 @@ exports.getBatchesByCourse = catchAsync(async (req, res, next) => {
         }
     });
 });
+
 
 exports.getBatchStudents = catchAsync(async (req, res, next) => {
     const batchId = req.params.batchId;

@@ -121,13 +121,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = document.createElement('tr');
             const formattedDate = new Date(batch.startingDate).toLocaleDateString('en-IN');
             const batchFees = formatCurrency(batch.fees);
-            const totalFeesAmount = batch.fees * batch.studentIds.length;
-            const batchFeesWithGST = formatCurrency(batch.fees + (batch.fees * (batch.GST / 100)));
-            const totalFeesWithGSTAmount = totalFeesAmount + (batch.studentIds.length * (batch.fees * (batch.GST / 100)));
-            const totalFees = formatCurrency(totalFeesAmount);
-            const totalFeesWithGST = `${formatCurrency(totalFeesWithGSTAmount)} (${batch.GST}%)`;
             const totalFeesPaid = formatCurrency(batch.totalFeesPaid);
-            const totalFeesDue = formatCurrency(((batch.fees + (batch.fees * (batch.GST / 100))) * batch.studentIds.length) - batch.totalFeesPaid);
+            const totalFeesDue = formatCurrency(batch.expectedTotalFeesWithGST - batch.totalFeesPaid);
 
             row.innerHTML = `
                 <td>${batch.courseName}</td>
@@ -136,9 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${formattedDate}</td>
                 <td>${batch.studentIds.length}</td>
                 <td>${batchFees}</td>
-                <td>${batchFeesWithGST}</td>
-                <td>${totalFees}</td>
-                <td>${totalFeesWithGST}</td>
+                <td>${batch.expectedTotalFeesWithGST}</td>
                 <td>${totalFeesPaid}</td>
                 <td>${totalFeesDue}</td>
                 <td>${batch.active}</td>

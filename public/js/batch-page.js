@@ -38,14 +38,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = document.createElement('tr');
             row.dataset.batchId = batch._id; // Assuming _id is your batch's unique identifier
             const formattedDate = new Date(batch.startingDate).toLocaleDateString('en-IN');
-            const totalFeesAmount = batch.fees * batch.studentIds.length;
             const batchFees = formatCurrency(batch.fees);
-            const batchFeesWithGST = formatCurrency(batch.fees + (batch.fees * (batch.GST / 100)));
-            const totalFeesWithGSTAmount = totalFeesAmount + (batch.studentIds.length * (batch.fees * (batch.GST / 100)));
-            const totalFees = formatCurrency(totalFeesAmount);
-            const totalFeesWithGST = `${formatCurrency(totalFeesWithGSTAmount)} (${batch.GST}%)`;
+            const expectedTotalFeesWithGSTAmount = formatCurrency(batch.expectedTotalFeesWithGST);
             const totalFeesPaid = formatCurrency(batch.totalFeesPaid);
-            const totalFeesDue = formatCurrency(((batch.fees + (batch.fees * (batch.GST / 100))) * batch.studentIds.length) - batch.totalFeesPaid);
+            const totalFeesDue = formatCurrency(batch.expectedTotalFeesWithGST - batch.totalFeesPaid);
 
             // Example: Populate table cells with batch data
             row.innerHTML = `
@@ -55,9 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${formattedDate}</td>
                 <td>${batch.studentIds.length}</td>
                 <td>${batchFees}</td>
-                <td>${batchFeesWithGST}</td>
-                <td>${totalFees}</td> 
-                <td>${totalFeesWithGST}</td> 
+                <td>${expectedTotalFeesWithGSTAmount}</td> 
                 <td>${totalFeesPaid}</td>
                 <td>${totalFeesDue}</td>
                 <td>${batch.active}</td>
