@@ -22,11 +22,18 @@ exports.newPayment = catchAsync(async (req, res, next) => {
     }
     const newPaymentAmount = parseFloat(newPayment);
 
-    // Calculate fees with GST
-    // student.batchIds[batchId].discount
-    const feesWithGST = +batch.fees + (+batch.fees * 0.18);
-
+    // Find the batch entry for the student
     const batchIndex = student.batchIds.findIndex(batchEntry => batchEntry.batchId.toString() === batchId);
+    let discount = 0;
+    if (batchIndex !== -1) {
+        discount = student.batchIds[batchIndex].discount;
+    }
+    
+    // Calculate the discounted fees
+    const discountedFees = batch.fees - (batch.fees * (discount / 100));
+    // Calculate fees with GST
+    const feesWithGST = discountedFees + (discountedFees * 0.18);
+
     let totalFeesPaid = newPaymentAmount;
     let dueAmt;
 
@@ -35,15 +42,16 @@ exports.newPayment = catchAsync(async (req, res, next) => {
         totalFeesPaid += batchEntry.feesPaid;
         batchEntry.feesPaid = totalFeesPaid;
         batchEntry.paidAmtList.push(newPaymentAmount);
-        dueAmt = batchEntry.feesWithGST - totalFeesPaid;
-        if (dueAmt < 0) dueAmt = 0;
-        batchEntry.feesDue = dueAmt;
+        batchEntry.feesWithGST = feesWithGST;
+        dueAmt = feesWithGST - totalFeesPaid;
+        batchEntry.feesDue = dueAmt < 0 ? 0 : dueAmt;
         student.batchIds[batchIndex] = batchEntry;
     } else {
         dueAmt = feesWithGST - newPaymentAmount;
-        if (dueAmt < 0) dueAmt = 0;
+        dueAmt = dueAmt < 0 ? 0 : dueAmt;
         const newBatchEntry = {
             batchId: batchId,
+            discount: discount,
             feesWithGST: feesWithGST,
             feesPaid: newPaymentAmount,
             paidAmtList: [newPaymentAmount],
@@ -59,7 +67,7 @@ exports.newPayment = catchAsync(async (req, res, next) => {
     const transaction = await Transaction.create({
         studentId,
         batchId,
-        newPayment: newPayment,
+        newPayment: newPaymentAmount,
         feesPaid: totalFeesPaid,
         dueAmt: dueAmt,
         paymentType: paymentType
@@ -74,8 +82,6 @@ exports.newPayment = catchAsync(async (req, res, next) => {
         pdfUrl: `/receipts/${transaction._id}.pdf`
     });
 });
-
-
 
 exports.feesTransactionsStudentInBatch = catchAsync(async(req, res, next) => {
     const batchId = req.params.batchId;
