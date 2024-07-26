@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     transactions = transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-                    console.log('Fetched transactions:', transactions); // Debugging line
+                    console.log('Fetched transactions:', transactions); // Debugging line   
                     const tableBody = document.querySelector('#transactionTable tbody');
                     tableBody.innerHTML = ''; // Clear existing rows
 
