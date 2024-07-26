@@ -228,5 +228,22 @@ exports.getBatchStudents = catchAsync(async (req, res, next) => {
 });
 
 exports.updateBatch = catchAsync(async (req, res, next) => {
-    
-})
+    const batchId = req.params.batchId;
+
+    // Find the faculty by ID
+    const batch = await Batch.findById(batchId);
+
+    if (!batch) {
+        return next(new AppError(`Faculty not found with _id: ${batchId}`, 404));
+    }
+
+    const updatedObj = { ...req.body };
+
+    // Update the faculty details
+    const updatedBatch = await Faculty.findByIdAndUpdate(batchId, updatedObj, { new: true, runValidators: true });
+
+    res.status(200).json({
+        status: 'success',
+        updatedBatch
+    });
+});

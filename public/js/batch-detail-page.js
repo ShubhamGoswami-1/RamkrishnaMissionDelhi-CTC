@@ -175,6 +175,88 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error fetching student details:', error));
     }
 
+    function saveBatchDetails(batchId) {
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+        let isValid = true;
+
+        const name = document.getElementById('name');
+        const email = document.getElementById('fathersName');
+        const phoneNo = document.getElementById('email');
+        const aadhaarNo = document.getElementById('aadhaarNo');
+        const address = document.getElementById('address');
+
+        // Name validation
+        // if (name.value.trim() === '') {
+        //     document.getElementById('nameError').textContent = 'Name cannot be empty.';
+        //     isValid = false;
+        // }
+
+        // // Email validation
+        // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        // if (!emailRegex.test(email.value.trim())) {
+        //     document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+        //     isValid = false;
+        // }
+
+        // // Phone Number validation
+        // const phoneNoValue = phoneNo.value.trim();
+        // const phoneNoRegex = /^\d{10}$/;
+        // if (phoneNoValue === '') {
+        //     document.getElementById('phoneError').textContent = 'Phone number cannot be empty.';
+        //     isValid = false;
+        // } else if (!phoneNoRegex.test(phoneNoValue)) {
+        //     document.getElementById('phoneError').textContent = 'Phone number must be exactly 10 digits.';
+        //     isValid = false;
+        // }
+
+        // // Aadhaar Number validation
+        // const aadhaarNoValue = aadhaarNo.value.trim();
+        // const aadhaarNoRegex = /^\d{12}$/;
+        // if (aadhaarNoValue === '') {
+        //     document.getElementById('aadhaarNoError').textContent = 'Aadhaar number cannot be empty.';
+        //     isValid = false;
+        // } else if (!aadhaarNoRegex.test(aadhaarNoValue)) {
+        //     document.getElementById('aadhaarNoError').textContent = 'Aadhaar number must be exactly 12 digits.';
+        //     isValid = false;
+        // }
+
+        // // Address validation
+        // if (address.value.trim() === '') {
+        //     document.getElementById('addressError').textContent = 'Address cannot be empty.';
+        //     isValid = false;
+        // }
+
+        if (isValid) {
+            const updatedDetails = {
+                name: name.value,
+                email: email.value,
+                aadhaarNo: aadhaarNo.value,
+                phone: phoneNo.value,
+                address: address.value,
+            };
+
+            fetch(`/api/v1/batch/edit-batch/${batchId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedDetails),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Details updated successfully');
+                    window.location.href = '/batch';
+                } else {
+                    console.error('Error updating details:', data.error);
+                }
+            })
+            .catch(error => console.error('Error updating details:', error));
+        }
+    }
+
     function fetchTransactions(studentId, batchId) {
         fetch(`/api/v1/payment/getAllTransactions/studentId/${studentId}/batchId/${batchId}`)
             .then(response => response.json())
@@ -213,6 +295,12 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error fetching transaction details:', error));
     }
+
+
+    const saveButton = document.getElementById('saveDetailsButton');
+    saveButton.addEventListener('click', function() {
+        saveBatchDetails(batchId);
+    });
 
     if(batchId){
         viewBatchDetails(batchId)
