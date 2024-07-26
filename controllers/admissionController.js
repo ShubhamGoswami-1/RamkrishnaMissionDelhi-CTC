@@ -34,12 +34,14 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
     // Do neccessary steps:
 
     // Apply discount if provided
+    let discountedFees = batch.fees;
+
     if(discount) {
-        batch.fees = (batch.fees - (batch.fess * discount/100));
+        discountedFees = (discountedFees - (discountedFees * discount/100));
     }
     
     // Calculate feesWithGST
-    const feesWithGST = batch.fees + (batch.fees * 0.18);
+    const feesWithGST = discountedFees + (discountedFees * 0.18);
 
     // 1. Add the batch assigned to the student's batchIds array
     const batchEntry = {
