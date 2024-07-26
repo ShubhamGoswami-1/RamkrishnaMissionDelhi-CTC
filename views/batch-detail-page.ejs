@@ -27,20 +27,22 @@
         <div class="details-container enrolled-courses">
             <div class="batches">
                 <h3>Enrolled Students</h3>
-                <table id="batchCourseTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Aadhaar</th>
-                            <th>Address</th>
-                            <th>Admission Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Batch/Course details will be populated here -->
-                    </tbody>
-                </table>
+                <div class="enrolled-student-table-container">
+                    <table id="batchCourseTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Aadhaar</th>
+                                <th>Address</th>
+                                <th>Admission Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Batch/Course details will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="transactions" id="transactionsContainer" style="display: none;">
                 <h3>Transactions</h3>
@@ -52,6 +54,7 @@
                                 <th>New Payment</th>
                                 <th>Fees Paid</th>
                                 <th>Due</th>
+                                <th>Payment Mode</th>
                                 <th>Receipt ID</th>
                             </tr>
                         </thead>
@@ -74,14 +77,39 @@
                 <input type="hidden" id="modalStudentId">
                 <input type="hidden" id="modalBatchId">
                 <div class="form-group">
+                    <label for="studentName">Student Name:</label>
+                    <input type="text" id="studentName" name="studentName" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="batchTitle">Batch Title:</label>
+                    <input type="text" id="batchTitle" name="batchTitle" readonly>
+                </div>
+                <div class="form-group">
                     <label for="newPayment">New Payment:</label>
                     <input type="number" id="newPayment" name="newPayment" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="paymentType">Payment Type:</label>
+                    <select id="paymentType" name="paymentType">
+                        <option value="Online">Online</option>
+                        <option value="Cash">Cash</option>
+                    </select>
                 </div>
                 <button type="button" id="submitTransactionButton">Submit</button>
             </form>
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Confirm Payment</h3>
+            <p>Are you sure you want to make this payment?</p>
+            <button id="confirmPaymentButton">Yes</button>
+            <button id="cancelPaymentButton">No</button>
+        </div>
+    </div>
 
     <!-- Ensure jQuery is included before your custom script -->
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

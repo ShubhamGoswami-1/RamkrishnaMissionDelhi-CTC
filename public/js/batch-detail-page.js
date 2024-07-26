@@ -1,35 +1,64 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const mainContent = document.querySelector('.main-content');
     const transactionModal = document.getElementById('transactionModal');
-    const closeModalButton = transactionModal.querySelector('.close');
+    const confirmationModal = document.getElementById('confirmationModal');
+    const closeTransactionModalButton = transactionModal.querySelector('.close');
+    const closeConfirmationModalButton = confirmationModal.querySelector('.close');
     const makeTransactionButton = document.getElementById('makeTransactionButton');
     const submitTransactionButton = document.getElementById('submitTransactionButton');
+    const confirmPaymentButton = document.getElementById('confirmPaymentButton');
+    const cancelPaymentButton = document.getElementById('cancelPaymentButton');
     const urlParams = new URLSearchParams(window.location.search);
-    const batchId = urlParams.get('batchId') || mainContent.getAttribute('data-batch-id');
+    const batchId = urlParams.get('batchId') || document.querySelector('.main-content').getAttribute('data-batch-id');
     let currentlySelectedStudentId = null;
 
     if (batchId) {
         fetchStudents(batchId);
+        fetchBatchDetails(batchId);
     }
 
     makeTransactionButton.addEventListener('click', function () {
         transactionModal.style.display = 'block';
     });
 
-    closeModalButton.addEventListener('click', function () {
+    closeTransactionModalButton.addEventListener('click', function () {
         transactionModal.style.display = 'none';
+    });
+
+    closeConfirmationModalButton.addEventListener('click', function () {
+        confirmationModal.style.display = 'none';
     });
 
     window.addEventListener('click', function (event) {
         if (event.target === transactionModal) {
             transactionModal.style.display = 'none';
+        } else if (event.target === confirmationModal) {
+            confirmationModal.style.display = 'none';
         }
     });
+
+    let batchTitle;
+    function fetchBatchDetails(batchId) {
+        fetch(`/api/v1/batch/getBatch/${batchId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Store data.title in batchTitle
+                batchTitle = data.batch.title;
+            })
+            .catch(error => {
+                console.error('Error fetching batch details:', error);
+            });
+    }    
 
     document.querySelector('#batchCourseTable').addEventListener('click', function (event) {
         const row = event.target.closest('tr');
         if (row) {
             const studentId = row.getAttribute('data-student-id');
+            const studentName = row.querySelector('td:nth-child(1)').textContent; // Assuming name is in the first column
 
             if (currentlySelectedStudentId === studentId) {
                 // If the same student is clicked again
@@ -37,12 +66,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 row.style.width = 'auto'; // Reset width of batch table row
                 currentlySelectedStudentId = null; // Clear selection
             } else {
-                // If a different batch is clicked
+                // If a different student is clicked
                 fetchTransactions(studentId, batchId);
 
                 // Set hidden fields in the modal
                 document.getElementById('modalStudentId').value = studentId;
                 document.getElementById('modalBatchId').value = batchId;
+                document.getElementById('studentName').value = studentName;
+
+                // You may need to fetch and set the batch title if it's not included in the student data
+                document.getElementById('batchTitle').value = batchTitle; // Replace with actual batch title fetch
 
                 // Show transactions and expand table
                 document.querySelector('.transactions').style.display = 'block';
@@ -53,9 +86,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     submitTransactionButton.addEventListener('click', function () {
+        confirmationModal.style.display = 'block';
+    });
+
+    confirmPaymentButton.addEventListener('click', function () {
         const studentId = document.getElementById('modalStudentId').value;
         const batchId = document.getElementById('modalBatchId').value;
         const newPayment = document.getElementById('newPayment').value;
+        const paymentType = document.getElementById('paymentType').value;
 
         if (newPayment) {
             fetch(`/api/v1/payment/newPayment/studentId/${studentId}/batchId/${batchId}`, {
@@ -63,13 +101,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ newPayment }),
+                body: JSON.stringify({ newPayment, paymentType }),
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
                         alert('Transaction successfully created!');
                         transactionModal.style.display = 'none';
+                        confirmationModal.style.display = 'none';
                         fetchStudents(batchId); // Refresh the batches list
                         fetchTransactions(studentId, batchId); // Refresh the transactions list
                     } else {
@@ -82,27 +121,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    cancelPaymentButton.addEventListener('click', function () {
+        confirmationModal.style.display = 'none';
+    });
     function fetchStudents(batchId) {
         fetch(`/api/v1/batch/get-all-students-Of-Batch/${batchId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
                     let students = data.data.students;
-                    // students = students.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                     const tableBody = document.querySelector('#batchCourseTable tbody');
                     tableBody.innerHTML = ''; // Clear existing rows
 
                     students.forEach(student => {
-                        // const formattedDate = new Date(student.createdAt).toLocaleDateString('en-IN');
                         const row = document.createElement('tr');
                         row.setAttribute('data-student-id', student._id);
-                        const formatedAdmissionDate = new Date(student.DateOfAdmission).toLocaleDateString('en-IN');
+                        const formattedAdmissionDate = new Date(student.DateOfAdmission).toLocaleDateString('en-IN');
                         row.innerHTML = `
                             <td>${student.name}</td>
                             <td>${student.phone}</td>
                             <td>${student.aadhaarNo}</td>
                             <td>${student.address}</td>
-                            <td>${formatedAdmissionDate}</td>
+                            <td>${formattedAdmissionDate}</td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -138,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${newPayment}</td>
                             <td>${feesPaid}</td>
                             <td>${dueAmt}</td>
+                            <td>${transaction.paymentType}</td>
                             <td>${truncatedTransactionId}</td>
                         `;
                         tableBody.appendChild(row);
