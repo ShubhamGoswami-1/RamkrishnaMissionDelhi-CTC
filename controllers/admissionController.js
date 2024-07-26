@@ -32,6 +32,12 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
     });
 
     // Do neccessary steps:
+
+    // Apply discount if provided
+    if(discount) {
+        batch.fees = (batch.fees - (batch.fess * discount/100));
+    }
+    
     // Calculate feesWithGST
     const feesWithGST = batch.fees + (batch.fees * 0.18);
 
