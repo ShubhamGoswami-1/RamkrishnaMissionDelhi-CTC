@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const ejs = require("ejs");
+const cookies = require("cookie-parser");
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -35,6 +36,8 @@ app.use('/receipts', express.static(path.join(__dirname, 'receipts')));
 
 // Set security HTTP headers
 app.use(helmet());
+
+app.use(cookies());
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {

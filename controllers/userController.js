@@ -6,59 +6,66 @@ const User = require('./../models/userModel');
 
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
-const sendEmail = require('./../utils/email')
+const mailSender = require('./../utils/email')
+
+const signToken = id => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN
+  });
+};
+
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true
+  };
+  
+  // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+  res.cookie('jwt', token, cookieOptions);
+
+  // Remove password from output
+  user.password = undefined;
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user
+    }
+  });
+};
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const newUser = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm
+  });
 
-  // Check if required fields are provided
-  if (!name || !email || !password) {
-    return next(new AppError('Name, email, and password are required.', 400));
-  }
-
-  try {
-    const newUser = await User.create({
-      name,
-      email,
-      password,
-    });
-
-    // Respond with status 201 and JSON data
-    res.status(201).json({
-      status: "success",
-      message: "User created successfully",
-      newUser
-    });
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({
-      status: "error",
-      message: "Internal server error"
-    });
-  }
+  createSendToken(newUser, 201, res);
 });
-
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  // Check if email and password exist
+  // 1) Check if email and password exist
   if (!email || !password) {
-      return next(new AppError('Please provide email and password!', 400));
+    return next(new AppError('Please provide email and password!', 400));
   }
-
-  // Check if user exists && password is correct
+  // 2) Check if user exists && password is correct
   const user = await User.findOne({ email }).select('+password');
 
   if (!user || !(await user.correctPassword(password, user.password))) {
-      return next(new AppError('Incorrect email or password', 401));
+    return next(new AppError('Incorrect email or password', 401));
   }
 
-  // Sending the response with a 201 status code
-  res.status(201).json({
-      status: 'success',
-      message: 'You are logged in!!!'
-  });
+  // 3) If everything ok, send token to client
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -69,6 +76,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if(req.cookies && req.cookies.jwt){
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -135,7 +144,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
   try {
-    await sendEmail(
+    await mailSender(
       user.email,
       'Your password reset token (valid for 10 min)',
       message

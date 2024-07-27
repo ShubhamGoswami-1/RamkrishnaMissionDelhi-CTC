@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 window.location.href = '/students';
             } else {
                 alert(data.message || 'Login failed. Please try again.');

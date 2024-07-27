@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-const sendEmail = async (email, title, body) => {
+const mailSender = async (email, title, body) => {
   try {
     // Create a Transporter to send emails
     let transporter = nodemailer.createTransport({
@@ -13,7 +13,7 @@ const sendEmail = async (email, title, body) => {
 
     // Send emails to users
     let info = await transporter.sendMail({
-      from: 'languagerkmdelhi@gmail.com RKMDelhi',
+      from: 'languagerkmdelhi@gmail.com',
       to: email,
       subject: title,
       html: body,
@@ -26,4 +26,4 @@ const sendEmail = async (email, title, body) => {
   }
 };
 
-module.exports = sendEmail;
+module.exports = mailSender;
