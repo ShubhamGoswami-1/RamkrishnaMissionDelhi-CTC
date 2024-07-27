@@ -23,6 +23,62 @@
     <div class="main-content" data-batch-id="<%= batchId %>">
         <h2>Batch Details</h2>
 
+        <!-- Batch Details Container -->
+        <div class="details-container">
+            <h3>Batch Details</h3>
+            <form id="personalDetailsForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Title:</label>
+                        <input type="text" id="name" name="name">
+                        <!-- <span id="nameError" class="error-message" style="color:red; display:none;">Name is
+                            required</span> -->
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Fees:</label>
+                        <input type="email" id="email" name="email">
+                        <!-- <span id="emailError" class="error-message" style="color:red; display:none;">Invalid email
+                            format</span> -->
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fathersName">Timing:</label>
+                        <input type="text" id="fathersName" name="fathersName">
+                        <!-- <span id="fathersNameError" class="error-message" style="color:red; display:none;">Father's name
+                            is required</span> -->
+                    </div>
+                    <div class="form-group">
+                        <label for="aadhaarNo">GST:</label>
+                        <input type="text" id="aadhaarNo" name="aadhaarNo">
+                        <!-- <span id="aadhaarError" class="error-message" style="color:red; display:none;">Aadhaar number
+                            must be 12 digits</span> -->
+                    </div>
+                </div>
+                <!-- <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone:</label>
+                        <input type="text" id="phone" name="phone">
+                        <span id="phoneError" class="error-message" style="color:red; display:none;">Phone number must
+                            be 10 digits</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Active:</label>
+                        <textarea id="address" name="address"></textarea>
+                        <span id="addressError" class="error-message" style="color:red; display:none;">Address is
+                            required</span>
+                    </div>
+                </div> -->
+                    <div class="form-group">
+                        <label for="address">Active:</label>
+                        <textarea id="address" name="address"></textarea>
+                    </div>
+                       
+                <button type="button" id="saveDetailsButton">Save Details</button>
+            </form>
+        </div>
+
+
         <!-- Enrolled Students Container -->
         <div class="details-container enrolled-courses">
             <div class="batches">
