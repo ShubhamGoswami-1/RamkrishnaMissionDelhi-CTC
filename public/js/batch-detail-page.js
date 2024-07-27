@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     let batchTitle;
+    let courseName;
+    let courseId;
     function fetchBatchDetails(batchId) {
         fetch(`/api/v1/batch/getBatch/${batchId}`)
             .then(response => {
@@ -46,6 +48,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
+                courseId = data.batch.courseId;
+                courseName = data.batch.courseName;
                 // Store data.title in batchTitle
                 batchTitle = data.batch.title;
             })
@@ -160,11 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.status === 'success') {
                     const batch = data.batch;
                     document.getElementById('name').value = batch.title;
-                    document.getElementById('fathersName').value = batch.timing;
-                    document.getElementById('email').value = batch.fees;
-                    document.getElementById('aadhaarNo').value = batch.GST;
+                    document.getElementById('timing').value = batch.timing;
+                    document.getElementById('fees').value = batch.fees;
+                    document.getElementById('gst').value = batch.GST;
                     // document.getElementById('phone').value = batch.phone;
-                    document.getElementById('address').value = batch.active;
+                    document.getElementById('active').value = batch.active;
 
                     // Fetch and display students
                     fetchStudents(batch._id);
@@ -178,65 +182,61 @@ document.addEventListener('DOMContentLoaded', function () {
     function saveBatchDetails(batchId) {
         // Clear previous error messages
         document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-
+    
         let isValid = true;
-
-        const name = document.getElementById('name');
-        const email = document.getElementById('fathersName');
-        const phoneNo = document.getElementById('email');
-        const aadhaarNo = document.getElementById('aadhaarNo');
-        const address = document.getElementById('address');
-
-        // Name validation
-        // if (name.value.trim() === '') {
-        //     document.getElementById('nameError').textContent = 'Name cannot be empty.';
-        //     isValid = false;
-        // }
-
-        // // Email validation
-        // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-        // if (!emailRegex.test(email.value.trim())) {
-        //     document.getElementById('emailError').textContent = 'Please enter a valid email address.';
-        //     isValid = false;
-        // }
-
-        // // Phone Number validation
-        // const phoneNoValue = phoneNo.value.trim();
-        // const phoneNoRegex = /^\d{10}$/;
-        // if (phoneNoValue === '') {
-        //     document.getElementById('phoneError').textContent = 'Phone number cannot be empty.';
-        //     isValid = false;
-        // } else if (!phoneNoRegex.test(phoneNoValue)) {
-        //     document.getElementById('phoneError').textContent = 'Phone number must be exactly 10 digits.';
-        //     isValid = false;
-        // }
-
-        // // Aadhaar Number validation
-        // const aadhaarNoValue = aadhaarNo.value.trim();
-        // const aadhaarNoRegex = /^\d{12}$/;
-        // if (aadhaarNoValue === '') {
-        //     document.getElementById('aadhaarNoError').textContent = 'Aadhaar number cannot be empty.';
-        //     isValid = false;
-        // } else if (!aadhaarNoRegex.test(aadhaarNoValue)) {
-        //     document.getElementById('aadhaarNoError').textContent = 'Aadhaar number must be exactly 12 digits.';
-        //     isValid = false;
-        // }
-
-        // // Address validation
-        // if (address.value.trim() === '') {
-        //     document.getElementById('addressError').textContent = 'Address cannot be empty.';
-        //     isValid = false;
-        // }
-
+    
+        const title = document.getElementById('name');
+        const fees = document.getElementById('fees');
+        const timing = document.getElementById('timing');
+        const gst = document.getElementById('gst');
+        const active = document.getElementById('active');
+    
+        // Title validation
+        if (title.value.trim() === '') {
+            document.getElementById('nameError').textContent = 'Title cannot be empty.';
+            document.getElementById('nameError').style.display = 'block';
+            isValid = false;
+        }
+    
+        // Fees validation
+        if (fees.value.trim() === '') {
+            document.getElementById('feesError').textContent = 'Fees cannot be empty.';
+            document.getElementById('feesError').style.display = 'block';
+            isValid = false;
+        } else if (isNaN(fees.value) || parseFloat(fees.value) <= 0) {
+            document.getElementById('feesError').textContent = 'Fees must be a positive number.';
+            document.getElementById('feesError').style.display = 'block';
+            isValid = false;
+        }
+    
+        // Timing validation
+        if (timing.value.trim() === '') {
+            document.getElementById('timingError').textContent = 'Timing cannot be empty.';
+            document.getElementById('timingError').style.display = 'block';
+            isValid = false;
+        }
+    
+        // GST validation
+        if (gst.value.trim() === '') {
+            document.getElementById('gstError').textContent = 'GST cannot be empty.';
+            document.getElementById('gstError').style.display = 'block';
+            isValid = false;
+        } else if (isNaN(gst.value) || parseFloat(gst.value) < 0) {
+            document.getElementById('gstError').textContent = 'GST must be a non-negative number.';
+            document.getElementById('gstError').style.display = 'block';
+            isValid = false;
+        }
+    
+        // If all validations pass, proceed with the API call
         if (isValid) {
             const updatedDetails = {
-                name: name.value,
-                email: email.value,
-                aadhaarNo: aadhaarNo.value,
-                phone: phoneNo.value,
-                address: address.value,
+                title: title.value,
+                fees: fees.value,
+                timing: timing.value,
+                gst: gst.value,
+                active: active.value,
             };
-
+    
             fetch(`/api/v1/batch/edit-batch/${batchId}`, {
                 method: 'PATCH',
                 headers: {
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.status === 'success') {
                     alert('Details updated successfully');
-                    window.location.href = '/batch';
+                    window.location.href = `/batch?courseId=${courseId}&courseName=${courseName}`;
                 } else {
                     console.error('Error updating details:', data.error);
                 }
@@ -256,6 +256,12 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error updating details:', error));
         }
     }
+    
+    document.getElementById('saveDetailsButton').addEventListener('click', function() {
+        const batchId = document.querySelector('.main-content').getAttribute('data-batch-id');
+        saveBatchDetails(batchId);
+    });
+    
 
     function fetchTransactions(studentId, batchId) {
         fetch(`/api/v1/payment/getAllTransactions/studentId/${studentId}/batchId/${batchId}`)
@@ -297,10 +303,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    const saveButton = document.getElementById('saveDetailsButton');
-    saveButton.addEventListener('click', function() {
-        saveBatchDetails(batchId);
-    });
+    // const saveButton = document.getElementById('saveDetailsButton');
+    // saveButton.addEventListener('click', function() {
+    //     saveBatchDetails(batchId);
+    // });
 
     if(batchId){
         viewBatchDetails(batchId)
