@@ -328,6 +328,39 @@ document.addEventListener('DOMContentLoaded', function () {
         return isValid;
     }
 
+    function savePersonalDetails(studentId) {
+        if (validateFields()) {
+            const updatedDetails = {
+                name: document.getElementById('name').value,
+                fathersName: document.getElementById('fathersName').value,
+                email: document.getElementById('email').value,
+                aadhaarNo: document.getElementById('aadhaarNo').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+            };
+
+            fetch(`/api/v1/student/edit-student/${studentId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedDetails),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Details updated successfully');
+                        window.location.href = '/students';
+                    } else {
+                        console.error('Error updating details:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error updating details:', error));
+        } else {
+            alert('Please correct the errors in the form.');
+        }
+    }
+    
     function fetchStudentFeesDue(studentId) {
         return fetch(`/api/v1/student/get-student/${studentId}`)
             .then(response => response.json())
