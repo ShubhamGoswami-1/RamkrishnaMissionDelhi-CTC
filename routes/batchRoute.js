@@ -4,6 +4,11 @@ const batchController = require('./../controllers/batchController');
 
 const router = express.Router();
 
+const userController = require("./../controllers/userController")
+
+router.use(userController.protect);
+router.use(userController.restrictTo('admin'));
+
 router.post('/add-new-batch/courseId/:courseId', batchController.addNewBatch);
 router.get('/get-all-batches-Of-Student/:studentId', batchController.getAllBatches);
 router.patch('/edit-batch/:batchId', batchController.updateBatch)

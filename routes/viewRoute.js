@@ -2,6 +2,11 @@ const express = require('express');
 
 const router = express.Router();
 
+const userController = require("./../controllers/userController")
+
+router.use(userController.protect);
+router.use(userController.restrictTo('admin'));
+
 router.get('/signup', (req, res, next) => {
     res.render('signup-page');
 });
