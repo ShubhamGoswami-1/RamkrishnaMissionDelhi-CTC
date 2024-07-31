@@ -228,7 +228,10 @@ tr:hover {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
-    padding-top: 60px;
+    /* padding-top: 60px; */
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
 }
 
 .modal-content {
@@ -253,7 +256,7 @@ tr:hover {
     cursor: pointer;
 }
 
-#submitTransactionButton{
+.btn{
     padding: 10px 20px;
     background-color: #e65c00;
     color: white;
@@ -264,7 +267,7 @@ tr:hover {
     margin-top: 20px;
 }
 
-#submitTransactionButton:hover{
+.btn:hover{
     background-color: #ff704d;
 }
 
