@@ -88,7 +88,7 @@ body {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -236,7 +236,7 @@ tr:hover {
     margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: max-content;
 }
 
 .close {
@@ -251,6 +251,21 @@ tr:hover {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+#submitTransactionButton{
+    padding: 10px 20px;
+    background-color: #e65c00;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#submitTransactionButton:hover{
+    background-color: #ff704d;
 }
 
 #makeTransactionButton {

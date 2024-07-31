@@ -124,18 +124,28 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Make a Payment</h2>
-                <p>Student Name: <span id="studentName"></span></p>
-                <p>Batch Title: <span id="batchTitle"></span></p>
+                <div class="form-group">
+                    <p>Student Name: <span id="studentName"></span></p>
+                </div>
+                <div class="form-group">
+                    <p>Batch Title: <span id="batchTitle"></span></p>
+                </div>
                 <form id="transactionForm">
                     <input type="hidden" id="modalStudentId">
                     <input type="hidden" id="modalBatchId">
-                    <label for="newPayment">Payment Amount:</label>
-                    <input type="number" id="newPayment" name="newPayment" required>
-                    <label for="paymentType">Payment Type:</label>
-                    <select id="paymentType" name="paymentType" required>
-                        <option value="Online">Online</option>
-                        <option value="Cash">Cash</option>
-                    </select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="newPayment">Payment Amount:</label>
+                            <input type="number" id="newPayment" name="newPayment" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentType">Payment Type:</label>
+                            <select id="paymentType" name="paymentType" required>
+                                <option value="Online">Online</option>
+                                <option value="Cash">Cash</option>
+                            </select>
+                        </div>
+                    </div>
                     <button type="button" id="submitTransactionButton">Submit</button>
                 </form>
             </div>

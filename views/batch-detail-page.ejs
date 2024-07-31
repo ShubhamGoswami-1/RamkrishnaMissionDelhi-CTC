@@ -31,34 +31,38 @@
                     <div class="form-group">
                         <label for="name">Title:</label>
                         <input type="text" id="name" name="name">
-                        <span id="nameError" class="error-message" style="color:red; display:none;">Title is required.</span>
+                        <span id="nameError" class="error-message" style="color:red; display:none;">Title is
+                            required.</span>
                     </div>
                     <div class="form-group">
                         <label for="fees">Fees:</label>
                         <input type="text" id="fees" name="fees">
-                        <span id="feesError" class="error-message" style="color:red; display:none;">Fees must not be empty.</span>
+                        <span id="feesError" class="error-message" style="color:red; display:none;">Fees must not be
+                            empty.</span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="timing">Timing:</label>
                         <input type="text" id="timing" name="timing">
-                        <span id="timingError" class="error-message" style="color:red; display:none;">Timing must not be empty.</span>
+                        <span id="timingError" class="error-message" style="color:red; display:none;">Timing must not be
+                            empty.</span>
                     </div>
                     <div class="form-group">
                         <label for="gst">GST:</label>
                         <input type="text" id="gst" name="gst">
-                        <span id="gstError" class="error-message" style="color:red; display:none;">GST must not be empty.</span>
+                        <span id="gstError" class="error-message" style="color:red; display:none;">GST must not be
+                            empty.</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="active">Active:</label>
                     <textarea id="active" name="active"></textarea>
                 </div>
-            
+
                 <button type="button" id="saveDetailsButton">Save Details</button>
             </form>
-            
+
         </div>
 
 
@@ -111,28 +115,28 @@
     <div id="transactionModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h3>New Transaction</h3>
+            <h2>Make a Payment</h2>
+            <div class="form-group">
+                <p>Student Name: <span id="studentName"></span></p>
+            </div>
+            <div class="form-group">
+                <p>Batch Title: <span id="batchTitle"></span></p>
+            </div>
             <form id="transactionForm">
                 <input type="hidden" id="modalStudentId">
                 <input type="hidden" id="modalBatchId">
-                <div class="form-group">
-                    <label for="studentName">Student Name:</label>
-                    <input type="text" id="studentName" name="studentName" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="batchTitle">Batch Title:</label>
-                    <input type="text" id="batchTitle" name="batchTitle" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="newPayment">New Payment:</label>
-                    <input type="number" id="newPayment" name="newPayment" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label for="paymentType">Payment Type:</label>
-                    <select id="paymentType" name="paymentType">
-                        <option value="Online">Online</option>
-                        <option value="Cash">Cash</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newPayment">Payment Amount:</label>
+                        <input type="number" id="newPayment" name="newPayment" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentType">Payment Type:</label>
+                        <select id="paymentType" name="paymentType" required>
+                            <option value="Online">Online</option>
+                            <option value="Cash">Cash</option>
+                        </select>
+                    </div>
                 </div>
                 <button type="button" id="submitTransactionButton">Submit</button>
             </form>
