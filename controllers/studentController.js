@@ -8,7 +8,6 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 exports.addNewStudent = catchAsync(async (req, res, next) => {
-
     const { name, fathersName, email, aadhaarNo, gender, phone, dob, address, education, reference } = req.body;
 
     const studentObj = {
@@ -26,13 +25,12 @@ exports.addNewStudent = catchAsync(async (req, res, next) => {
 
     const newStudent = await Student.create(studentObj);
 
-    // res.status(201).json({
-    //     status: "success",
-    //     newStudent
-    // });
-
-    res.redirect('/students');
+    res.status(201).json({
+        status: 'success',
+        newStudent
+    });
 });
+
 
 exports.getStudent = catchAsync(async (req, res, next) => {
     const studentId = req.params.studentId;
@@ -62,30 +60,39 @@ exports.getAllStudents = catchAsync(async (req, res, next) => {
 
 exports.searchStudent = catchAsync(async (req, res, next) => {
     const { searchText, category } = req.query;
-    const query = {};
-    if(!category){
-        category = name
-    }
-    if(searchText){
-        query[category] = { $regex: new RegExp(searchText, "i") };   
-    }
-    let students = await Student.find(query, {
+
+    // Set default category if not provided
+    const searchCategory = category || 'name';
+
+    // Construct query for MongoDB
+    const regex = new RegExp(searchText, 'i'); // Case-insensitive regex
+    const query = searchText ? { [searchCategory]: regex } : {};
+
+    // Find students based on the query
+    const students = await Student.find(query, {
         _id: 1,
         name: 1,
         fathersName: 1,
         aadhaarNo: 1,
         phone: 1,
-        address: 1,
-        email: 1
-    })
-    .sort({ [category]: 1})
-    .limit(10);
+        address: 1
+    });
+
+    // Sort students by the relevance of the search text
+    students.sort((a, b) => {
+        const aMatch = a[searchCategory].toLowerCase().indexOf(searchText.toLowerCase());
+        const bMatch = b[searchCategory].toLowerCase().indexOf(searchText.toLowerCase());
+
+        if (aMatch === 0 && bMatch !== 0) return -1;
+        if (aMatch !== 0 && bMatch === 0) return 1;
+        return aMatch - bMatch;
+    });
 
     res.status(200).json({
-        status: "success",
+        status: 'success',
         students
     });
-})
+});
 
 exports.getStudentBatches = catchAsync(async (req, res, next) => {
     const studentId = req.params.studentId;
@@ -152,10 +159,15 @@ exports.downloadStudentsExcel = catchAsync(async (req, res, next) => {
         fs.mkdirSync(dir, { recursive: true });
     }
 
-    const filePath = path.join(dir, 'students.xlsx');
+    // Get the system's local date and format it
+    const date = new Date();
+    const formattedDate = date.toLocaleDateString('en-GB').replace(/\//g, '-'); // e.g., "23-07-2024"
+    const fileName = `Students_${formattedDate}.xlsx`;
+    const filePath = path.join(dir, fileName);
+    
     xlsx.writeFile(workBook, filePath);
 
-    res.download(filePath, 'students.xlsx', (err) => {
+    res.download(filePath, fileName, (err) => {
         if (err) {
             return next(new AppError('Error downloading file', 500));
         }
@@ -163,3 +175,27 @@ exports.downloadStudentsExcel = catchAsync(async (req, res, next) => {
         fs.unlinkSync(filePath);
     });
 });
+
+exports.getBatchDetailsOfStudents = catchAsync(async (req, res, next) => {
+    const batchId = req.params.batchId;
+
+    const students = await Student.find({
+        'batchIds.batchId': batchId
+    }).select('name email batchIds');
+
+    // Filter the batchIds array to include only the specific batchId
+    const studentsWithSpecificBatchId = students.map(student => {
+        const studentObj = student.toObject();
+        const filteredBatchIds = studentObj.batchIds.filter(batch => batch.batchId.toString() === batchId);
+
+        return {
+            ...studentObj,
+            batchIds: filteredBatchIds
+        };
+    });
+
+    res.status(200).json({
+        status: 'success',
+        students: studentsWithSpecificBatchId
+    });
+})

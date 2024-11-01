@@ -41,32 +41,43 @@ const studentSchema = new mongoose.Schema({
     required: [true, "Enter the address"]
   },
   batchIds: {
-    type: [String], 
-    /* 
-    {
-      courseId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course',
-        required: [true, 'Enter the courseId']
-      },
-      admissionDate: {
-        type: Date,
-        default: Date.now()
-      },
-      batchId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Batch',
-        required: [true, 'Enter the batchId']
-      },
-      formNo: {
-        type: String,
-        required: [true, "Need to fill the form number"]
+    // type: [String], 
+    type: [
+      {
+        batchId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'batch'
+        },
+        discount: {
+          type: Number,
+          enum: {
+            values: [0, 15, 25, 50, 75],
+            message: 'Please select from these values: 0, 15, 25, 50, 75'
+          },
+          default: 0
+        },
+        feesWithGST: {
+          type: Number,
+          default: 0
+        },        
+        feesPaid: {
+          type: Number,
+          default: 0
+        },
+        feesDue: {
+          type: Number,
+          default: 0
+        },
+        paidAmtList: {
+          type: [Number],
+          default: []
+        }
       }
-    }
-    */
+    ]
   },
   course_admissionIds: {
-    type: [String]
+    type: [String],
+    default: []
   },
   education: {
     type: String

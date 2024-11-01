@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const mainContent = document.querySelector('.main-content');
     const courseId = mainContent.getAttribute('data-course-id');
     const addBatchButton = document.getElementById('addBatchButton');
@@ -11,24 +11,56 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchDropdown = document.getElementById('searchDropdown');
     const batchForm = document.getElementById('batchForm');
     const facultySelect = document.getElementById('facultyId');
+    const feesInput = document.getElementById('fees');
+    const GSTInput = document.getElementById('GST'); // Add this line to select the GST input
+
+    function formatCurrency(amount) {
+        return amount.toLocaleString('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    // Function to redirect to batch details page
+    function viewBatchDetails(batchId) {
+        window.location.href = `/batch/details/${batchId}`;
+    }
 
     // Function to populate table rows with batch data
     function populateBatchTable(batches) {
         const tbody = batchTable.querySelector('tbody');
         tbody.innerHTML = ''; // Clear existing rows
+        batches = batches.sort((a, b) => new Date(b.startingDate) - new Date(a.startingDate));
 
         batches.forEach(batch => {
             const row = document.createElement('tr');
             row.dataset.batchId = batch._id; // Assuming _id is your batch's unique identifier
+            const formattedDate = new Date(batch.startingDate).toLocaleDateString('en-IN');
+            const batchFees = formatCurrency(batch.fees);
+            const expectedTotalFeesWithGSTAmount = formatCurrency(batch.expectedTotalFeesWithGST);
+            const totalFeesPaid = formatCurrency(batch.totalFeesPaid);
+            const totalFeesDue = formatCurrency(batch.expectedTotalFeesWithGST - batch.totalFeesPaid);
 
             // Example: Populate table cells with batch data
             row.innerHTML = `
                 <td>${batch.title}</td>
                 <td>${batch.facultyName}</td>
                 <td>${batch.timing}</td>
-                <td>${batch.startingDate}</td>
+                <td>${formattedDate}</td>
+                <td>${batch.studentIds.length}</td>
+                <td>${batchFees}</td>
+                <td>${expectedTotalFeesWithGSTAmount}</td> 
+                <td>${totalFeesPaid}</td>
+                <td>${totalFeesDue}</td>
                 <td>${batch.active}</td>
             `;
+
+            // Example: Populate table cells with batch data
+            row.addEventListener('click', function () {
+                viewBatchDetails(batch._id);
+            });
 
             tbody.appendChild(row);
         });
@@ -47,11 +79,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fetch all batches when page loads
-    fetch(`/api/v1/batch/get-all-batches?courseId=${courseId}`)
+    fetch(`/api/v1/batch/get-batches-by-course/${courseId}`)
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                populateBatchTable(data.batches); // Populate table with fetched batches
+                populateBatchTable(data.data.batchDetails); // Populate table with fetched batches
             } else {
                 console.error('Error fetching batches:', data.error);
             }
@@ -59,15 +91,26 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error fetching batches:', error));
 
     // Show the form modal when 'Add Batch' button is clicked
-    addBatchButton.onclick = function() {
+    addBatchButton.onclick = function () {
         batchFormModal.style.display = "flex";
+
+        // Fetch course fees to set the default value in the fees input
+        fetch(`/api/v1/course/get-course-fees/${courseId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    feesInput.value = data.fees; // Set the fetched fees as the default value
+                } else {
+                    console.error('Error fetching course fees:', data.error);
+                }
+            })
+            .catch(error => console.error('Error fetching course fees:', error));
 
         // Fetch all faculties to populate the dropdown
         fetch('/api/v1/faculty/get-all-faculties')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    console.log("Faculties", data.faculties)
                     populateFacultyDropdown(data.faculties); // Populate dropdown with fetched faculties
                 } else {
                     console.error('Error fetching faculties:', data.error);
@@ -78,20 +121,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close the modal when the 'x' button is clicked
     closeButtons.forEach(button => {
-        button.onclick = function() {
+        button.onclick = function () {
             batchFormModal.style.display = "none";
         }
     });
 
     // Close the modal when clicking outside the form content
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == batchFormModal) {
             batchFormModal.style.display = "none";
         }
     };
 
     // Handle search functionality
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener('input', function () {
         let filter = this.value.toLowerCase();
         let category = searchCategory.value;
 
@@ -108,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .catch(error => console.error('Error searching batches:', error));
         } else {
             // If the search input is cleared, fetch all batches again
-            fetch(`/api/v1/batch/get-all-batches?courseId=${courseId}`)
+            fetch(`/api/v1/batch/get-batches-by-course/${courseId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
@@ -122,11 +165,60 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Toggle the search category dropdown
-    filterIcon.addEventListener('click', function(event) {
+    filterIcon.addEventListener('click', function (event) {
         searchDropdown.classList.toggle('active');
     });
 
-    searchCategory.addEventListener('change', function() {
+    searchCategory.addEventListener('change', function () {
         searchInput.dispatchEvent(new Event('input')); // Trigger the search when the category changes
+    });
+
+    // Function to show a popup message
+    function showPopupMessage(message, backgroundColor) {
+        const popup = document.createElement('div');
+        popup.textContent = message;
+        popup.className = 'popup-message';
+        popup.style.backgroundColor = backgroundColor;
+        document.body.appendChild(popup);
+
+        setTimeout(() => {
+            popup.remove();
+        }, 3000); // Show the popup for 3 seconds
+    }
+
+    // Check if the batch was added successfully from localStorage
+    if (localStorage.getItem('batchAdded') === 'true') {
+        showPopupMessage('Batch Added', 'rgba(0, 128, 0, 0.7)');
+        localStorage.removeItem('batchAdded');
+    }
+
+    // Handle form submission with Fetch API
+    batchForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(batchForm);
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+
+        fetch(`/api/v1/batch/add-new-batch/courseId/${courseId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formObject)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                batchFormModal.style.display = "none"; // Close the modal
+                localStorage.setItem('batchAdded', 'true'); // Set localStorage flag
+                window.location.reload(); // Reload the page
+            } else {
+                console.error('Error adding batch:', data.error);
+            }
+        })
+        .catch(error => console.error('Error adding batch:', error));
     });
 });

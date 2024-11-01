@@ -6,24 +6,32 @@ const Faculty = require('./../models/facultyModel');
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
-exports.addNewFaculty = catchAsync(async (req, res, next) => {
-    const { name, aadhaarNo, phone, email, address } = req.body;
+exports.addNewFaculty = async (req, res, next) => {
+    try {
+        const { name, aadhaarNo, phone, email, address } = req.body;
 
-    const newFaculty = await Faculty.create({
-        name,
-        aadhaarNo,
-        phone,
-        address,
-        email
-    });
+        // Create new faculty
+        const newFaculty = await Faculty.create({
+            name,
+            aadhaarNo,
+            phone,
+            email,
+            address
+        });
 
-    // res.status(201).json({
-    //     status: "success",
-    //     newFaculty
-    // });
+        res.status(201).json({
+            status: 'success',
+            newFaculty
+        });
 
-    res.redirect('/faculty');
-})
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: error.message
+        });
+    }
+}
+
 
 exports.getAllFaculties = catchAsync(async (req, res, next) => {
     const faculties = await Faculty.find();

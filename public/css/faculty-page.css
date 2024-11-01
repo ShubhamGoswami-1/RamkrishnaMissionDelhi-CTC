@@ -43,6 +43,8 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.9;
+    overflow-y: auto;
+    height: 100vh;
 }
 .main-content h2 {
     margin-bottom: 20px;
@@ -234,4 +236,10 @@ tr:hover {
     border-bottom: 1px solid #ccc;
     border-radius: 0;
     background-color: #fff;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 0.25em;
 }

@@ -30,11 +30,19 @@ const batchSchema = new mongoose.Schema({
   },
   studentIds: {
     type: [String],
-    default: ''
+    default: []
+  },
+  fees: {
+    type: Number,
+    default: 0
   },
   active: {
     type: Boolean,
     default: true
+  },
+  GST: {
+    type: Number,
+    default: 18 // Default value is 18
   }
 }, {
     collection: "batch",

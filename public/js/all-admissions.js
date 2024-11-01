@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const admissionTable = document.getElementById('admissionTable');
     const searchInput = document.getElementById('searchInput');
     const searchCategory = document.getElementById('searchCategory');
@@ -9,17 +9,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function populateAdmissionTable(admissions) {
         const tbody = admissionTable.querySelector('tbody');
         tbody.innerHTML = ''; // Clear existing rows
-    
+        admissions = admissions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
         admissions.forEach(admission => {
             const row = document.createElement('tr');
             row.dataset.admissionId = admission._id; // Assuming _id is your admission's unique identifier
-    
-            // Parse the DateOfAdmission string into a Date object
-            const dateOfAdmission = new Date(admission.DateOfAdmission);
-    
+
             // Format the date as DD-MM-YYYY
-            const formattedDate = `${dateOfAdmission.getDate().toString().padStart(2, '0')}-${(dateOfAdmission.getMonth() + 1).toString().padStart(2, '0')}-${dateOfAdmission.getFullYear()}`;
-    
+            const formattedDate = new Date(admission.DateOfAdmission).toLocaleDateString('en-IN');
+
             row.innerHTML = `
                 <td>${admission.studentName}</td>
                 <td>${admission.courseName}</td>
@@ -27,11 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${formattedDate}</td>
                 <td>${admission.formNo}</td>
             `;
-    
+
             tbody.appendChild(row);
         });
     }
-    
+
 
     // Fetch all admissions when page loads
     fetch('/api/v1/admission/get-all-admissions')
@@ -46,12 +44,12 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error fetching admissions:', error));
 
     // Handle search functionality
-    searchInput.addEventListener('input', function() {
-        let filter = this.value.toLowerCase();
+    searchInput.addEventListener('input', function () {
+        let filter = this.value.trim();
         let category = searchCategory.value;
 
         if (filter.length > 0) {
-            fetch(`/api/v1/admission/search?searchText=${filter}&category=${category}`)
+            fetch(`/api/v1/admission/search?searchText=${encodeURIComponent(filter)}&category=${encodeURIComponent(category)}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
@@ -77,11 +75,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Toggle the search category dropdown
-    filterIcon.addEventListener('click', function(event) {
+    filterIcon.addEventListener('click', function (event) {
         searchDropdown.classList.toggle('active');
     });
 
-    searchCategory.addEventListener('change', function() {
+    searchCategory.addEventListener('change', function () {
         searchInput.dispatchEvent(new Event('input')); // Trigger the search when the category changes
     });
 });

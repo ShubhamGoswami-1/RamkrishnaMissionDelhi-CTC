@@ -27,26 +27,31 @@
                     <div class="form-group">
                         <label for="name">Name:</label>
                         <input type="text" id="name" name="name">
+                        <span id="nameError" class="error-message"></span>
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
                         <input type="email" id="email" name="email">
+                        <span id="emailError" class="error-message"></span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="aadhaarNo">Aadhaar No:</label>
                         <input type="text" id="aadhaarNo" name="aadhaarNo">
+                        <span id="aadhaarNoError" class="error-message"></span>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone:</label>
                         <input type="text" id="phone" name="phone">
+                        <span id="phoneError" class="error-message"></span>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="address">Address:</label>
                         <textarea id="address" name="address"></textarea>
+                        <span id="addressError" class="error-message"></span>
                     </div>
                 </div>
                 <button type="button" id="saveDetailsButton">Save Details</button>
@@ -54,21 +59,30 @@
         </div>
 
         <!-- Batch/Course IDs Container -->
-        <!-- <div class="details-container">
+        <div class="details-container">
             <h3>Enrolled Courses</h3>
             <table id="batchCourseTable">
                 <thead>
                     <tr>
-                        <th>Batch/Course ID</th>
-                        <th>Batch/Course Name</th>
-                        <th>Fees Paid</th>
+                        <th>Course</th>
+                        <th>Batch</th>
+                        <th>Timing</th>
+                        <th>Starting Date</th>
+                        <th>No. of Students</th>
+                        <th>Fees</th>
+                        <!-- <th>GST Fees</th> -->
+                        <!-- <th>Expected Fees</th> -->
+                        <th>Expected Fees with GST</th>
+                        <th>Total Fees Paid</th>
+                        <th>Total Fees Due</th>
+                        <th>Active</th>
                     </tr>
                 </thead>
-                <tbody> -->
+                <tbody>
                     <!-- Batch/Course details will be populated here -->
-                <!-- </tbody>
+                </tbody>
             </table>
-        </div> -->
+        </div>
     </div>
     <script src="/js/faculty-detail-page.js"></script>
 </body>

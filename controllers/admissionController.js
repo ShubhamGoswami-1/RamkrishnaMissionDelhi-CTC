@@ -7,7 +7,7 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 exports.newAdmission = catchAsync(async(req, res, next) => {
-    const { studentId, courseId, batchId, formNo } = req.body; // formNo
+    const { studentId, courseId, batchId, formNo, discount } = req.body; // formNo
 
     const student = await Student.findOne({ _id: studentId });
     const course = await Course.findById(courseId)
@@ -31,15 +31,32 @@ exports.newAdmission = catchAsync(async(req, res, next) => {
         formNo
     });
 
-    // Do neccessary steps
+    // Do neccessary steps:
+
+    // Apply discount if provided
+    let discountedFees = batch.fees;
+
+    if(discount) {
+        discountedFees = (discountedFees - (discountedFees * discount/100));
+    }
+    
+    // Calculate feesWithGST
+    const feesWithGST = discountedFees + (discountedFees * 0.18);
 
     // 1. Add the batch assigned to the student's batchIds array
-    if(!student.batchIds){
-        const batchIds = [];
-        batchIds.push(batchId.toString());
-        student.batchIds = batchIds;
+    const batchEntry = {
+        batchId: batchId,
+        discount,
+        feesWithGST: feesWithGST,
+        feesPaid: 0,
+        feesDue: feesWithGST,
+        paidAmtList: []
+    };
+
+    if (!student.batchIds) {
+        student.batchIds = [batchEntry];
     } else {
-        student.batchIds.push(batchId);
+        student.batchIds.push(batchEntry);
     }
 
     // 2. Add the admission._id to the student course_admissionIds array
@@ -81,18 +98,21 @@ exports.getAllAdmissions = catchAsync(async (req, res, next) => {
 exports.searchAdmission = catchAsync(async (req, res, next) => {
     const { searchText, category } = req.query;
     const query = {};
-    if(!category){
-        category = studentName
+    
+    // Use a default category if none is provided
+    const searchCategory = category || 'studentName';
+
+    if (searchText) {
+        query[searchCategory] = { $regex: new RegExp(searchText, "i") };   
     }
-    if(searchText){
-        query[category] = { $regex: new RegExp(searchText, "i") };   
-    }
-    let admissions = await Student.find(query)
-    .sort({ [category]: 1})
-    .limit(10);
+
+    // Find admissions based on the query
+    let admissions = await Admission.find(query)
+        .sort({ DateOfAdmission: -1 }) // Sort by admission date, descending
+        .limit(10); // Limit the number of results if needed
 
     res.status(200).json({
         status: "success",
         admissions
     });
-})
+});

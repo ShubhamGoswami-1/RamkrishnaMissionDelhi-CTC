@@ -43,6 +43,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.9;
+    overflow-y: auto;
 }
 .main-content h2 {
     margin-bottom: 20px;
