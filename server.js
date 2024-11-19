@@ -10,10 +10,14 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-);
+const dev = process.env.NODE_ENV;
+
+const DB = dev === 'development' 
+  ? process.env.DEV_DATABASE.replace('<PASSWORD>', process.env.DEV_DATABASE_PASSWORD)
+  : process.env.PROD_DATABASE.replace('<PASSWORD>', process.env.PROD_DATABASE_PASSWORD);
+
+// Example of logging the environment (optional)
+console.log(`Connecting to ${dev === 'development' ? 'development' : 'production'} database.`);
 
 mongoose
   .connect(DB)

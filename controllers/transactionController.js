@@ -1,3 +1,5 @@
+const path = require('path');
+
 const Batch = require("./../models/batchModel");
 const Transaction = require("./../models/transactionModel");
 const Student = require('./../models/studentModel');
@@ -64,22 +66,41 @@ exports.newPayment = catchAsync(async (req, res, next) => {
         return next(new AppError('Payment amount exceeds the fees due.', 400));
     }
 
+    // Get the latest receipt number
+    const lastTransaction = await Transaction.findOne().sort({ receiptNo: -1 });
+    const receiptNo = lastTransaction ? lastTransaction.receiptNo + 1 : 1;
+
     const transaction = await Transaction.create({
         studentId,
         batchId,
         newPayment: newPaymentAmount,
         feesPaid: totalFeesPaid,
         dueAmt: dueAmt,
-        paymentType: paymentType
+        paymentType: paymentType,
+        receiptNo
     });
 
     await student.save();
-    const pdfPath = generateReceiptPDF(transaction, student, batch, totalFeesPaid, newPaymentAmount, feesWithGST, dueAmt);
+    // Sanitize student name for file naming
+    const sanitizedStudentName = student.name.replace(/[^a-zA-Z0-9]/g, '_');
+    const pdfFileName = `${sanitizedStudentName}-${receiptNo}.pdf`;
+    const pdfPath = path.join(__dirname, '..', 'receipts', pdfFileName);
+    await generateReceiptPDF(transaction, student, batch, totalFeesPaid, newPaymentAmount, feesWithGST, dueAmt, pdfPath);
 
-    res.status(201).json({
-        status: 'success',
-        transaction,
-        pdfUrl: `/receipts/${transaction._id}.pdf`
+    const fileName = path.basename(pdfPath);
+
+    console.log("Pdf Path: ", pdfPath);
+    console.log("File Name: ", fileName);
+
+    // Set headers to prompt download and open in a new tab
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.setHeader('Content-Type', 'application/pdf');
+
+    // Send the file as a response and automatically download it
+    res.download(pdfPath, fileName, (err) => {
+        if (err) {
+            return next(new AppError('Error downloading the PDF', 500));
+        }
     });
 });
 

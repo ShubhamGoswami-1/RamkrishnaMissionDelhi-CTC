@@ -25,6 +25,10 @@ const transactionSchema = new mongoose.Schema({
         type: String,
         enum: ['Online', 'Cash'],
         required: true
+    },
+    receiptNo: { // New field for receipt number
+        type: Number,
+        required: true
     }
 }, {
     collection: "transaction",

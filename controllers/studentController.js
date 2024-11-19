@@ -41,8 +41,6 @@ exports.getStudent = catchAsync(async (req, res, next) => {
         return next(new AppError(`No student found with id:${studentId}`, 404));
     }
 
-    console.log("Student: ", student)
-
     res.status(200).json({
         status: "success",
         student

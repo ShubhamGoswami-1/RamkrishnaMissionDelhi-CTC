@@ -79,7 +79,6 @@ exports.getFaculty = catchAsync(async (req, res, next) => {
         return next(new AppError(`No faculty found with id:${facultyId}`, 404));
     }
 
-    console.log("facultyId is  :", facultyId);
     res.status(200).json({
         status: "success",
         faculty
