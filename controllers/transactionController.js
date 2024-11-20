@@ -93,13 +93,23 @@ exports.newPayment = catchAsync(async (req, res, next) => {
     console.log("File Name: ", fileName);
 
     // Set headers to prompt download and open in a new tab
-    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
-    res.setHeader('Content-Type', 'application/pdf');
+    // res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    // res.setHeader('Content-Type', 'application/pdf');
 
     // Send the file as a response and automatically download it
-    res.download(pdfPath, fileName, (err) => {
+    // res.download(pdfPath, fileName, (err) => {
+    //     if (err) {
+    //         return next(new AppError('Error downloading the PDF', 500));
+    //     }
+    // });
+
+    res.setHeader('Content-Disposition', `inline; filename="${pdfFileName}"`);
+    res.setHeader('Content-Type', 'application/pdf');
+
+    res.sendFile(pdfPath, (err) => {
         if (err) {
-            return next(new AppError('Error downloading the PDF', 500));
+            console.error('Error while sending file:', err);
+            return next(new AppError('Error serving the PDF', 500));
         }
     });
 });

@@ -211,55 +211,122 @@ document.addEventListener('DOMContentLoaded', function () {
         hideModal(confirmationModal); // Hide the confirmation modal
     });
 
+    // confirmTransactionButton.addEventListener('click', async function () {
+    //     const studentId = document.getElementById('modalStudentId').value;
+    //     const batchId = document.getElementById('modalBatchId').value;
+    //     const newPayment = parseFloat(document.getElementById('newPayment').value);
+    //     const paymentType = document.getElementById('paymentType').value;
+    //     const newPaymentField = document.getElementById('newPayment');
+
+    //     if (isNaN(newPayment) || newPayment <= 0) {
+    //         alert('Please enter a valid payment amount.');
+    //         return;
+    //     }
+
+    //     const feesDue = await fetchStudentFeesDue(studentId);
+    //     if (feesDue === null) {
+    //         alert('Error fetching fees due. Please try again later.');
+    //         return;
+    //     }
+
+    //     if (newPayment > feesDue) {
+    //         alert('Payment amount exceeds the fees due.');
+    //         return;
+    //     }
+
+    //     if (newPayment) {
+    //         fetch(`/api/v1/payment/newPayment/studentId/${studentId}/batchId/${batchId}`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ newPayment, paymentType }),
+    //         })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 if (data.status === 'success') {
+    //                     alert('Transaction successfully created!');
+    //                     hideModal(confirmationModal); // Hide the confirmation modal
+    //                     transactionModal.style.display = 'none'; // Hide the transaction modal
+    //                     fetchBatches(studentId); // Refresh the batches list
+    //                     fetchTransactions(studentId, batchId); // Refresh the transactions list
+    //                     newPaymentField.value = ''; // Clear the new payment field
+    //                 } else {
+    //                     console.error('Error creating transaction:', data.error);
+    //                 }
+    //             })
+    //             .catch(error => console.error('Error creating transaction:', error));
+    //     } else {
+    //         alert('Please enter a payment amount.');
+    //     }
+    // });
+
     confirmTransactionButton.addEventListener('click', async function () {
-        const studentId = document.getElementById('modalStudentId').value;
-        const batchId = document.getElementById('modalBatchId').value;
-        const newPayment = parseFloat(document.getElementById('newPayment').value);
-        const paymentType = document.getElementById('paymentType').value;
-        const newPaymentField = document.getElementById('newPayment');
-
-        if (isNaN(newPayment) || newPayment <= 0) {
-            alert('Please enter a valid payment amount.');
-            return;
-        }
-
-        const feesDue = await fetchStudentFeesDue(studentId);
-        if (feesDue === null) {
-            alert('Error fetching fees due. Please try again later.');
-            return;
-        }
-
-        if (newPayment > feesDue) {
-            alert('Payment amount exceeds the fees due.');
-            return;
-        }
-
-        if (newPayment) {
-            fetch(`/api/v1/payment/newPayment/studentId/${studentId}/batchId/${batchId}`, {
+        try {
+            const studentId = document.getElementById('modalStudentId').value.trim();
+            const batchId = document.getElementById('modalBatchId').value.trim();
+            const newPayment = parseFloat(document.getElementById('newPayment').value);
+            const paymentType = document.getElementById('paymentType').value.trim();
+            const newPaymentField = document.getElementById('newPayment');
+    
+            // Validate input fields
+            if (!studentId || !batchId || !paymentType) {
+                alert('Missing required fields. Please ensure all inputs are filled.');
+                return;
+            }
+    
+            if (isNaN(newPayment) || newPayment <= 0) {
+                alert('Please enter a valid payment amount greater than 0.');
+                return;
+            }
+    
+            // Fetch fees due to validate the payment
+            const feesDue = await fetchStudentFeesDue(studentId);
+            if (feesDue === null) {
+                alert('Error fetching fees due. Please try again later.');
+                return;
+            }
+    
+            if (newPayment > feesDue) {
+                alert('Payment amount exceeds the fees due.');
+                return;
+            }
+    
+            // If everything is valid, proceed to fetch the PDF
+            const response = await fetch(`/api/v1/payment/newPayment/studentId/${studentId}/batchId/${batchId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ newPayment, paymentType }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Transaction successfully created!');
-                        hideModal(confirmationModal); // Hide the confirmation modal
-                        transactionModal.style.display = 'none'; // Hide the transaction modal
-                        fetchBatches(studentId); // Refresh the batches list
-                        fetchTransactions(studentId, batchId); // Refresh the transactions list
-                        newPaymentField.value = ''; // Clear the new payment field
-                    } else {
-                        console.error('Error creating transaction:', data.error);
-                    }
-                })
-                .catch(error => console.error('Error creating transaction:', error));
-        } else {
-            alert('Please enter a payment amount.');
+            });
+    
+            if (response.ok) {
+                // Convert response to Blob for the PDF
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+    
+                // Open the PDF in a new tab
+                window.open(url, '_blank');
+    
+                alert('Transaction successfully created!');
+                hideModal(confirmationModal); // Hide the confirmation modal
+                transactionModal.style.display = 'none'; // Hide the transaction modal
+                fetchBatches(studentId); // Refresh the batches list
+                fetchTransactions(studentId, batchId); // Refresh the transactions list
+                newPaymentField.value = ''; // Clear the new payment field
+            } else {
+                // Handle non-OK responses
+                const errorData = await response.json();
+                console.error('Error creating transaction:', errorData);
+                alert(errorData.message || 'Failed to create transaction.');
+            }
+        } catch (error) {
+            console.error('Error creating transaction:', error);
+            alert('An unexpected error occurred. Please try again.');
         }
     });
+    
 
     function validateEmail(email) {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
