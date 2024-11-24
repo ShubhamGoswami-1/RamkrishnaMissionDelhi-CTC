@@ -204,7 +204,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     submitTransactionButton.addEventListener('click', function (event) {
         event.preventDefault(); // Prevent default form submission
+        transactionModal.style.display= 'none';
         confirmationModal.style.display = 'block'; // Show the confirmation modal
+        
     });
 
     cancelTransactionButton.addEventListener('click', function () {
