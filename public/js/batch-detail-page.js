@@ -262,6 +262,36 @@ document.addEventListener('DOMContentLoaded', function () {
         saveBatchDetails(batchId);
     });
     
+    function viewReceipt(receiptBase64, receiptNo, studentName) {
+        if (!receiptBase64) {
+            alert('No receipt available for this transaction.');
+            return;
+        }
+    
+        try {
+            // Decode Base64 to binary
+            const byteCharacters = atob(receiptBase64);
+            const byteArray = new Uint8Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteArray[i] = byteCharacters.charCodeAt(i);
+            }
+    
+            // Create Blob and open it
+            const blob = new Blob([byteArray], { type: 'application/pdf' });
+            const blobUrl = URL.createObjectURL(blob);
+            const receiptFilename = `${studentName}-${receiptNo}.pdf`;
+    
+            const newTab = window.open(blobUrl, '_blank');
+            if (!newTab) {
+                alert('Pop-up blocked! Please allow pop-ups for this site.');
+            }
+    
+            // Revoke Blob URL after usage
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        } catch (error) {
+            console.error('Error displaying receipt:', error);
+        }
+    }
 
     function fetchTransactions(studentId, batchId) {
         fetch(`/api/v1/payment/getAllTransactions/studentId/${studentId}/batchId/${batchId}`)
@@ -269,18 +299,20 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.status === 'success') {
                     let transactions = data.transactions;
+                    let studentName  = data.studentName;
 
                     transactions = transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
+  
                     const tableBody = document.querySelector('#transactionTable tbody');
                     tableBody.innerHTML = ''; // Clear existing rows
 
                     transactions.forEach(transaction => {
                         const formattedDate = new Date(transaction.createdAt).toLocaleDateString('en-IN');
-                        const truncatedTransactionId = transaction._id.length > 7 ? '....' + transaction._id.slice(-7) : transaction._id;
                         const newPayment = `₹${parseFloat(transaction.newPayment).toFixed(2)}`;
                         const feesPaid = `₹${parseFloat(transaction.feesPaid).toFixed(2)}`;
                         const dueAmt = `₹${parseFloat(transaction.dueAmt).toFixed(2)}`;
+                        const paymentType = transaction.paymentType || 'N/A';
+                        const recieptNo = transaction.receiptNo;
 
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -288,10 +320,27 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${newPayment}</td>
                             <td>${feesPaid}</td>
                             <td>${dueAmt}</td>
-                            <td>${transaction.paymentType}</td>
-                            <td>${truncatedTransactionId}</td>
-                        `;
+                            <td>${paymentType}</td>
+                            <td>${recieptNo}</td>
+                            <td><button class="view-receipt-btn" 
+                                    data-receipt="${transaction.receiptBase64}" 
+                                    data-receipt-no="${transaction.receiptNo}" 
+                                    data-student-name="${studentName}">
+                                    View Receipt
+                                </button>
+                            </td>
+                        `;                        
                         tableBody.appendChild(row);
+                    });
+
+                    // Attach event listeners to buttons dynamically
+                    document.querySelectorAll('.view-receipt-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const receiptBase64 = this.getAttribute('data-receipt');
+                            const receiptNo = this.getAttribute('data-receipt-no');
+                            const studentName = this.getAttribute('data-student-name');
+                            viewReceipt(receiptBase64, receiptNo, studentName);
+                        });
                     });
 
                     document.querySelector('.transactions').style.display = 'block';

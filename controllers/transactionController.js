@@ -183,34 +183,29 @@ exports.newPayment = catchAsync(async (req, res, next) => {
 
     await student.save();
 
-    const sanitizedStudentName = student.name.replace(/[^a-zA-Z0-9]/g, '_');
-    const pdfFileName = `${sanitizedStudentName}-${receiptNo}.pdf`;
-    const pdfPath = path.join(__dirname, '..', 'receipts', pdfFileName);
-    await generateReceiptPDF(transaction, student, batch, totalFeesPaid, newPaymentAmount, feesWithGST, dueAmt, pdfPath);
+    // Generate the PDF as a buffer
+    const pdfBuffer = await new Promise((resolve, reject) => {
+        const doc = generateReceiptPDF(transaction, student, batch, totalFeesPaid, newPaymentAmount, feesWithGST, dueAmt);
+        const chunks = [];
+        doc.on('data', chunk => chunks.push(chunk));
+        doc.on('end', () => resolve(Buffer.concat(chunks)));
+        doc.on('error', err => reject(err));
+        doc.end();
+    });
 
-    try {
-        // Log before attempting to access the file
-        console.log('Attempting to access file:', pdfPath);
-        
-        // Wait until the file is accessible
-        await access(pdfPath);
+    const receiptBase64 = pdfBuffer.toString('base64');
+    transaction.receiptBase64 = receiptBase64;
+    await transaction.save();
 
-        // Log after successful access
-        console.log('File is accessible:', pdfPath);
+    
+    // Serve the PDF in the response to open it in a new tab
+    res.setHeader('Content-Type', 'application/pdf');
+    const sanitizeFilename = (name) => name.replace(/[^a-z0-9]/gi, '_');
+    const sanitizedFilename = sanitizeFilename(student.name);
+    res.setHeader('Content-Disposition', `inline; filename="${sanitizedFilename}-${transaction.receiptNo}.pdf"`);
 
-        res.setHeader('Content-Disposition', `inline; filename="${pdfFileName}"`);
-        res.setHeader('Content-Type', 'application/pdf');
-
-        res.sendFile(pdfPath, (err) => {
-            if (err) {
-                console.error('Error while sending file:', err);
-                return next(new AppError('Error serving the PDF', 500));
-            }
-        });
-    } catch (err) {
-        console.error('Error while accessing file:', err);
-        return next(new AppError('Error locating the PDF file.', 500));
-    }
+    // res.setHeader('Content-Disposition', `inline; filename=${student.name}-${receiptNo}.pdf`);
+    res.send(pdfBuffer);
 });
 
 
@@ -235,8 +230,9 @@ exports.feesTransactionsStudentInBatch = catchAsync(async(req, res, next) => {
         studentId
     });
 
-    res.status(200).json({
-        status: "success",
-        transactions
+    res.status(200).json({ 
+        status: 'success', 
+        transactions,
+        studentName: student.name
     });
 })

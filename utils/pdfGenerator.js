@@ -37,7 +37,7 @@ const convertNumberToWords = (number) => {
 const generateReceiptPDF = (transaction, student, batch, totalFeesPaid, newPaymentAmount, feesWithGST, dueAmt, pdfPath) => {
     const val = convertNumberToWords(newPaymentAmount);
     const doc = new PDFDocument({ size: [595, 420], margin: 20 }); // A5 size
-    doc.pipe(fs.createWriteStream(pdfPath));
+    // doc.pipe(fs.createWriteStream(pdfPath));
 
     // Border
     doc.rect(10, 10, doc.page.width - 20, doc.page.height - 20).strokeColor('black').lineWidth(1).stroke();
@@ -165,9 +165,8 @@ const generateReceiptPDF = (transaction, student, batch, totalFeesPaid, newPayme
     doc.font('Helvetica-Bold').fontSize(9).text(`Recieved the sum of Rupees(in words): ${val} only`, 20, currentY + 10);
     doc.text('Prepared by', 20, doc.page.height - 60, { align: 'left' });
     doc.text('Secretary', doc.page.width - 80, doc.page.height - 60, { align: 'right' });
-
-    doc.end();
-    return pdfPath;
+    
+    return doc;
 }
 
 module.exports = generateReceiptPDF;

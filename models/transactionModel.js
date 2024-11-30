@@ -26,10 +26,14 @@ const transactionSchema = new mongoose.Schema({
         enum: ['Online', 'Cash'],
         required: true
     },
-    receiptNo: { // New field for receipt number
+    receiptNo: { 
         type: Number,
         required: true
-    }
+    },
+    receiptBase64: { 
+        type: String,
+        required: false
+    },  
 }, {
     collection: "transaction",
     versionKey: false,
