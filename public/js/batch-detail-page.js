@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     submitTransactionButton.addEventListener('click', function () {
         confirmationModal.style.display = 'block';
+        transactionModal.style.display= 'none';
     });
 
     confirmPaymentButton.addEventListener('click', function () {
