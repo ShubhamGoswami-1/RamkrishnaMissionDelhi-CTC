@@ -28,6 +28,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // 1) GLOBAL MIDDLEWARES
 
+// Logger
+app.use(morgan('dev'));
+
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/receipts', express.static(path.join(__dirname, 'receipts')));
@@ -86,7 +89,8 @@ app.use('/api/v1/payment', paymentRouter);
 app.use('/', viewRouter);
   
 app.all('*', (req, res, next) => {
-    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+    // next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+    res.render('error-404');
 });
 
 app.use(globalErrorHandler);

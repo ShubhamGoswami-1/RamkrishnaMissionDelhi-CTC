@@ -209,30 +209,28 @@ exports.newPayment = catchAsync(async (req, res, next) => {
 });
 
 
-exports.feesTransactionsStudentInBatch = catchAsync(async(req, res, next) => {
-    const batchId = req.params.batchId;
-    const studentId = req.params.studentId;
+exports.feesTransactionsStudentInBatch = catchAsync(async (req, res, next) => {
+    const { batchId, studentId } = req.params;
 
-    const batch = await Batch.findById(batchId);
+    // Fetch batch and student data in parallel
+    const [batch, student] = await Promise.all([
+        Batch.findById(batchId).select('_id'),
+        Student.findById(studentId).select('_id')
+    ]);
 
-    if(!batch){
+    if (!batch) {
         return next(new AppError('No batch found with this batchId', 404));
     }
 
-    const student = await Student.findById(studentId);
-
-    if(!student){
+    if (!student) {
         return next(new AppError('No student found with this id', 404));
     }
 
-    const transactions = await Transaction.find({
-        batchId,
-        studentId
-    });
+    // Use lean() for faster read-only queries
+    const transactions = await Transaction.find({ studentId, batchId });
 
     res.status(200).json({ 
         status: 'success', 
-        transactions,
-        studentName: student.name
+        transactions
     });
-})
+});

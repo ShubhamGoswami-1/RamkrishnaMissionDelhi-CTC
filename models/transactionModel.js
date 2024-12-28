@@ -40,6 +40,11 @@ const transactionSchema = new mongoose.Schema({
     timestamps: true
 });
 
+// Add a compound index on batchId and studentId (for fetching transactions)
+transactionSchema.index({ studentId: 1, batchId: 1 }); // May remove it later
+
+// transactionSchema.index({ studentId: 1 });
+
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
 module.exports = Transaction;

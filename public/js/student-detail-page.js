@@ -50,30 +50,33 @@ document.addEventListener('DOMContentLoaded', function () {
         const row = event.target.closest('tr');
         if (row) {
             const batchId = row.getAttribute('data-batch-id');
-
+    
             if (currentlySelectedBatchId === batchId) {
-                // If the same batch is clicked again
+                // If the same batch is clicked again, reset styles and selection
+                row.style.backgroundColor = '#f5f5f5'; // Default color
+                currentlySelectedBatchId = null; 
                 document.querySelector('.transactions').style.display = 'none';
-                row.style.width = 'auto'; // Reset width of batch table row
-                currentlySelectedBatchId = null; // Clear selection
             } else {
-                // If a different batch is clicked
+                // Deselect previously selected row if exists
+                if (currentlySelectedBatchId) {
+                    const previousRow = document.querySelector(`tr[data-batch-id="${currentlySelectedBatchId}"]`);
+                    if (previousRow) previousRow.style.backgroundColor = '#f5f5f5'; // Default color
+                }
+    
+                // Highlight the currently clicked row
+                row.style.backgroundColor = '#d1a782'; // Desired highlight color
+                currentlySelectedBatchId = batchId;
+    
+                // Show transactions and fetch necessary details
                 fetchTransactions(studentId, batchId);
-
-                // Set hidden fields in the modal
+                document.querySelector('.transactions').style.display = 'block';
                 document.getElementById('modalStudentId').value = studentId;
                 document.getElementById('modalBatchId').value = batchId;
-
-                // Fetch and display student name and batch title
                 fetchStudentAndBatchDetails(studentId, batchId);
-
-                // Show transactions and expand table
-                document.querySelector('.transactions').style.display = 'block';
-                row.style.width = '100%'; // Set width of batch table row to full width
-                currentlySelectedBatchId = batchId; // Set currently selected batch ID
             }
         }
     });
+    
 
     function fetchStudentAndBatchDetails(studentId, batchId) {
         fetch(`/api/v1/student/get-student/${studentId}`)
@@ -162,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error fetching batch details:', error));
     }
     
-    function viewReceipt(receiptBase64, receiptNo, studentName) {
+    function viewReceipt(receiptBase64) {
         if (!receiptBase64) {
             alert('No receipt available for this transaction.');
             return;
@@ -199,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.status === 'success') {
                     let transactions = data.transactions;
-                    let studentName  = data.studentName;
 
                     transactions = transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   
@@ -224,8 +226,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${recieptNo}</td>
                             <td><button class="view-receipt-btn" 
                                     data-receipt="${transaction.receiptBase64}" 
-                                    data-receipt-no="${transaction.receiptNo}" 
-                                    data-student-name="${studentName}">
                                     View Receipt
                                 </button>
                             </td>
@@ -237,9 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelectorAll('.view-receipt-btn').forEach(button => {
                         button.addEventListener('click', function () {
                             const receiptBase64 = this.getAttribute('data-receipt');
-                            const receiptNo = this.getAttribute('data-receipt-no');
-                            const studentName = this.getAttribute('data-student-name');
-                            viewReceipt(receiptBase64, receiptNo, studentName);
+                            viewReceipt(receiptBase64);
                         });
                     });
 
