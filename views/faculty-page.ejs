@@ -2,10 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <%- include('partials/common-title') %>
     <link rel="stylesheet" href="/css/faculty-page.css">
     <style>
         /* Simple CSS for error messages */
@@ -18,14 +15,7 @@
 </head>
 
 <body>
-    <div class="sidebar">
-        <h2>Dashboard</h2>
-        <a href="/students">Students</a>
-        <a href="/faculty">Faculty</a>
-        <a href="/course">Course</a>
-        <a href="/new-admission">New Admission</a>
-        <a href="/all-admissions">All Admissions</a>
-    </div>
+    <%- include('partials/sidemenu') %>
     <div class="main-content">
         <h2>Faculty</h2>
 
