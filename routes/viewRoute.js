@@ -57,6 +57,10 @@ router.get('/all-admissions', userController.protect, userController.restrictTo(
     res.render('all-admissions');
 })
 
+router.get('/report', userController.protect, userController.restrictTo('admin'), (req, res, next) => {
+    res.render('report');
+})
+
 router.get('/', (req, res, next) => {
     res.render('welcome-page');
 });

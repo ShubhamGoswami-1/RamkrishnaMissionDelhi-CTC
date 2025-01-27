@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const transactionSchema = new mongoose.Schema({
     studentId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'student'
+        ref: 'Student'
     },
     batchId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'batch'
+        ref: 'Batch'
     },
     newPayment: {
         type: Number,

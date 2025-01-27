@@ -234,3 +234,50 @@ exports.feesTransactionsStudentInBatch = catchAsync(async (req, res, next) => {
         transactions
     });
 });
+
+exports.getAllFilteredTransactions = catchAsync(async (req, res, next) => {
+    const { page = 1, limit = 10, startDate, endDate, transactionType } = req.query;
+
+    // Pagination calculations
+    const skip = (page - 1) * limit;
+
+    // Create a filter object
+    const filter = {};
+
+    // Apply date range filter
+    if (startDate || endDate) {
+        filter.createdAt = {};
+        if (startDate) {
+            filter.createdAt.$gte = new Date(startDate);
+        }
+        if (endDate) {
+            filter.createdAt.$lte = new Date(endDate);
+        }
+    }
+
+    // Apply transaction type filter (if provided)
+    if (transactionType) {
+        filter.type = transactionType;
+    }
+
+    // Fetch transactions with filters, pagination, and sorting
+    const transactions = await Transaction.find(filter)
+        .populate('studentId', 'name email phone aadhaarNo') // Populate student data
+        .populate('batchId', 'title courseName') // Populate batch data
+        .sort({ createdAt: -1 }) // Sort by createdAt DESC
+        .skip(skip) // Skip for pagination
+        .limit(Number(limit)); // Limit the number of records per page
+
+    // Get the total number of documents matching the filter
+    const totalDocuments = await Transaction.countDocuments(filter);
+
+    res.status(200).json({
+        status: 'success',
+        results: transactions.length,
+        totalDocuments,
+        currentPage: Number(page),
+        totalPages: Math.ceil(totalDocuments / limit),
+        transactions,
+    });
+});
+

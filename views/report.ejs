@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/common-title') %>
+    <link rel="stylesheet" href="/css/report.css">
+</head>
+<body>
+    <%- include('partials/sidemenu') %>
+    <div class="main-content">
+        <h2>Transaction Report</h2>
+
+        <!-- Transactions Table -->
+        <div class="table-container-outer">
+            <div class="table-container">
+                <table id="facultyTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Aadhaar</th>
+                            <th>Phone</th>
+                            <th>Course</th>
+                            <th>Batch</th>
+                            <th>New Payment</th>
+                            <th>Due Amount</th>
+                            <th>Date</th>
+                            <th>Payment Type</th>
+                            <th>Receipt No</th>
+                            <th>Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="button-container">
+                <button id="addFacultyButton">Generate Report</button>
+                <button id="downloadExcelButton">Download Report</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Generate Report Modal -->
+    <div id="facultyFormModal" class="form-container">
+        <div class="form-content">
+            <span class="close">&times;</span>
+            <h2>Generate Report</h2>
+            <form id="facultyForm">
+                
+                <div class="formElement">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate" required>
+                </div>
+
+                <div class="formElement">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate" required>
+                </div>
+
+                <div class="formElement">
+                    <label for="batchId">Batch:</label>
+                    <select id="batchId" name="batchId">
+                        <option value="">All</option>
+                        <option value="batch1">Batch 1</option>
+                        <option value="batch2">Batch 2</option>
+                    </select>
+                </div>
+
+                <div class="formElement"></div>
+                    <label for="paymentType">Payment Type:</label>
+                    <select id="paymentType" name="paymentType">
+                        <option value="">All</option>
+                        <option value="Credit">Credit</option>
+                        <option value="Debit">Debit</option>
+                    </select>
+                </div>
+
+                <button type="submit">Generate</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/report.js"></script>
+</body>
+</html>
